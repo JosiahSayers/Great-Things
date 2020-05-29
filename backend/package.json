@@ -1,0 +1,19 @@
+{
+  "name": "great-things-backend",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JosiahSayers/Great-Things.git"
+  },
+  "author": "Josiah Sayers",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JosiahSayers/Great-Things/issues"
+  },
+  "homepage": "https://github.com/JosiahSayers/Great-Things#readme"
+}
