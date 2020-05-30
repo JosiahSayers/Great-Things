@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '../util/logger';
 
-export const logRequest = (req: Request, res: Response, next: NextFunction) => {
+export const logRequest = (req: Request, res: Response, next: NextFunction): Response | void => {
   logger.debug({
     message: `${req.method} ${req.path}`,
     time: new Date().getTime()
   });
   return next();
-}
+};

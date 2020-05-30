@@ -5,6 +5,7 @@ import { User, UserDocument } from '../models/User';
 import { RegisterBody } from '../types/register-body';
 import { isValidEmail, isValidPassword, createJwt } from './auth.helper';
 import { isAuthorized } from '../middleware/auth.middleware';
+import logger from '../util/logger';
 
 const router = express.Router();
 
@@ -19,17 +20,19 @@ router.post('/authenticate', (req: Request, res: Response) => {
     if (err) {
       return res.sendStatus(500);
     } else {
-      user.comparePassword(auth.password, (err, isMatch) => {
-        if (err) {
-          return res.sendStatus(500);
-        } else if (!isMatch) {
-          return res.sendStatus(401);
-        } else {
+      try {
+        const correctPassword = user.comparePassword(auth.password);
+        if (correctPassword) {
           const token = createJwt(user);
           res.cookie('Authorization', `Bearer ${token}`, { encode: String });
           return res.sendStatus(200);
+        } else {
+          return res.sendStatus(401);
         }
-      });
+      } catch (e) {
+        logger.error(e);
+        return res.sendStatus(500);
+      }
     }
   });
 });

@@ -4,7 +4,7 @@ import { TokenExpiredError } from 'jsonwebtoken';
 import { JWT_SECRET } from '../util/environment';
 import { UserJWT } from '../types/jwt';
 
-export const isAuthorized = (req: Request, res: Response, next: NextFunction) => {
+export const isAuthorized = (req: Request, res: Response, next: NextFunction): Response | void => {
   const authCookie = req.cookies.Authorization;
   if (!authCookie) {
     return res.sendStatus(401);
@@ -26,4 +26,4 @@ export const isAuthorized = (req: Request, res: Response, next: NextFunction) =>
       return res.sendStatus(500);
     }
   }
-}
+};

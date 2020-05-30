@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 import bcrypt from 'bcrypt-nodejs';
 
 export type UserDocument = mongoose.Document & {
@@ -15,7 +15,7 @@ export type UserDocument = mongoose.Document & {
   comparePassword: comparePasswordFunction;
 };
 
-type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
+type comparePasswordFunction = (candidatePassword: string) => boolean;
 
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
@@ -32,9 +32,9 @@ const userSchema = new mongoose.Schema({
 /**
  * Password hash middleware.
  */
-userSchema.pre("save", function save(next) {
+userSchema.pre('save', function save(next) {
   const user = this as UserDocument;
-  if (!user.isModified("password")) { return next(); }
+  if (!user.isModified('password')) { return next(); }
   bcrypt.genSalt(10, (err, salt) => {
     if (err) { return next(err); }
     bcrypt.hash(user.password, salt, undefined, (err: mongoose.Error, hash) => {
@@ -45,12 +45,10 @@ userSchema.pre("save", function save(next) {
   });
 });
 
-const comparePassword: comparePasswordFunction = function (candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
-    cb(err, isMatch);
-  });
+const comparePassword: comparePasswordFunction = function (candidatePassword: string): boolean {
+  return bcrypt.compareSync(candidatePassword, this.password);
 };
 
 userSchema.methods.comparePassword = comparePassword;
 
-export const User = mongoose.model<UserDocument>("User", userSchema);
+export const User = mongoose.model<UserDocument>('User', userSchema);

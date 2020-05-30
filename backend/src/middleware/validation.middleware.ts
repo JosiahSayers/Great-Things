@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '../util/logger';
 
-export const validateHeaders = (req: Request, res: Response, next: NextFunction) => {
+export const validateHeaders = (req: Request, res: Response, next: NextFunction): Response | void => {
   for (let i = 0; i < requiredHeaders.length; i++) {
     const header = requiredHeaders[i];
     
@@ -12,7 +12,7 @@ export const validateHeaders = (req: Request, res: Response, next: NextFunction)
     }
   }
   return next();
-}
+};
 
 const requiredHeaders = ['transaction-id'];
 
