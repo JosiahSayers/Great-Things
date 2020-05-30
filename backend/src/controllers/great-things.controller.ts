@@ -4,6 +4,7 @@ import { GreatThing, GreatThingDocument} from '../models/Great-Thing';
 import { GreatThingRequest } from '../types/great-things.request';
 import logger from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
+import { validateQueryParams } from '../middleware/great-things-query.middleware';
 
 const router = express.Router();
 
@@ -52,6 +53,38 @@ router.put('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Re
     });
 
     return res.sendStatus(204);
+  } catch (e) {
+    logger.error(e);
+    return res.sendStatus(500);
+  }
+});
+
+router.get('/', validateQueryParams, async (req: Request, res: Response) => {
+  const sortBy = <string>req.query['sort-by'];
+  const sortOrder = <string>req.query['sort-order'];
+  const startingAfterId = <string | undefined>req.query['startingAfterId'];
+
+  const sortOptions: {[key: string]: string} = {};
+  sortOptions[sortBy] = sortOrder;
+
+  try {
+    const query = GreatThing
+      .find({ ownerId: req.jwt.id })
+      .limit(parseInt(<string>req.query['limit']))
+      .sort(sortOptions);
+    
+    if (startingAfterId) {
+      const lastKnown = await GreatThing.findById({ _id: <string>req.query['startingAfterId'] }).exec();
+
+      if (sortOrder === 'desc' || sortOrder === 'descending') {
+        query.lt(sortBy, lastKnown[sortBy]);
+      } else {
+        query.gt(sortBy, lastKnown[sortBy]);
+      }
+    }
+
+    const greatThingsList = await query.exec();
+    return res.status(200).send({ greatThings: greatThingsList });
   } catch (e) {
     logger.error(e);
     return res.sendStatus(500);
