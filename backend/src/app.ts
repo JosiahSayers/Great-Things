@@ -4,10 +4,12 @@ import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import { PORT, MONGO_CONNECTION_STRING } from './util/environment';
 
-import authController from './controllers/auth';
+import authController from './controllers/auth.controller';
+import greatThingsController from './controllers/great-things.controller';
 import mongoose from 'mongoose';
 import { logRequest } from './middleware/logger.middleware';
 import { validateHeaders } from './middleware/validation.middleware';
+import { isAuthorized } from './middleware/auth.middleware';
 
 const app = express();
 
@@ -25,5 +27,6 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 app.use('/v1/auth', logRequest, validateHeaders, authController);
+app.use('/v1/users/:userid/great-things', logRequest, validateHeaders, isAuthorized, greatThingsController);
 
 export default app;
