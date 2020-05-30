@@ -9,32 +9,29 @@ import logger from '../util/logger';
 
 const router = express.Router();
 
-router.post('/authenticate', (req: Request, res: Response) => {
+router.post('/authenticate', async (req: Request, res: Response) => {
   const auth: AuthenticationBody = req.body;
 
   if (!auth.username || !auth.password) {
     return res.sendStatus(401);
   }
 
-  User.findOne({ email: auth.username }, (err, user) => {
-    if (err) {
-      return res.sendStatus(500);
+  try {
+    const user = await User.findOne({ email: auth.username });
+    const correctPassword = user.comparePassword(auth.password);
+
+    if (correctPassword) {
+      const token = createJwt(user);
+      res.cookie('Authorization', `Bearer ${token}`, { encode: String });
+      return res.sendStatus(200);
     } else {
-      try {
-        const correctPassword = user.comparePassword(auth.password);
-        if (correctPassword) {
-          const token = createJwt(user);
-          res.cookie('Authorization', `Bearer ${token}`, { encode: String });
-          return res.sendStatus(200);
-        } else {
-          return res.sendStatus(401);
-        }
-      } catch (e) {
-        logger.error(e);
-        return res.sendStatus(500);
-      }
+      return res.sendStatus(401);
     }
-  });
+    
+  } catch (e) {
+    logger.error(e);
+    return res.sendStatus(500);
+  }
 });
 
 router.post('/register', async (req: Request, res: Response) => {
@@ -50,6 +47,7 @@ router.post('/register', async (req: Request, res: Response) => {
           picture: auth.picture
         }
       }).save();
+
       const token = createJwt(user);
       res.cookie('Authorization', `Bearer ${token}`, { encode: String });
       return res.sendStatus(200);
