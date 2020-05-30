@@ -5,6 +5,7 @@ export type GreatThingDocument = mongoose.Document & {
   createdAt: number;
   lastUpdatedAt: number;
   ownerId: string;
+  [key: string]: string | number;
 };
 
 const greatThingSchema = new mongoose.Schema({
