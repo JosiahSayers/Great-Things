@@ -1,0 +1,3 @@
+backend: backend/**/*
+frontend: frontend/**/*
+CI/CD: .github/workflows
