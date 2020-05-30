@@ -2,13 +2,15 @@ import mongoose from 'mongoose';
 
 export type GreatThingDocument = mongoose.Document & {
   text: string;
-  creationDate: number;
+  createdAt: number;
+  lastUpdatedAt: number;
   ownerId: string;
 };
 
 const greatThingSchema = new mongoose.Schema({
   text: String,
-  creationDate: Number,
+  createdAt: Number,
+  lastUpdatedAt: Number,
   ownerId: String
 });
 
