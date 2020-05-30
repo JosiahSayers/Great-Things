@@ -10,5 +10,6 @@ jobs:
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
     - name: label PR
-    backend: backend/**/*
-    frontent: frontend/**/*
+      run: |
+        backend: backend/**/*
+        frontend: frontend/**/*
