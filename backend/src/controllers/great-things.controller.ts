@@ -4,7 +4,7 @@ import { GreatThing, GreatThingDocument} from '../models/Great-Thing';
 import { GreatThingRequest } from '../types/great-things.request';
 import logger from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
-import { validateQueryParams } from '../middleware/great-things-query.middleware';
+import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
 
 const router = express.Router();
 
@@ -85,6 +85,34 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
 
     const greatThingsList = await query.exec();
     return res.status(200).send({ greatThings: greatThingsList });
+  } catch (e) {
+    logger.error(e);
+    return res.sendStatus(500);
+  }
+});
+
+router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Response) => {
+  const numberOfResults = parseInt(<string>req.query['number-of-results']);
+
+  try {
+    const userGreatThingCount = await GreatThing.find({ ownerId: req.jwt.id }).countDocuments().exec();
+
+    if (userGreatThingCount > 0) {
+      const greatThingsList: GreatThingDocument[] = [];
+      for (let i = 0; i < numberOfResults; i++) {
+        const randomSkip = Math.floor(Math.random() * userGreatThingCount);
+        greatThingsList.push(
+          await GreatThing
+            .findOne({ ownerId: req.jwt.id })
+            .skip(randomSkip)
+            .exec()
+        );
+      }
+
+      return res.status(200).send({ greatThings: greatThingsList });
+    } else {
+      return res.status(404);
+    }
   } catch (e) {
     logger.error(e);
     return res.sendStatus(500);
