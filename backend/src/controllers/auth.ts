@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post('/authenticate', (req: Request, res: Response) => {
   const auth: AuthenticationBody = req.body;
-  
+
   if (!auth.username || !auth.password) {
     return res.sendStatus(401);
   }
@@ -26,7 +26,7 @@ router.post('/authenticate', (req: Request, res: Response) => {
           return res.sendStatus(401);
         } else {
           const token = createJwt(user);
-          res.cookie('Authorization', `Bearer ${token}`);
+          res.cookie('Authorization', `Bearer ${token}`, { encode: String });
           return res.sendStatus(200);
         }
       });
@@ -48,7 +48,7 @@ router.post('/register', async (req: Request, res: Response) => {
         }
       }).save();
       const token = createJwt(user);
-      res.cookie('Authorization', `Bearer ${token}`);
+      res.cookie('Authorization', `Bearer ${token}`, { encode: String });
       return res.sendStatus(200);
     } catch (e) {
       return res.sendStatus(500);
@@ -58,6 +58,6 @@ router.post('/register', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/test', isAuthorized, (req, res: Response) => res.sendStatus(200));
+router.get('/test/:userid', isAuthorized, (req, res: Response) => res.sendStatus(200));
 
 export default router;
