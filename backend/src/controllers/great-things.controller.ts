@@ -26,4 +26,18 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
+router.delete('/:greatThingId', async (req: Request, res: Response) => {
+  try {
+    const deletedDocument = await GreatThing.findByIdAndDelete({ _id: req.params.greatThingId });
+    
+    if (!deletedDocument) {
+      return res.sendStatus(404);
+    }
+
+    return res.sendStatus(204);
+  } catch (e) {
+    return res.sendStatus(500);
+  }
+});
+
 export default router;
