@@ -12,9 +12,12 @@ export const isAuthorized = (req: Request, res: Response, next: NextFunction): R
   try {
     const encodedJWT = authCookie.split(' ')[1];
     const userJWT = <UserJWT>jwt.verify(encodedJWT, JWT_SECRET);
-    const requestedUserId = req.params.userid;
+    
+    if (isJwtExpired(userJWT)) {
+      return res.status(401).send({ msg: 'JWT has expired' });
+    }
 
-    if (requestedUserId && requestedUserId !== userJWT.id) {
+    if (!isValidResource(req, userJWT)) {
       return res.status(401).send({ msg: 'Current user is not authorized to access this resource' });
     }
 
@@ -27,3 +30,13 @@ export const isAuthorized = (req: Request, res: Response, next: NextFunction): R
     }
   }
 };
+
+function isJwtExpired(userJwt: UserJWT): boolean {
+  const currentTime = Math.floor(new Date().getTime() / 1000);
+  return currentTime > userJwt.exp;
+}
+
+function isValidResource(req: Request, userJWT: UserJWT): boolean {
+  const requestedUserId = req.params.userid;
+  return !requestedUserId || requestedUserId === userJWT.id;
+}

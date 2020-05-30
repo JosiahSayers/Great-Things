@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { AuthenticationBody } from '../types/authentication-body';
 import { User, UserDocument } from '../models/User';
 import { RegisterBody } from '../types/register-body';
-import { isValidEmail, isValidPassword, createJwt } from './auth.helper';
+import { isValidEmail, isValidPassword, createJwt } from './auth.controller.helper';
 import { isAuthorized } from '../middleware/auth.middleware';
 import logger from '../util/logger';
 
@@ -52,6 +52,7 @@ router.post('/register', async (req: Request, res: Response) => {
       res.cookie('Authorization', `Bearer ${token}`, { encode: String });
       return res.sendStatus(200);
     } catch (e) {
+      logger.error(e);
       return res.sendStatus(500);
     }
   } else {
