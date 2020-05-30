@@ -37,7 +37,7 @@ export const validateQueryParamsForRandom = (req: Request, res: Response, next: 
   const numberOfResults = parseInt(<string>req.query['number-of-results']);
 
   if (numberOfResults != undefined && numberOfResults < 1) {
-    return res.status(400).send({ msg: `You sent ${numberOfResults} for the number-of-results query params, but it must be a number greater than 0.` });
+    return res.status(400).send({ msg: `You sent ${numberOfResults} for the number-of-results query param, but it must be a number greater than 0.` });
   } else if (!numberOfResults) {
     req.query['number-of-results'] = '1';
   }
