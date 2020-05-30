@@ -1,20 +1,23 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import { GreatThing, GreatThingDocument} from '../models/Great-Thing';
-import { NewGreatThingRequest } from '../types/new-great-things.request';
+import { GreatThingRequest } from '../types/great-things.request';
 import logger from '../util/logger';
+import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
 router.post('/', async (req: Request, res: Response) => {
-  const gtReq: NewGreatThingRequest = req.body;
+  const gtReq = <GreatThingRequest>req.body;
+  const currentTime = new Date().getTime();
 
   if (gtReq && gtReq.text && gtReq.text.length > 0) {
     try {
       const greatThing = await new GreatThing(<GreatThingDocument>{
         text: gtReq.text,
-        creationDate: new Date().getTime(),
-        ownerId: req.params.userid
+        createdAt: currentTime,
+        lastUpdatedAt: currentTime,
+        ownerId: req.jwt.id
       }).save();
       res.status(201).send(greatThing);
     } catch (e) {
@@ -26,7 +29,7 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
-router.delete('/:greatThingId', async (req: Request, res: Response) => {
+router.delete('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Response) => {
   try {
     const deletedDocument = await GreatThing.findByIdAndDelete({ _id: req.params.greatThingId });
     
@@ -36,6 +39,21 @@ router.delete('/:greatThingId', async (req: Request, res: Response) => {
 
     return res.sendStatus(204);
   } catch (e) {
+    return res.sendStatus(500);
+  }
+});
+
+router.put('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Response) => {
+  try {
+    const updatedGreatThing = <GreatThingRequest>req.body;
+    await GreatThing.findByIdAndUpdate({ _id: req.params.greatThingId }, {
+      text: updatedGreatThing.text,
+      lastUpdatedAt: new Date().getTime()
+    });
+
+    return res.sendStatus(204);
+  } catch (e) {
+    logger.error(e);
     return res.sendStatus(500);
   }
 });
