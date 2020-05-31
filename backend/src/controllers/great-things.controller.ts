@@ -4,8 +4,9 @@ import { GreatThing, GreatThingDocument} from '../models/Great-Thing';
 import { GreatThingRequest } from '../types/great-things.request';
 import logger from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
-import { validateQueryParams, validateQueryParamsForRandom, validateQueryParamsForSearch } from '../middleware/great-things-query.middleware';
+import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
 import { sanitizeSearchString } from './great-things.controller.helper';
+import { MongooseFilterQuery } from 'mongoose';
 
 const router = express.Router();
 
@@ -63,14 +64,23 @@ router.put('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Re
 router.get('/', validateQueryParams, async (req: Request, res: Response) => {
   const sortBy = <string>req.query['sort-by'];
   const sortOrder = <string>req.query['sort-order'];
-  const startingAfterId = <string | undefined>req.query['startingAfterId'];
+  const startingAfterId = <string>req.query['startingAfterId'];
+  const containedInText = <string>req.query['contained-in-text'];
 
   const sortOptions: {[key: string]: string} = {};
   sortOptions[sortBy] = sortOrder;
 
   try {
+    const findObject: MongooseFilterQuery<Pick<GreatThingDocument, string | number>> = { ownerId: req.jwt.id };
+    
+    if (containedInText) {
+      const sanitizedInput = sanitizeSearchString(containedInText);
+      const searchString = `\\Q${sanitizedInput}\\E`;
+      findObject.text = { $regex: searchString, $options: 'i' };
+    }
+
     const query = GreatThing
-      .find({ ownerId: req.jwt.id })
+      .find(findObject)
       .limit(parseInt(<string>req.query['limit']))
       .sort(sortOptions);
     
@@ -113,27 +123,6 @@ router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Re
       return res.status(200).send({ greatThings: greatThingsList });
     } else {
       return res.status(404);
-    }
-  } catch (e) {
-    logger.error(e);
-    return res.sendStatus(500);
-  }
-});
-
-router.get('/search', validateQueryParamsForSearch, async (req: Request, res: Response) => {
-  const sanitizedInput = sanitizeSearchString(<string>req.query['contained-in-text']);
-  const searchString = `\\Q${sanitizedInput}\\E`;
-
-  try {
-    const searchResults = await GreatThing
-      .find({ ownerId: req.jwt.id, text: { $regex: searchString, $options: 'i' } })
-      .limit(25)
-      .exec();
-    
-    if (searchResults && searchResults.length > 0) {
-      return res.status(200).send({ greatThings: searchResults });
-    } else {
-      return res.sendStatus(404);
     }
   } catch (e) {
     logger.error(e);

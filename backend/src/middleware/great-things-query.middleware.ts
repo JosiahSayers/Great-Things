@@ -44,13 +44,3 @@ export const validateQueryParamsForRandom = (req: Request, res: Response, next: 
 
   return next();
 };
-
-export const validateQueryParamsForSearch = (req: Request, res: Response, next: NextFunction): Response | void => {
-  const searchText = <string>req.query['contained-in-text'];
-
-  if (!searchText) {
-    return res.status(400).send({ msg: 'A search value must be provided in the contained-in-text query param.' });
-  }
-
-  return next();
-};
