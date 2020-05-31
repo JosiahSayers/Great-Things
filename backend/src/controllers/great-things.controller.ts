@@ -4,7 +4,8 @@ import { GreatThing, GreatThingDocument} from '../models/Great-Thing';
 import { GreatThingRequest } from '../types/great-things.request';
 import logger from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
-import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
+import { validateQueryParams, validateQueryParamsForRandom, validateQueryParamsForSearch } from '../middleware/great-things-query.middleware';
+import { sanitizeSearchString } from './great-things.controller.helper';
 
 const router = express.Router();
 
@@ -112,6 +113,27 @@ router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Re
       return res.status(200).send({ greatThings: greatThingsList });
     } else {
       return res.status(404);
+    }
+  } catch (e) {
+    logger.error(e);
+    return res.sendStatus(500);
+  }
+});
+
+router.get('/search', validateQueryParamsForSearch, async (req: Request, res: Response) => {
+  const sanitizedInput = sanitizeSearchString(<string>req.query['contained-in-text']);
+  const searchString = `\\Q${sanitizedInput}\\E`;
+
+  try {
+    const searchResults = await GreatThing
+      .find({ ownerId: req.jwt.id, text: { $regex: searchString, $options: 'i' } })
+      .limit(25)
+      .exec();
+    
+    if (searchResults && searchResults.length > 0) {
+      return res.status(200).send({ greatThings: searchResults });
+    } else {
+      return res.sendStatus(404);
     }
   } catch (e) {
     logger.error(e);

@@ -9,7 +9,7 @@ export type GreatThingDocument = mongoose.Document & {
 };
 
 const greatThingSchema = new mongoose.Schema({
-  text: String,
+  text: { type: String, text: true },
   createdAt: Number,
   lastUpdatedAt: Number,
   ownerId: String
