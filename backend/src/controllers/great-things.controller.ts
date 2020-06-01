@@ -63,12 +63,14 @@ router.put('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Re
 router.get('/', validateQueryParams, async (req: Request, res: Response) => {
   const sortBy = <string>req.query['sort-by'];
   const sortOrder = <string>req.query['sort-order'];
-  const startingAfterId = <string>req.query['startingAfterId'];
+  const page = parseInt(<string>req.query['page']);
   const searchText = <string>req.query['search'];
   const limit = parseInt(<string>req.query['limit']);
 
   const sortOptions: {[key: string]: string} = {};
   sortOptions[sortBy] = sortOrder;
+
+  const skipValue = (page - 1) * limit;
 
   try {
     const findObject: MongooseFilterQuery<Pick<GreatThingDocument, string | number>> = { ownerId: req.jwt.id };
@@ -80,21 +82,12 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
 
     const query = GreatThing
       .find(findObject)
-      .sort(sortOptions);
-    
-    if (startingAfterId) {
-      const lastKnown = await GreatThing.findById({ _id: <string>req.query['startingAfterId'] }).exec();
+      .sort(sortOptions)
+      .skip(skipValue);
 
-      if (sortOrder === 'desc' || sortOrder === 'descending') {
-        query.lt(sortBy, lastKnown[sortBy]);
-      } else {
-        query.gt(sortBy, lastKnown[sortBy]);
-      }
-    }
-
-    let remainingMatches = await GreatThing.count(query.getQuery()).exec();
+    const totalMatches = await GreatThing.count(query.getQuery()).exec();
     const greatThingsList = await query.limit(limit).exec();
-    remainingMatches = remainingMatches - greatThingsList.length;
+    const remainingMatches = totalMatches - greatThingsList.length - ((page - 1) * limit);
     return res.status(200).send({ greatThings: greatThingsList, remainingMatches });
   } catch (e) {
     logger.error(e);
@@ -103,14 +96,14 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
 });
 
 router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Response) => {
-  const numberOfResults = parseInt(<string>req.query['number-of-results']);
+  const limit = parseInt(<string>req.query['limit']);
 
   try {
     const userGreatThingCount = await GreatThing.find({ ownerId: req.jwt.id }).countDocuments().exec();
 
     if (userGreatThingCount > 0) {
       const greatThingsList: GreatThingDocument[] = [];
-      for (let i = 0; i < numberOfResults; i++) {
+      for (let i = 0; i < limit; i++) {
         const randomSkip = Math.floor(Math.random() * userGreatThingCount);
         greatThingsList.push(
           await GreatThing
