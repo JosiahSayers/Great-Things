@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
+import { sanitizeSearchString } from '../controllers/great-things.controller.helper';
 
+const MIN_LIMIT = 2;
 const MAX_LIMIT = 30;
 const DEFAULT_LIMIT = 10;
 
@@ -11,9 +13,13 @@ export const validateQueryParams = (req: Request, res: Response, next: NextFunct
   const limit = parseInt(<string>req.query['limit']);
   const sortBy = <string>req.query['sort-by'];
   const sortOrder = <string>req.query['sort-order'];
+  const searchText = <string>req.query['search'];
+  const page = parseInt(<string>req.query['page']);
 
   if (limit && limit > MAX_LIMIT) {
-    return res.status(400).send({ msg: `You sent ${limit} for the limit query param, the max supported value is ${30}.` });
+    return res.status(400).send({ msg: `You sent ${limit} for the limit query param, the max supported value is ${MAX_LIMIT}.` });
+  } else if (limit && limit < MIN_LIMIT) {
+    return res.status(400).send({ msg: `You sent ${limit} for the limit query param, the min supported value is ${MIN_LIMIT}.` });
   } else if (!limit) {
     req.query['limit'] = DEFAULT_LIMIT.toString();
   }
@@ -30,26 +36,28 @@ export const validateQueryParams = (req: Request, res: Response, next: NextFunct
     req.query['sort-order'] = 'desc';
   }
 
-  return next();
-};
+  if(searchText) {
+    req.query['search'] = sanitizeSearchString(searchText);
+  }
 
-export const validateQueryParamsForRandom = (req: Request, res: Response, next: NextFunction): Response | void => {
-  const numberOfResults = parseInt(<string>req.query['number-of-results']);
-
-  if (numberOfResults != undefined && numberOfResults < 1) {
-    return res.status(400).send({ msg: `You sent ${numberOfResults} for the number-of-results query param, but it must be a number greater than 0.` });
-  } else if (!numberOfResults) {
-    req.query['number-of-results'] = '1';
+  if (page && page < 1) {
+    return res.status(400).send({ msg: `You sent ${page} for the page query param, but it must be a number greater than 0.` });
+  } else if (!page) {
+    req.query['page'] = '1';
   }
 
   return next();
 };
 
-export const validateQueryParamsForSearch = (req: Request, res: Response, next: NextFunction): Response | void => {
-  const searchText = <string>req.query['contained-in-text'];
+export const validateQueryParamsForRandom = (req: Request, res: Response, next: NextFunction): Response | void => {
+  const limit = parseInt(<string>req.query['limit']);
 
-  if (!searchText) {
-    return res.status(400).send({ msg: 'A search value must be provided in the contained-in-text query param.' });
+  if (limit && limit < MIN_LIMIT) {
+    return res.status(400).send({ msg: `You sent ${limit} for the limit query param, but it must be a number greater than 0.` });
+  } else if (limit && limit > MAX_LIMIT) {
+    return res.status(400).send({ msg: `You sent ${limit} for the limit query param, but it must be a number less than 0.` });
+  } else if (!limit) {
+    req.query['limit'] = '1';
   }
 
   return next();

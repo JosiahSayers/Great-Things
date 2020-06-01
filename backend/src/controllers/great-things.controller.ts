@@ -4,8 +4,8 @@ import { GreatThing, GreatThingDocument} from '../models/Great-Thing';
 import { GreatThingRequest } from '../types/great-things.request';
 import logger from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
-import { validateQueryParams, validateQueryParamsForRandom, validateQueryParamsForSearch } from '../middleware/great-things-query.middleware';
-import { sanitizeSearchString } from './great-things.controller.helper';
+import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
+import { MongooseFilterQuery } from 'mongoose';
 
 const router = express.Router();
 
@@ -63,29 +63,32 @@ router.put('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Re
 router.get('/', validateQueryParams, async (req: Request, res: Response) => {
   const sortBy = <string>req.query['sort-by'];
   const sortOrder = <string>req.query['sort-order'];
-  const startingAfterId = <string | undefined>req.query['startingAfterId'];
+  const page = parseInt(<string>req.query['page']);
+  const searchText = <string>req.query['search'];
+  const limit = parseInt(<string>req.query['limit']);
 
   const sortOptions: {[key: string]: string} = {};
   sortOptions[sortBy] = sortOrder;
 
-  try {
-    const query = GreatThing
-      .find({ ownerId: req.jwt.id })
-      .limit(parseInt(<string>req.query['limit']))
-      .sort(sortOptions);
-    
-    if (startingAfterId) {
-      const lastKnown = await GreatThing.findById({ _id: <string>req.query['startingAfterId'] }).exec();
+  const skipValue = (page - 1) * limit;
 
-      if (sortOrder === 'desc' || sortOrder === 'descending') {
-        query.lt(sortBy, lastKnown[sortBy]);
-      } else {
-        query.gt(sortBy, lastKnown[sortBy]);
-      }
+  try {
+    const findObject: MongooseFilterQuery<Pick<GreatThingDocument, string | number>> = { ownerId: req.jwt.id };
+    
+    if (searchText) {
+      const searchString = `\\Q${searchText}\\E`;
+      findObject.text = { $regex: searchString, $options: 'i' };
     }
 
-    const greatThingsList = await query.exec();
-    return res.status(200).send({ greatThings: greatThingsList });
+    const query = GreatThing
+      .find(findObject)
+      .sort(sortOptions)
+      .skip(skipValue);
+
+    const totalMatches = await GreatThing.count(query.getQuery()).exec();
+    const greatThingsList = await query.limit(limit).exec();
+    const remainingMatches = totalMatches - greatThingsList.length - ((page - 1) * limit);
+    return res.status(200).send({ greatThings: greatThingsList, remainingMatches });
   } catch (e) {
     logger.error(e);
     return res.sendStatus(500);
@@ -93,14 +96,14 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
 });
 
 router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Response) => {
-  const numberOfResults = parseInt(<string>req.query['number-of-results']);
+  const limit = parseInt(<string>req.query['limit']);
 
   try {
     const userGreatThingCount = await GreatThing.find({ ownerId: req.jwt.id }).countDocuments().exec();
 
     if (userGreatThingCount > 0) {
       const greatThingsList: GreatThingDocument[] = [];
-      for (let i = 0; i < numberOfResults; i++) {
+      for (let i = 0; i < limit; i++) {
         const randomSkip = Math.floor(Math.random() * userGreatThingCount);
         greatThingsList.push(
           await GreatThing
@@ -113,27 +116,6 @@ router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Re
       return res.status(200).send({ greatThings: greatThingsList });
     } else {
       return res.status(404);
-    }
-  } catch (e) {
-    logger.error(e);
-    return res.sendStatus(500);
-  }
-});
-
-router.get('/search', validateQueryParamsForSearch, async (req: Request, res: Response) => {
-  const sanitizedInput = sanitizeSearchString(<string>req.query['contained-in-text']);
-  const searchString = `\\Q${sanitizedInput}\\E`;
-
-  try {
-    const searchResults = await GreatThing
-      .find({ ownerId: req.jwt.id, text: { $regex: searchString, $options: 'i' } })
-      .limit(25)
-      .exec();
-    
-    if (searchResults && searchResults.length > 0) {
-      return res.status(200).send({ greatThings: searchResults });
-    } else {
-      return res.sendStatus(404);
     }
   } catch (e) {
     logger.error(e);

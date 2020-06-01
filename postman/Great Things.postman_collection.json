@@ -1,0 +1,338 @@
+{
+	"info": {
+		"_postman_id": "df3136aa-7e10-4109-8c99-5a0e06af98bd",
+		"name": "Great Things",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{email}}\",\n\t\"password\": \"{{password}}\",\n\t\"name\": \"{{name}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{environment}}/v1/auth/register",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"v1",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authenticate",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "transaction-id",
+						"value": "123",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{email}}\",\n\t\"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{environment}}/v1/auth/authenticate",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"v1",
+						"auth",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Great Things",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "transaction-id",
+						"type": "text",
+						"value": "123"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"text\": \"This is some, text with punctuation.!?\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{environment}}/v1/users/{{id}}/great-things",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"v1",
+						"users",
+						"{{id}}",
+						"great-things"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Great Things",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "transaction-id",
+						"type": "text",
+						"value": "123"
+					}
+				],
+				"url": {
+					"raw": "{{environment}}/v1/users/{{id}}/great-things?limit=5",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"v1",
+						"users",
+						"{{id}}",
+						"great-things"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "5"
+						},
+						{
+							"key": "sort-order",
+							"value": "desc",
+							"disabled": true
+						},
+						{
+							"key": "sort-by",
+							"value": "lastUpdatedAt",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Random Great Things",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "transaction-id",
+						"type": "text",
+						"value": "123"
+					}
+				],
+				"url": {
+					"raw": "{{environment}}/v1/users/{{id}}/great-things/random",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"v1",
+						"users",
+						"{{id}}",
+						"great-things",
+						"random"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Great Things",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "transaction-id",
+						"type": "text",
+						"value": "123"
+					}
+				],
+				"url": {
+					"raw": "{{environment}}/v1/users/{{id}}/great-things/5ed283d7ff9467b7694dcaca",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"v1",
+						"users",
+						"{{id}}",
+						"great-things",
+						"5ed283d7ff9467b7694dcaca"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Great Things",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "transaction-id",
+						"type": "text",
+						"value": "123"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"text\": \"This was updated\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{environment}}/v1/users/{{id}}/great-things/5ed28e09e1b7cabb1aa588ec",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"v1",
+						"users",
+						"{{id}}",
+						"great-things",
+						"5ed28e09e1b7cabb1aa588ec"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Transaction-ID",
+						"value": "12345",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{email}}\",\n\t\"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{environment}}/v1/auth/test/{{id}}",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"v1",
+						"auth",
+						"test",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
