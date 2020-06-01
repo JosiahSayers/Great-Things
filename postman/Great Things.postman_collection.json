@@ -139,7 +139,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{environment}}/v1/users/{{id}}/great-things?limit=5",
+					"raw": "{{environment}}/v1/users/{{id}}/great-things",
 					"host": [
 						"{{environment}}"
 					],
@@ -152,7 +152,8 @@
 					"query": [
 						{
 							"key": "limit",
-							"value": "5"
+							"value": "5",
+							"disabled": true
 						},
 						{
 							"key": "sort-order",
@@ -167,6 +168,16 @@
 						{
 							"key": "page",
 							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "after",
+							"value": "-1",
+							"disabled": true
+						},
+						{
+							"key": "before",
+							"value": "-1",
 							"disabled": true
 						}
 					]
