@@ -95,7 +95,7 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
       query.gt('createdAt', after);
     }
 
-    const totalMatches = await GreatThing.count(query.getQuery()).exec();
+    const totalMatches = await GreatThing.countDocuments(query.getQuery()).exec();
     const greatThingsList = await query.limit(limit).exec();
     const remainingMatches = totalMatches - greatThingsList.length - ((page - 1) * limit);
     return res.status(200).send({ greatThings: greatThingsList, remainingMatches });
