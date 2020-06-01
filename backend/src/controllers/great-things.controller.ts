@@ -66,6 +66,8 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
   const page = parseInt(<string>req.query['page']);
   const searchText = <string>req.query['search'];
   const limit = parseInt(<string>req.query['limit']);
+  const before = parseInt(<string>req.query['before']);
+  const after = parseInt(<string>req.query['after']);
 
   const sortOptions: {[key: string]: string} = {};
   sortOptions[sortBy] = sortOrder;
@@ -84,6 +86,14 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
       .find(findObject)
       .sort(sortOptions)
       .skip(skipValue);
+
+    if (before) {
+      query.lt('createdAt', before);
+    }
+
+    if (after) {
+      query.gt('createdAt', after);
+    }
 
     const totalMatches = await GreatThing.count(query.getQuery()).exec();
     const greatThingsList = await query.limit(limit).exec();

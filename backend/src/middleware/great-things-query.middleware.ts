@@ -15,6 +15,8 @@ export const validateQueryParams = (req: Request, res: Response, next: NextFunct
   const sortOrder = <string>req.query['sort-order'];
   const searchText = <string>req.query['search'];
   const page = parseInt(<string>req.query['page']);
+  const before = parseInt(<string>req.query['before']);
+  const after = parseInt(<string>req.query['after']);
 
   if (limit && limit > MAX_LIMIT) {
     return res.status(400).send({ msg: `You sent ${limit} for the limit query param, the max supported value is ${MAX_LIMIT}.` });
@@ -44,6 +46,14 @@ export const validateQueryParams = (req: Request, res: Response, next: NextFunct
     return res.status(400).send({ msg: `You sent ${page} for the page query param, but it must be a number greater than 0.` });
   } else if (!page) {
     req.query['page'] = '1';
+  }
+
+  if ((!before && !isNaN(before)) || before < 0) {
+    return res.status(400).send({ msg: `You sent ${before} for the before query param, but it must be a valid integer timestamp.` });
+  }
+  
+  if ((!after && !isNaN(after)) || after < 0) {
+    return res.status(400).send({ msg: `You sent ${after} for the after query param, but it must be a valid integer timestamp.` });
   }
 
   return next();
