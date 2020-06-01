@@ -1,12 +1,13 @@
 import winston from 'winston';
 import { ENVIRONMENT } from './environment';
+import { Request } from 'express';
 
 const prettyJson = winston.format.printf((info) => {
   info.message = JSON.stringify({ log: info.message, timestamp: info.timestamp }, null, 4);
   return `${info.level}: ${info.message}`;
 });
 
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
   level: 'debug',
   format: winston.format.combine(
     winston.format.prettyPrint(),
@@ -35,4 +36,15 @@ if (ENVIRONMENT !== 'production') {
   }));
 }
 
-export default logger;
+export const baseLogObject = (req: Request): Record<string, unknown> => {
+  return {
+    transactionId: req.headers['transaction-id'],
+    user: {
+      email: req.jwt.email,
+      id: req.jwt.id,
+      profile: {
+        name: req.jwt.name
+      }
+    }
+  };
+};

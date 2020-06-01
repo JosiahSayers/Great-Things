@@ -3,13 +3,13 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import { PORT, MONGO_CONNECTION_STRING } from './util/environment';
-
 import authController from './controllers/auth.controller';
 import greatThingsController from './controllers/great-things.controller';
 import mongoose from 'mongoose';
 import { logRequest } from './middleware/logger.middleware';
 import { validateHeaders } from './middleware/validation.middleware';
 import { isAuthorized, isCurrentUser } from './middleware/auth.middleware';
+import { logger } from './util/logger';
 
 const app = express();
 
@@ -19,10 +19,12 @@ mongoose.connect(MONGO_CONNECTION_STRING, {
     useUnifiedTopology: true ,
     useFindAndModify: false
   })
-  .then(() => console.log('Successfully connected to mongoDB'))
+  .then(() => logger.info('Successfully connected to mongoDB'))
   .catch((err) => {
-    console.log('ERROR connecting to mongoDB');
-    console.log(err);
+    logger.error({
+      msg: 'ERROR connecting to mongoDB, exiting process...',
+      error: err
+    });
     process.exit();
   });
 

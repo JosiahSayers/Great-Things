@@ -24,3 +24,11 @@ export function isValidPassword(password: string): boolean {
   const passwordCheckRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
   return password && passwordCheckRegex.test(password);
 }
+
+export function buildUserForLog(user: UserDocument): Record<string, unknown> {
+  return {
+    id: user._id,
+    email: user.email,
+    profile: user.profile
+  };
+}

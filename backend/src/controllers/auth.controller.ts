@@ -3,9 +3,9 @@ import { Request, Response } from 'express';
 import { AuthenticationBody } from '../types/authentication-body';
 import { User, UserDocument } from '../models/User';
 import { RegisterBody } from '../types/register-body';
-import { isValidEmail, isValidPassword, createJwt } from './auth.controller.helper';
+import { isValidEmail, isValidPassword, createJwt, buildUserForLog } from './auth.controller.helper';
 import { isAuthorized } from '../middleware/auth.middleware';
-import logger from '../util/logger';
+import { logger } from '../util/logger';
 
 const router = express.Router();
 
@@ -23,8 +23,18 @@ router.post('/authenticate', async (req: Request, res: Response) => {
     if (correctPassword) {
       const token = createJwt(user);
       res.cookie('Authorization', `Bearer ${token}`, { encode: String });
+      logger.info({
+        msg: 'User successfully authenticated',
+        user: buildUserForLog(user),
+        transactionId: <string>req.headers['transaction-id']
+      });
       return res.sendStatus(200);
     } else {
+      logger.debug({
+        msg: 'User tried to authenticate with an incorrect password',
+        user: buildUserForLog(user),
+        transactionId: <string>req.headers['transaction-id']
+      });
       return res.sendStatus(401);
     }
     
@@ -50,12 +60,37 @@ router.post('/register', async (req: Request, res: Response) => {
 
       const token = createJwt(user);
       res.cookie('Authorization', `Bearer ${token}`, { encode: String });
+
+      logger.info({
+        msg: 'User successfully registered',
+        registration: buildUserForLog(user),
+        transactionId: <string>req.headers['transaction-id']
+      });
+
       return res.sendStatus(200);
     } catch (e) {
-      logger.error(e);
+      logger.error({
+        msg: 'User tried to register with the following information:',
+        registration: {
+          email: auth.username,
+          profile: {
+            name: auth.name,
+            picture: auth.picture
+          }
+        },
+        error: e,
+        transactionId: <string>req.headers['transaction-id']
+      });
       return res.sendStatus(500);
     }
   } else {
+    logger.debug({
+      msg: 'User tried to register with an invalid email or password',
+      registration: {
+        email: auth.username
+      },
+      transactionId: <string>req.headers['transaction-id']
+    });
     return res.sendStatus(400);
   }
 });
