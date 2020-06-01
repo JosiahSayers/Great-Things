@@ -81,6 +81,37 @@
 			"response": []
 		},
 		{
+			"name": "Refresh JWT",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "transaction-id",
+						"value": "123",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{environment}}/v1/auth/refresh",
+					"host": [
+						"{{environment}}"
+					],
+					"path": [
+						"v1",
+						"auth",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Great Things",
 			"request": {
 				"method": "POST",
@@ -151,11 +182,6 @@
 					],
 					"query": [
 						{
-							"key": "limit",
-							"value": "5",
-							"disabled": true
-						},
-						{
 							"key": "sort-order",
 							"value": "desc",
 							"disabled": true
@@ -177,6 +203,11 @@
 						},
 						{
 							"key": "before",
+							"value": "-1",
+							"disabled": true
+						},
+						{
+							"key": "limit",
 							"value": "-1",
 							"disabled": true
 						}

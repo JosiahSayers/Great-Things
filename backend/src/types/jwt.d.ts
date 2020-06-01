@@ -4,4 +4,5 @@ export interface UserJWT {
   email: string;
   
   exp: number;
+  picture: string;
 }

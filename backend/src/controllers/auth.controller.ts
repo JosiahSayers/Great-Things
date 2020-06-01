@@ -6,6 +6,8 @@ import { RegisterBody } from '../types/register-body';
 import { isValidEmail, isValidPassword, createJwt, buildUserForLog } from './auth.controller.helper';
 import { isAuthorized } from '../middleware/auth.middleware';
 import { logger } from '../util/logger';
+import { JWT_SECRET } from '../util/environment';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -93,6 +95,34 @@ router.post('/register', async (req: Request, res: Response) => {
     });
     return res.sendStatus(400);
   }
+});
+
+router.get('/refresh', isAuthorized, async (req: Request, res: Response) => {
+  const newJWT = jwt.sign(
+    {
+      email: req.jwt.email,
+      id: req.jwt.id,
+      name: req.jwt.name,
+      picture: req.jwt.picture
+    },
+    JWT_SECRET,
+    { expiresIn: '15m' }
+  );
+
+  logger.info({
+    msg: 'User successfully refreshed their JWT',
+    transactionId: req.headers['transaction-id'],
+    user: {
+      id: req.jwt.id,
+      email: req.jwt.email,
+      profile: {
+        name: req.jwt.name
+      }
+    }
+  });
+
+  res.cookie('Authorization', `Bearer ${newJWT}`, { encode: String });
+  res.sendStatus(200);
 });
 
 router.get('/test/:userid', isAuthorized, (req, res: Response) => res.sendStatus(200));
