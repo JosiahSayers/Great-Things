@@ -4,27 +4,31 @@ import { TokenExpiredError } from 'jsonwebtoken';
 import { JWT_SECRET } from '../util/environment';
 import { UserJWT } from '../types/jwt';
 import { GreatThing } from '../models/Great-Thing';
-import logger from '../util/logger';
+import { logger, baseLogObject } from '../util/logger';
 
 export const isAuthorized = (req: Request, res: Response, next: NextFunction): Response | void => {
   const authCookie = req.cookies.Authorization;
   if (!authCookie) {
+    logger.debug({
+      msg: 'User sent a request without an Authorization cookie',
+      transactionId: <string>req.headers['transaction-id']
+    });
     return res.sendStatus(401);
   }
   try {
     const encodedJWT = authCookie.split(' ')[1];
     const userJWT = <UserJWT>jwt.verify(encodedJWT, JWT_SECRET);
-    
-    if (isJwtExpired(userJWT)) {
-      return res.status(401).send({ msg: 'JWT has expired' });
-    }
 
     req.jwt = userJWT;
 
     return next();
   } catch (e) {
+    logger.error({
+      msg: 'Error encountered in the JWT Authorization flow',
+      error: e,
+      transactionId: <string>req.headers['transaction-id']
+    });
     if (e instanceof TokenExpiredError) {
-      logger.error(e);
       return res.status(401).send({ msg: 'Token Expired' });
     } else {
       return res.sendStatus(500);
@@ -37,7 +41,7 @@ export const isCurrentUser = (req: Request, res: Response, next: NextFunction): 
   if (!requestedUserId || requestedUserId === req.jwt.id) {
     return next();
   } else {
-    return res.status(401).send({ msg: 'Current user is not authorized to access this resource' });
+    return sendAndLog('Current user is not authorized to access this resource', requestedUserId, req, res);
   }
 };
 
@@ -52,15 +56,23 @@ export const doesUserOwnGreatThing = async (req: Request, res: Response, next: N
       req.greatThing = requestedGreatThing;
       return next();
     } else {
-      return res.status(401).send({ msg: 'Current user is not authorized to access this resource' });
+      return sendAndLog('Current user is not authorized to access this resource', requestedGreatThing._id, req, res);
     }
   } catch (e) {
-    logger.error(e);
+    logger.error({
+      msg: 'Error encountered in doesUserOwnGreatThing middleware',
+      error: e,
+      ...baseLogObject(req)
+    });
     return res.status(500);
   }
 };
 
-function isJwtExpired(userJwt: UserJWT): boolean {
-  const currentTime = Math.floor(new Date().getTime() / 1000);
-  return currentTime > userJwt.exp;
-}
+const sendAndLog = (msg: string, requestedResource: string, req: Request, res: Response): void => {
+  logger.debug({
+    msg,
+    requestedResource,
+    ...baseLogObject(req)
+  });
+  res.status(401).send({ msg });
+};

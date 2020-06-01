@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import logger from '../util/logger';
+import { logger, baseLogObject } from '../util/logger';
 
 export const validateHeaders = (req: Request, res: Response, next: NextFunction): Response | void => {
   for (let i = 0; i < requiredHeaders.length; i++) {
@@ -7,7 +7,11 @@ export const validateHeaders = (req: Request, res: Response, next: NextFunction)
     
     if (!req.headers[header] || req.headers[header].toString().trim() === '') {
       const errorMsg = generateMissingHeaderError(header);
-      logger.debug(errorMsg);
+      logger.debug({
+        msg: 'User tried to send a request with invalid or missing headers',
+        errorMsg,
+        ...baseLogObject(req)
+      });
       return res.status(400).send(errorMsg);
     }
   }

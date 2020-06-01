@@ -2,7 +2,7 @@ import express from 'express';
 import { Request, Response } from 'express';
 import { GreatThing, GreatThingDocument} from '../models/Great-Thing';
 import { GreatThingRequest } from '../types/great-things.request';
-import logger from '../util/logger';
+import { logger, baseLogObject } from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
 import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
 import { MongooseFilterQuery } from 'mongoose';
@@ -21,12 +21,28 @@ router.post('/', async (req: Request, res: Response) => {
         lastUpdatedAt: currentTime,
         ownerId: req.jwt.id
       }).save();
+
+      logger.info({
+        msg: 'User successfully created a new Great Thing',
+        greatThingId: greatThing._id,
+        ...baseLogObject(req)
+      });
+
       res.status(201).send(greatThing);
     } catch (e) {
-      logger.error(e);
+      logger.error({
+        msg: 'User encountered an error while creating a Great Thing',
+        error: e,
+        ...baseLogObject(req)
+      });
       return res.sendStatus(500);
     }
   } else {
+    logger.debug({
+      msg: 'User tried to create a new Great Thing with invalid input(s)',
+      request: req.body,
+      ...baseLogObject(req)
+    });
     return res.sendStatus(400);
   }
 });
@@ -39,8 +55,20 @@ router.delete('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res:
       return res.sendStatus(404);
     }
 
+    logger.info({
+      msg: 'User successfully deleted a Great Thing',
+      deletedGreatThingId: deletedDocument._id,
+      ...baseLogObject(req)
+    });
+
     return res.sendStatus(204);
   } catch (e) {
+    logger.error({
+      msg: 'User encountered an error while deleting a Great Thing',
+      error: e,
+      greatThingId: req.params.greatThingId,
+      ...baseLogObject(req)
+    });
     return res.sendStatus(500);
   }
 });
@@ -53,9 +81,20 @@ router.put('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Re
       lastUpdatedAt: new Date().getTime()
     });
 
+    logger.info({
+      msg: 'User successfully updated a new Great Thing',
+      greatThingId: req.params.greatThingId,
+      ...baseLogObject(req)
+    });
+
     return res.sendStatus(204);
   } catch (e) {
-    logger.error(e);
+    logger.error({
+      msg: 'User encountered an error while updating a Great Thing',
+      error: e,
+      greatThingId: req.params.greatThingId,
+      ...baseLogObject(req)
+    });
     return res.sendStatus(500);
   }
 });
@@ -95,12 +134,24 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
       query.gt('createdAt', after);
     }
 
-    const totalMatches = await GreatThing.count(query.getQuery()).exec();
+    const totalMatches = await GreatThing.countDocuments(query.getQuery()).exec();
     const greatThingsList = await query.limit(limit).exec();
     const remainingMatches = totalMatches - greatThingsList.length - ((page - 1) * limit);
+
+    logger.info({
+      msg: 'User successfully searched for Great Things',
+      queryParams: req.query,
+      ...baseLogObject(req)
+    });
+
     return res.status(200).send({ greatThings: greatThingsList, remainingMatches });
   } catch (e) {
-    logger.error(e);
+    logger.error({
+      msg: 'User encountered an error while trying to search for Great Things',
+      error: e,
+      queryParams: req.query,
+      ...baseLogObject(req)
+    });
     return res.sendStatus(500);
   }
 });
@@ -123,12 +174,29 @@ router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Re
         );
       }
 
+      logger.info({
+        msg: 'User successfully retrieved random Great Thing(s)',
+        queryParams: req.query,
+        ...baseLogObject(req)
+      });
+
       return res.status(200).send({ greatThings: greatThingsList });
     } else {
+      logger.debug({
+        msg: 'User tried to get random Great Thing(s) but they haven\'t created any Great Things yet',
+        queryParams: req.query,
+        ...baseLogObject(req)
+      });
+
       return res.status(404);
     }
   } catch (e) {
-    logger.error(e);
+    logger.error({
+      msg: 'User encoutered an error while trying to retrieve random Great Thing(s)',
+      error: e,
+      queryParams: req.query,
+      ...baseLogObject(req)
+    });
     return res.sendStatus(500);
   }
 });

@@ -1,19 +1,50 @@
 import winston from 'winston';
 import { ENVIRONMENT } from './environment';
+import { Request } from 'express';
 
-const options: winston.LoggerOptions = {
+const prettyJson = winston.format.printf((info) => {
+  info.message = JSON.stringify({ log: info.message, timestamp: info.timestamp }, null, 4);
+  return `${info.level}: ${info.message}`;
+});
+
+export const logger = winston.createLogger({
+  level: 'debug',
+  format: winston.format.combine(
+    winston.format.prettyPrint(),
+    winston.format.splat(),
+    winston.format.simple(),
+    winston.format.timestamp(),
+    prettyJson
+  ),
   transports: [
-    new winston.transports.Console({
-      level: ENVIRONMENT === 'production' ? 'error' : 'debug'
-    }),
-    new winston.transports.File({ filename: 'debug.log', level: 'debug' })
-  ]
-};
+    //
+    // - Write all logs with level `error` and below to `error.log`
+    // - Write all logs with level `info` and below to `combined.log`
+    //
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'logs/combined.log' }),
+  ],
+});
 
-const logger = winston.createLogger(options);
-
+//
+// If we're not in production then log to the `console` with the format:
+// `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
+//
 if (ENVIRONMENT !== 'production') {
-  logger.debug('Logging initialized at debug level');
+  logger.add(new winston.transports.Console({
+    format: winston.format.simple(),
+  }));
 }
 
-export default logger;
+export const baseLogObject = (req: Request): Record<string, unknown> => {
+  return {
+    transactionId: req.headers['transaction-id'],
+    user: {
+      email: req.jwt.email,
+      id: req.jwt.id,
+      profile: {
+        name: req.jwt.name
+      }
+    }
+  };
+};
