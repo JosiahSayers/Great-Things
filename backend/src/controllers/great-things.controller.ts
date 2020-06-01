@@ -5,7 +5,6 @@ import { GreatThingRequest } from '../types/great-things.request';
 import logger from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
 import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
-import { sanitizeSearchString } from './great-things.controller.helper';
 import { MongooseFilterQuery } from 'mongoose';
 
 const router = express.Router();
@@ -65,7 +64,8 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
   const sortBy = <string>req.query['sort-by'];
   const sortOrder = <string>req.query['sort-order'];
   const startingAfterId = <string>req.query['startingAfterId'];
-  const containedInText = <string>req.query['contained-in-text'];
+  const searchText = <string>req.query['search'];
+  const limit = parseInt(<string>req.query['limit']);
 
   const sortOptions: {[key: string]: string} = {};
   sortOptions[sortBy] = sortOrder;
@@ -73,15 +73,13 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
   try {
     const findObject: MongooseFilterQuery<Pick<GreatThingDocument, string | number>> = { ownerId: req.jwt.id };
     
-    if (containedInText) {
-      const sanitizedInput = sanitizeSearchString(containedInText);
-      const searchString = `\\Q${sanitizedInput}\\E`;
+    if (searchText) {
+      const searchString = `\\Q${searchText}\\E`;
       findObject.text = { $regex: searchString, $options: 'i' };
     }
 
     const query = GreatThing
       .find(findObject)
-      .limit(parseInt(<string>req.query['limit']))
       .sort(sortOptions);
     
     if (startingAfterId) {
@@ -94,8 +92,10 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
       }
     }
 
-    const greatThingsList = await query.exec();
-    return res.status(200).send({ greatThings: greatThingsList });
+    let remainingMatches = await GreatThing.count(query.getQuery()).exec();
+    const greatThingsList = await query.limit(limit).exec();
+    remainingMatches = remainingMatches - greatThingsList.length;
+    return res.status(200).send({ greatThings: greatThingsList, remainingMatches });
   } catch (e) {
     logger.error(e);
     return res.sendStatus(500);

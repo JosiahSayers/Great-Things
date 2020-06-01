@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { sanitizeSearchString } from '../controllers/great-things.controller.helper';
 
 const MAX_LIMIT = 30;
 const DEFAULT_LIMIT = 10;
@@ -11,6 +12,7 @@ export const validateQueryParams = (req: Request, res: Response, next: NextFunct
   const limit = parseInt(<string>req.query['limit']);
   const sortBy = <string>req.query['sort-by'];
   const sortOrder = <string>req.query['sort-order'];
+  const searchText = <string>req.query['search'];
 
   if (limit && limit > MAX_LIMIT) {
     return res.status(400).send({ msg: `You sent ${limit} for the limit query param, the max supported value is ${30}.` });
@@ -28,6 +30,10 @@ export const validateQueryParams = (req: Request, res: Response, next: NextFunct
     return res.status(400).send({ msg: `You sent ${sortOrder} for the sort-order query param, the valid values are: ${sortOrderValidValues.join(', ')}` });
   } else if (!sortOrder || sortOrder.length === 0) {
     req.query['sort-order'] = 'desc';
+  }
+
+  if(searchText) {
+    req.query['search'] = sanitizeSearchString(searchText);
   }
 
   return next();
