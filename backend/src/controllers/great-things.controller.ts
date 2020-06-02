@@ -6,10 +6,12 @@ import { logger, baseLogObject } from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
 import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
 import { MongooseFilterQuery } from 'mongoose';
+import { upload as uploadImage } from '../util/image-management';
+import { validatePicture } from '../middleware/great-things-picture.middleware';
 
 const router = express.Router();
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', validatePicture, async (req: Request, res: Response) => {
   const gtReq = <GreatThingRequest>req.body;
   const currentTime = new Date().getTime();
 
@@ -19,7 +21,8 @@ router.post('/', async (req: Request, res: Response) => {
         text: gtReq.text,
         createdAt: currentTime,
         lastUpdatedAt: currentTime,
-        ownerId: req.jwt.id
+        ownerId: req.jwt.id,
+        picture: gtReq.picture
       }).save();
 
       logger.info({
@@ -114,7 +117,8 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
   const skipValue = (page - 1) * limit;
 
   try {
-    const findObject: MongooseFilterQuery<Pick<GreatThingDocument, string | number>> = { ownerId: req.jwt.id };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const findObject: MongooseFilterQuery<Pick<GreatThingDocument, any>> = { ownerId: req.jwt.id };
     
     if (searchText) {
       const searchString = `\\Q${searchText}\\E`;
@@ -195,6 +199,34 @@ router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Re
       msg: 'User encoutered an error while trying to retrieve random Great Thing(s)',
       error: e,
       queryParams: req.query,
+      ...baseLogObject(req)
+    });
+    return res.sendStatus(500);
+  }
+});
+
+router.post('/upload-image', async (req: Request, res: Response) => {
+  try {
+    if (req.files.image && !Array.isArray(req.files.image)) {
+      const picture = await uploadImage(req.files.image);
+      return res.status(200).send({ picture });
+
+    } else if (Array.isArray(req.files.image)) {
+      logger.debug({
+        msg: 'User tried to upload multiple files',
+        ...baseLogObject(req)
+      });
+
+    } else {
+      logger.debug({
+        msg: 'User tried to upload a file without sending it in the "image" form field',
+        ...baseLogObject(req)
+      });
+    }
+  } catch (e) {
+    logger.error({
+      msg: 'User encountered an error while trying to upload an image',
+      error: e,
       ...baseLogObject(req)
     });
     return res.sendStatus(500);
