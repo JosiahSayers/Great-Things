@@ -22,7 +22,7 @@ router.post('/', validatePicture, async (req: Request, res: Response) => {
         createdAt: currentTime,
         lastUpdatedAt: currentTime,
         ownerId: req.jwt.id,
-        picture: gtReq.picture ? gtReq.picture : undefined
+        picture: gtReq.picture
       }).save();
 
       logger.info({
