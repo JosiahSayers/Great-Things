@@ -117,7 +117,8 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
   const skipValue = (page - 1) * limit;
 
   try {
-    const findObject: MongooseFilterQuery<Pick<GreatThingDocument, string | number>> = { ownerId: req.jwt.id };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const findObject: MongooseFilterQuery<Pick<GreatThingDocument, any>> = { ownerId: req.jwt.id };
     
     if (searchText) {
       const searchString = `\\Q${searchText}\\E`;
