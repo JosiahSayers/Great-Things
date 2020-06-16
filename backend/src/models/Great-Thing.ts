@@ -23,8 +23,8 @@ const greatThingSchema = new mongoose.Schema({
 
 export interface GreatThingPicture {
   href: string;
-  height: number;
-  width: number;
+  height?: number;
+  width?: number;
   format: string;
 }
 

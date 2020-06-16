@@ -6,7 +6,7 @@ import { logger, baseLogObject } from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
 import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
 import { MongooseFilterQuery } from 'mongoose';
-import { upload as uploadImage } from '../util/image-management';
+import { processImageAndUpload } from '../util/image-management';
 import { validatePicture } from '../middleware/great-things-picture.middleware';
 
 const router = express.Router();
@@ -208,7 +208,7 @@ router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Re
 router.post('/upload-image', async (req: Request, res: Response) => {
   try {
     if (req.files.image && !Array.isArray(req.files.image)) {
-      const picture = await uploadImage(req.files.image);
+      const picture = await processImageAndUpload(req.files.image, req);
       return res.status(200).send({ picture });
 
     } else if (Array.isArray(req.files.image)) {

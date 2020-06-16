@@ -8,4 +8,8 @@ export const PORT = process.env.port;
 export const JWT_SECRET = process.env.JWT_SECRET;
 export const ENVIRONMENT = process.env.ENVIRONMENT;
 
-export const CLOUDINARY_CONIFG = JSON.parse(process.env.CLOUDINARY_CONFIG);
+export const GCP_ID = process.env.GOOGLE_CLOUD_PROJECT;
+
+export const GCP_USER_PHOTOS = process.env.GCP_USER_PHOTOS;
+
+export const GCP_PHOTO_URL_BASE = `https://storage.googleapis.com/${GCP_USER_PHOTOS}/`;
