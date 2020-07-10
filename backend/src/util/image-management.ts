@@ -1,12 +1,12 @@
 import { UploadedFile } from 'express-fileupload';
-import { GreatThingPicture } from '../models/Great-Thing';
 import sharp from 'sharp';
 import { logger, baseLogObject } from './logger';
 import { Request } from 'express';
 import { GCP_PHOTO_URL_BASE } from './environment';
 import fs from 'fs';
+import { PictureInterface } from '../models/Picture';
 
-export const processImageAndUpload = async (file: UploadedFile, req: Request): Promise<GreatThingPicture> => {
+export const processImageAndUpload = async (file: UploadedFile, req: Request): Promise<PictureInterface> => {
   try {
     const fileName = `${req.jwt.id}-${new Date().getTime()}.jpeg`;
     const filepath = `/tmp/${fileName}`;
@@ -22,6 +22,8 @@ export const processImageAndUpload = async (file: UploadedFile, req: Request): P
     fs.unlinkSync(filepath);
 
     return {
+      ownerId: req.jwt.id,
+      createdAt: new Date().getTime(),
       href: GCP_PHOTO_URL_BASE + fileName,
       format: processedImage.format,
       width: processedImage.width,

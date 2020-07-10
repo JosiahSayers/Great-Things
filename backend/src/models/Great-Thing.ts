@@ -5,7 +5,7 @@ export type GreatThingDocument = mongoose.Document & {
   createdAt: number;
   lastUpdatedAt: number;
   ownerId: string;
-  picture?: GreatThingPicture
+  pictureId?: string;
 };
 
 const greatThingSchema = new mongoose.Schema({
@@ -13,19 +13,7 @@ const greatThingSchema = new mongoose.Schema({
   createdAt: Number,
   lastUpdatedAt: Number,
   ownerId: String,
-  picture: {
-    href: String,
-    height: Number,
-    width: Number,
-    format: String,
-  }
+  pictureId: String
 });
-
-export interface GreatThingPicture {
-  href: string;
-  height?: number;
-  width?: number;
-  format: string;
-}
 
 export const GreatThing = mongoose.model<GreatThingDocument>('GreatThing', greatThingSchema);

@@ -21,6 +21,10 @@
     "**/coverage": true
   },
   "typescript.referencesCodeLens.enabled": true,
-  "appService.zipIgnorePattern": [".vscode{,/**}"],
-  "appService.deploySubpath": ""
+  "appService.zipIgnorePattern": [
+    ".vscode{,/**}",
+    "node_modules{,/**}"
+  ],
+  "appService.deploySubpath": ".",
+  "appService.defaultWebAppToDeploy": "/subscriptions/7bed4166-7dc6-48e5-b5a6-35dd6e181194/resourceGroups/Great-Things/providers/Microsoft.Web/sites/greatthings"
 }

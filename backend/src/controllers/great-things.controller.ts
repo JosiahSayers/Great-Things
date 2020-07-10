@@ -8,6 +8,7 @@ import { validateQueryParams, validateQueryParamsForRandom } from '../middleware
 import { MongooseFilterQuery } from 'mongoose';
 import { processImageAndUpload } from '../util/image-management';
 import { validatePicture } from '../middleware/great-things-picture.middleware';
+import { Picture } from '../models/Picture';
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ router.post('/', validatePicture, async (req: Request, res: Response) => {
         createdAt: currentTime,
         lastUpdatedAt: currentTime,
         ownerId: req.jwt.id,
-        picture: gtReq.picture
+        pictureId: gtReq.pictureId
       }).save();
 
       logger.info({
@@ -209,7 +210,8 @@ router.post('/upload-image', async (req: Request, res: Response) => {
   try {
     if (req.files.image && !Array.isArray(req.files.image)) {
       const picture = await processImageAndUpload(req.files.image, req);
-      return res.status(200).send({ picture });
+      const pictureDocument = await new Picture(picture);
+      return res.status(200).send(pictureDocument);
 
     } else if (Array.isArray(req.files.image)) {
       logger.debug({
