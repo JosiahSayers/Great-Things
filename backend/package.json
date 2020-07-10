@@ -7,9 +7,10 @@
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-ts": "tsc -w",
     "watch-node": "nodemon dist/server.js",
-    "build:ts": "tsc",
+    "build": "tsc && cp package.json dist/package.json",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\"",
-    "ci": "npm i && npm run lint && npm run build:ts"
+    "ci": "npm i && npm run lint && npm run build",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
