@@ -1,23 +1,34 @@
 import express from 'express';
 import { Request, Response } from 'express';
-import { GreatThing, GreatThingDocument} from '../models/Great-Thing';
+import { GreatThing, GreatThingDocument } from '../models/Great-Thing';
 import { GreatThingRequest } from '../types/great-things.request';
 import { logger, baseLogObject } from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
 import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
 import { MongooseFilterQuery } from 'mongoose';
-import { processImageAndUpload } from '../util/image-management';
-import { validatePicture } from '../middleware/great-things-picture.middleware';
-import { Picture } from '../models/Picture';
+import { processImageAndUpload, deleteImage } from '../util/image-management';
+import { Picture, mapPictureDocument } from '../models/Picture';
+import { mapResponseWithPicture } from './great-things.controller.helper';
 
 const router = express.Router();
 
-router.post('/', validatePicture, async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
   const gtReq = <GreatThingRequest>req.body;
   const currentTime = new Date().getTime();
 
   if (gtReq && gtReq.text && gtReq.text.length > 0) {
     try {
+      if (gtReq.pictureId) {
+        const picture = await Picture.findById(gtReq.pictureId);
+        if (!picture || picture.ownerId !== req.jwt.id) {
+          logger.debug({
+            msg: 'User tried to add a new Great Thing with a picture that doesn\'t belong to them or doesn\'t exist',
+            ...baseLogObject(req)
+          });
+          res.status(404).send();
+        }
+      }
+
       const greatThing = await new GreatThing(<GreatThingDocument>{
         text: gtReq.text,
         createdAt: currentTime,
@@ -32,7 +43,7 @@ router.post('/', validatePicture, async (req: Request, res: Response) => {
         ...baseLogObject(req)
       });
 
-      res.status(201).send(greatThing);
+      res.status(201).send(await mapResponseWithPicture([greatThing]));
     } catch (e) {
       logger.error({
         msg: 'User encountered an error while creating a Great Thing',
@@ -54,7 +65,12 @@ router.post('/', validatePicture, async (req: Request, res: Response) => {
 router.delete('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Response) => {
   try {
     const deletedDocument = await GreatThing.findByIdAndDelete({ _id: req.params.greatThingId });
-    
+
+    if (deletedDocument.pictureId) {
+      const deletedPicture = await Picture.findByIdAndDelete({ _id: deletedDocument.pictureId });
+      await deleteImage(deletedPicture.href, req);
+    }
+
     if (!deletedDocument) {
       return res.sendStatus(404);
     }
@@ -112,7 +128,7 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
   const before = parseInt(<string>req.query['before']);
   const after = parseInt(<string>req.query['after']);
 
-  const sortOptions: {[key: string]: string} = {};
+  const sortOptions: { [key: string]: string } = {};
   sortOptions[sortBy] = sortOrder;
 
   const skipValue = (page - 1) * limit;
@@ -120,7 +136,7 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const findObject: MongooseFilterQuery<Pick<GreatThingDocument, any>> = { ownerId: req.jwt.id };
-    
+
     if (searchText) {
       const searchString = `\\Q${searchText}\\E`;
       findObject.text = { $regex: searchString, $options: 'i' };
@@ -141,6 +157,7 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
 
     const totalMatches = await GreatThing.countDocuments(query.getQuery()).exec();
     const greatThingsList = await query.limit(limit).exec();
+    const response = await mapResponseWithPicture(greatThingsList);
     const remainingMatches = totalMatches - greatThingsList.length - ((page - 1) * limit);
 
     logger.info({
@@ -149,7 +166,7 @@ router.get('/', validateQueryParams, async (req: Request, res: Response) => {
       ...baseLogObject(req)
     });
 
-    return res.status(200).send({ greatThings: greatThingsList, remainingMatches });
+    return res.status(200).send({ ...response, remainingMatches });
   } catch (e) {
     logger.error({
       msg: 'User encountered an error while trying to search for Great Things',
@@ -185,7 +202,7 @@ router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Re
         ...baseLogObject(req)
       });
 
-      return res.status(200).send({ greatThings: greatThingsList });
+      return res.status(200).send(await mapResponseWithPicture(greatThingsList));
     } else {
       logger.debug({
         msg: 'User tried to get random Great Thing(s) but they haven\'t created any Great Things yet',
@@ -210,8 +227,8 @@ router.post('/upload-image', async (req: Request, res: Response) => {
   try {
     if (req.files.image && !Array.isArray(req.files.image)) {
       const picture = await processImageAndUpload(req.files.image, req);
-      const pictureDocument = await new Picture(picture);
-      return res.status(200).send(pictureDocument);
+      const pictureDocument = await new Picture(picture).save();
+      return res.status(200).send(mapPictureDocument(pictureDocument));
 
     } else if (Array.isArray(req.files.image)) {
       logger.debug({

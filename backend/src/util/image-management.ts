@@ -38,3 +38,17 @@ export const processImageAndUpload = async (file: UploadedFile, req: Request): P
     return;
   }
 };
+
+export const deleteImage = async (fileHref: string, req: Request): Promise<void> => {
+  try {
+    const pathSegments = fileHref.split('/');
+    const filename = pathSegments[pathSegments.length - 1];
+    await req.photoStorage.file(filename).delete();
+  } catch (e) {
+    logger.error({
+      msg: 'An error occured while deleting the requested file',
+      error: e,
+      ...baseLogObject(req)
+    });
+  }
+};

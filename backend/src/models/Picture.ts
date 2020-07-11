@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 export type PictureDocument = mongoose.Document & PictureInterface;
 
 export type PictureInterface = {
+  id?: string;
   ownerId: string;
   createdAt: number;
   href: string,
@@ -20,4 +21,16 @@ const pictureSchema = new mongoose.Schema({
   format: String,
 });
 
-export const Picture = mongoose.model<PictureDocument>('Picture', pictureSchema);
+export const Picture = mongoose.model<PictureDocument>('pictures', pictureSchema);
+
+export const mapPictureDocument = (pic: PictureDocument): PictureInterface => (
+  {
+    id: pic.id,
+    ownerId: pic.ownerId,
+    createdAt: pic.createdAt,
+    href: pic.href,
+    height: pic.height,
+    width: pic.width,
+    format: pic.format
+  }
+);
