@@ -1,5 +1,5 @@
 import { GreatThingDocument, mapGreatThing } from '../models/Great-Thing';
-import { Picture } from '../models/Picture';
+import { Picture, mapPictureDocument } from '../models/Picture';
 import { GreatThingResponse, MappedResponseObject } from '../types/great-thing-response';
 
 export const sanitizeSearchString = (search: string): string => {
@@ -18,14 +18,7 @@ export const mapResponseWithPicture = async (greatThings: GreatThingDocument[]):
       const pic = await Picture.findById(greatThing.pictureId);
 
       if (pic && pic.ownerId === greatThing.ownerId) {
-        mapped.picture = {
-          ownerId: pic.ownerId,
-          createdAt: pic.createdAt,
-          href: pic.href,
-          height: pic.height,
-          width: pic.width,
-          format: pic.format
-        };
+        mapped.picture = mapPictureDocument(pic);
       }
     }
     mappedResponse.greatThings.push(mapped);
