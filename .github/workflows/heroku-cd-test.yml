@@ -27,3 +27,4 @@ jobs:
           heroku_app_name: "great-things-test"
           heroku_email: "josiah.sayers15@gmail.com"
           appdir: "backend/dist"
+          branch: "develop"
