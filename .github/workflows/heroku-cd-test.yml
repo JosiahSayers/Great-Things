@@ -23,8 +23,13 @@ jobs:
     - run: cd backend && npm run build
     - uses: AkhileshNS/heroku-deploy@v3.2.6
       with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "great-things-test"
-          heroku_email: "josiah.sayers15@gmail.com"
-          appdir: "backend/dist"
-          branch: "develop"
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: "great-things-test"
+        heroku_email: "josiah.sayers15@gmail.com"
+        appdir: "backend"
+        branch: "develop"
+      env:
+        HD_MONGO_CONNECTION_STRING: ${{secrets.MONGO_CONNECTION_STRING_TEST}}
+        HD_JWT_SECRET: ${{secrets.JWT_SECRET}}
+        HD_GOOGLE_CLOUD_PROJECT: ${{secrets.GOOGLE_CLOUD_PROJECT_TEST}}
+        HD_GCP_USER_PHOTOS: ${{secrets.GCP_USER_PHOTOS}}
