@@ -19,9 +19,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: cd backend
-    - run: npm install
-    - run: npm run build
+    - run: cd backend && npm install
+    - run: cd backend && npm run build
     - uses: AkhileshNS/heroku-deploy@v3.2.6
       with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
