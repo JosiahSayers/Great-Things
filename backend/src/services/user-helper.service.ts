@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { User, UserDocument } from '../models/User';
 import { JWT_SECRET } from '../util/environment';
 
-export function createJwt(user: UserDocument): string {
+function createJwt(user: UserDocument): string {
   return jwt.sign(
     {
       email: user.email,
@@ -15,20 +15,36 @@ export function createJwt(user: UserDocument): string {
   );
 }
 
-export async function isValidEmail(email: string): Promise<boolean> {
+async function isValidEmail(email: string): Promise<boolean> {
   const emailCheckRegex = /^([a-zA-Z0-9_\-\.\+]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
   return email && !(await User.exists({ email })) && emailCheckRegex.test(email);
 }
 
-export function isValidPassword(password: string): boolean {
+function isValidPassword(password: string): boolean {
   const passwordCheckRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
   return password && passwordCheckRegex.test(password);
 }
 
-export function buildUserForLog(user: UserDocument): Record<string, unknown> {
+function buildUserForLog(user: UserDocument): UserForLog {
   return {
     id: user._id,
     email: user.email,
     profile: user.profile
   };
+}
+
+export const UserServiceHelper = {
+  createJwt,
+  isValidEmail,
+  isValidPassword,
+  buildUserForLog
+};
+
+interface UserForLog {
+  id: string;
+  email: string;
+  profile: {
+    name: string;
+    picture?: string;
+  }
 }

@@ -44,7 +44,7 @@ const injectStorageBucket = (req: Request, res: Response, next: NextFunction): v
   req.photoStorage = photoBucket;
   next();
 };
-console.log('PORT---------' + PORT);
+
 app.set('port', PORT || 3000);
 app.use(bodyParser.json());
 app.use(cookieParser());
