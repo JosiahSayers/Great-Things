@@ -56,8 +56,14 @@ const uploadImage = async (req: Request): Promise<PictureInterface> => {
   }
 };
 
-export const PictureService = {
+const deleteImage = async (pictureId: string, req: Request): Promise<void> => {
+  const deletedPicture = await Picture.findByIdAndDelete({ _id: pictureId });
+  return helper.deleteImage(deletedPicture.href, req);
+};
+
+export const pictureService = {
   findById,
   mapPicture,
-  uploadImage
+  uploadImage,
+  deleteImage
 };

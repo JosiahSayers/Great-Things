@@ -6,10 +6,9 @@ import { logger, baseLogObject } from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
 import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
 import { MongooseFilterQuery } from 'mongoose';
-import { processImageAndUpload, deleteImage } from '../util/image-management';
 import { Picture } from '../models/Picture';
 import { mapResponseWithPicture } from './great-things.controller.helper';
-import { PictureService } from '../services/pictures/picture.service';
+import { pictureService } from '../services/pictures/picture.service';
 
 const router = express.Router();
 
@@ -67,13 +66,12 @@ router.delete('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res:
   try {
     const deletedDocument = await GreatThing.findByIdAndDelete({ _id: req.params.greatThingId });
 
-    if (deletedDocument.pictureId) {
-      const deletedPicture = await Picture.findByIdAndDelete({ _id: deletedDocument.pictureId });
-      await deleteImage(deletedPicture.href, req);
-    }
-
     if (!deletedDocument) {
       return res.sendStatus(404);
+    }
+
+    if (deletedDocument.pictureId) {
+      await pictureService.deleteImage(deletedDocument.pictureId, req);
     }
 
     logger.info({
@@ -226,7 +224,7 @@ router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Re
 
 router.post('/upload-image', async (req: Request, res: Response) => {
   try {
-    const picture = await PictureService.uploadImage(req);
+    const picture = await pictureService.uploadImage(req);
     return res.status(200).send(picture);
   } catch (e) {
     return res.sendStatus(parseInt(e.message, 10));
