@@ -40,10 +40,10 @@ export const baseLogObject = (req: Request): Record<string, unknown> => {
   return {
     transactionId: req.headers['transaction-id'],
     user: {
-      email: req.jwt.email,
-      id: req.jwt.id,
+      email: req.jwt?.email,
+      id: req.jwt?.id,
       profile: {
-        name: req.jwt.name
+        name: req.jwt?.name
       }
     }
   };

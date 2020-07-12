@@ -53,11 +53,12 @@ const register = async (req: Request): Promise<string> => {
   const isValidEmail = await helper.isValidEmail(auth.username);
   const isValidPass = helper.isValidPassword(auth.password);
 
-  if (!isValidEmail || !isValidPass) {
-    throw new Error('400');
-  }
-
   try {
+
+    if (!isValidEmail || !isValidPass) {
+      throw new Error('400');
+    }
+
     const user = await new User(<UserDocument>{
       email: auth.username,
       password: auth.password,
