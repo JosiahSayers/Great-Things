@@ -1,9 +1,9 @@
-import { User, UserDocument } from '../models/User';
-import { AuthenticationBody } from '../types/authentication-body';
+import { User, UserDocument } from '../../models/User';
+import { AuthenticationBody } from '../../types/authentication-body';
 import { UserServiceHelper as helper } from './user-helper.service';
-import { logger } from '../util/logger';
+import { logger } from '../../util/logger';
 import { Request } from 'express';
-import { RegisterBody } from '../types/register-body';
+import { RegisterBody } from '../../types/register-body';
 
 const authenticate = async (req: Request): Promise<string> => {
   let jwt;

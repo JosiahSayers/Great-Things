@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
-import { User, UserDocument } from '../models/User';
-import { JWT_SECRET } from '../util/environment';
-import { UserJWT } from '../types/jwt';
+import { User, UserDocument } from '../../models/User';
+import { JWT_SECRET } from '../../util/environment';
+import { UserJWT } from '../../types/jwt';
 
 function createJwt(user: UserDocument): string {
   return jwt.sign(

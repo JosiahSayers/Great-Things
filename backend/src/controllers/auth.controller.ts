@@ -1,7 +1,7 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import { isAuthorized } from '../middleware/auth.middleware';
-import { UserService } from '../services/user.service';
+import { UserService } from '../services/users/user.service';
 
 const router = express.Router();
 

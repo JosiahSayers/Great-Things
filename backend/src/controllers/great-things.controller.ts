@@ -7,8 +7,9 @@ import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
 import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
 import { MongooseFilterQuery } from 'mongoose';
 import { processImageAndUpload, deleteImage } from '../util/image-management';
-import { Picture, mapPictureDocument } from '../models/Picture';
+import { Picture } from '../models/Picture';
 import { mapResponseWithPicture } from './great-things.controller.helper';
+import { PictureService } from '../services/pictures/picture.service';
 
 const router = express.Router();
 
@@ -225,30 +226,10 @@ router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Re
 
 router.post('/upload-image', async (req: Request, res: Response) => {
   try {
-    if (req.files.image && !Array.isArray(req.files.image)) {
-      const picture = await processImageAndUpload(req.files.image, req);
-      const pictureDocument = await new Picture(picture).save();
-      return res.status(200).send(mapPictureDocument(pictureDocument));
-
-    } else if (Array.isArray(req.files.image)) {
-      logger.debug({
-        msg: 'User tried to upload multiple files',
-        ...baseLogObject(req)
-      });
-
-    } else {
-      logger.debug({
-        msg: 'User tried to upload a file without sending it in the "image" form field',
-        ...baseLogObject(req)
-      });
-    }
+    const picture = await PictureService.uploadImage(req);
+    return res.status(200).send(picture);
   } catch (e) {
-    logger.error({
-      msg: 'User encountered an error while trying to upload an image',
-      error: e,
-      ...baseLogObject(req)
-    });
-    return res.sendStatus(500);
+    return res.sendStatus(parseInt(e.message, 10));
   }
 });
 

@@ -1,17 +1,17 @@
 import { UploadedFile } from 'express-fileupload';
 import sharp from 'sharp';
-import { logger, baseLogObject } from './logger';
+import { logger, baseLogObject } from '../../util/logger';
 import { Request } from 'express';
-import { GCP_PHOTO_URL_BASE } from './environment';
+import { GCP_PHOTO_URL_BASE } from '../../util/environment';
 import fs from 'fs';
-import { PictureInterface } from '../models/Picture';
+import { PictureInterface } from '../../models/Picture';
 
-export const processImageAndUpload = async (file: UploadedFile, req: Request): Promise<PictureInterface> => {
+const processImageAndUpload = async (req: Request): Promise<PictureInterface> => {
   try {
     const fileName = `${req.jwt.id}-${new Date().getTime()}.jpeg`;
     const filepath = `/tmp/${fileName}`;
 
-    const processedImage = await sharp(file.data)
+    const processedImage = await sharp((<UploadedFile>req.files.image).data)
       .resize(450, 450, {
         fit: 'contain'
       })
@@ -39,7 +39,7 @@ export const processImageAndUpload = async (file: UploadedFile, req: Request): P
   }
 };
 
-export const deleteImage = async (fileHref: string, req: Request): Promise<void> => {
+const deleteImage = async (fileHref: string, req: Request): Promise<void> => {
   try {
     const pathSegments = fileHref.split('/');
     const filename = pathSegments[pathSegments.length - 1];
@@ -51,4 +51,9 @@ export const deleteImage = async (fileHref: string, req: Request): Promise<void>
       ...baseLogObject(req)
     });
   }
+};
+
+export const PictureHelperService = {
+  processImageAndUpload,
+  deleteImage
 };

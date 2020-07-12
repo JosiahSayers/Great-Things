@@ -1,6 +1,6 @@
 import { GreatThingDocument, mapGreatThing } from '../models/Great-Thing';
-import { Picture, mapPictureDocument } from '../models/Picture';
 import { GreatThingResponse, MappedResponseObject } from '../types/great-thing-response';
+import { PictureService } from '../services/pictures/picture.service';
 
 export const sanitizeSearchString = (search: string): string => {
   return search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -15,10 +15,10 @@ export const mapResponseWithPicture = async (greatThings: GreatThingDocument[]):
     const mapped: MappedResponseObject = mapGreatThing(greatThing);
 
     if (greatThing.pictureId) {
-      const pic = await Picture.findById(greatThing.pictureId);
+      const pic = await PictureService.findById(greatThing.pictureId);
 
       if (pic && pic.ownerId === greatThing.ownerId) {
-        mapped.picture = mapPictureDocument(pic);
+        mapped.picture = PictureService.mapPicture(pic);
       }
     }
     mappedResponse.greatThings.push(mapped);
