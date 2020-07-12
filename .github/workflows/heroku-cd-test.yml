@@ -9,16 +9,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x]
-
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
     - uses: AkhileshNS/heroku-deploy@v3.2.6
       with:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
@@ -26,9 +18,3 @@ jobs:
         heroku_email: "josiah.sayers15@gmail.com"
         appdir: "backend"
         branch: "develop"
-      env:
-        HD_MONGO_CONNECTION_STRING: ${{secrets.MONGO_CONNECTION_STRING_TEST}}
-        HD_JWT_SECRET: ${{secrets.JWT_SECRET}}
-        HD_GOOGLE_CLOUD_PROJECT: ${{secrets.GOOGLE_CLOUD_PROJECT_TEST}}
-        HD_GCP_USER_PHOTOS: ${{secrets.GCP_USER_PHOTOS}}
-        HD_GCP_KEYFILE: ${{secrets.GCP_KEYFILE_TEST}}
