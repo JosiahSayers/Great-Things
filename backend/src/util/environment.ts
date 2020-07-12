@@ -8,7 +8,7 @@ if (ENVIRONMENT === 'local') {
 }
 
 export const MONGO_CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING;
-export const PORT = process.env.port;
+export const PORT = process.env.PORT;
 export const JWT_SECRET = process.env.JWT_SECRET;
 
 export const GCP_ID = process.env.GOOGLE_CLOUD_PROJECT;
