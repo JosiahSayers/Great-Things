@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { User, UserDocument } from '../models/User';
 import { JWT_SECRET } from '../util/environment';
+import { UserJWT } from '../types/jwt';
 
 function createJwt(user: UserDocument): string {
   return jwt.sign(
@@ -9,6 +10,19 @@ function createJwt(user: UserDocument): string {
       id: user.id,
       name: user.profile.name,
       picture: user.profile.picture
+    },
+    JWT_SECRET,
+    { expiresIn: '15m' }
+  );
+}
+
+function refreshJwt(current: UserJWT): string {
+  return jwt.sign(
+    {
+      email: current.email,
+      id: current.id,
+      name: current.name,
+      picture: current.picture
     },
     JWT_SECRET,
     { expiresIn: '15m' }
@@ -25,16 +39,27 @@ function isValidPassword(password: string): boolean {
   return password && passwordCheckRegex.test(password);
 }
 
-function buildUserForLog(user: UserDocument): UserForLog {
-  return {
-    id: user._id,
-    email: user.email,
-    profile: user.profile
-  };
+function buildUserForLog(req: UserForLogRequest): UserForLog {
+  if (req.userDocument) {
+    return {
+      id: req.userDocument._id,
+      email: req.userDocument.email,
+      profile: req.userDocument.profile
+    };
+  } else if (req.jwt) {
+    return {
+      id: req.jwt.id,
+      email: req.jwt.email,
+      profile: {
+        name: req.jwt.name
+      }
+    };
+  }
 }
 
 export const UserServiceHelper = {
   createJwt,
+  refreshJwt,
   isValidEmail,
   isValidPassword,
   buildUserForLog
@@ -47,4 +72,9 @@ interface UserForLog {
     name: string;
     picture?: string;
   }
+}
+
+interface UserForLogRequest {
+  userDocument?: UserDocument;
+  jwt?: UserJWT;
 }
