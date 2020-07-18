@@ -22,15 +22,3 @@ const pictureSchema = new mongoose.Schema({
 });
 
 export const Picture = mongoose.model<PictureDocument>('pictures', pictureSchema);
-
-export const mapPictureDocument = (pic: PictureDocument): PictureInterface => (
-  {
-    id: pic.id,
-    ownerId: pic.ownerId,
-    createdAt: pic.createdAt,
-    href: pic.href,
-    height: pic.height,
-    width: pic.width,
-    format: pic.format
-  }
-);

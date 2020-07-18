@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { sanitizeSearchString } from '../controllers/great-things.controller.helper';
+import { greatThingsServiceHelper } from '../services/great-things/great-things-helper.service';
 import { logger, baseLogObject } from '../util/logger';
 
 const MIN_LIMIT = 2;
@@ -40,7 +40,7 @@ export const validateQueryParams = (req: Request, res: Response, next: NextFunct
   }
 
   if(searchText) {
-    req.query['search'] = sanitizeSearchString(searchText);
+    req.query['search'] = greatThingsServiceHelper.sanitizeSearchString(searchText);
   }
 
   if (page && page < 1) {
