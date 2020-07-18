@@ -20,13 +20,3 @@ const greatThingSchema = new mongoose.Schema({
 });
 
 export const GreatThing = mongoose.model<GreatThingDocument>('GreatThing', greatThingSchema);
-
-export const mapGreatThing = (gt: GreatThingDocument): GreatThingInterface => (
-  {
-    id: gt.id,
-    text: gt.text,
-    createdAt: gt.createdAt,
-    lastUpdatedAt: gt.lastUpdatedAt,
-    ownerId: gt.ownerId
-  }
-);

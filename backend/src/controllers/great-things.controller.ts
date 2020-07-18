@@ -1,120 +1,40 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import { GreatThing, GreatThingDocument } from '../models/Great-Thing';
-import { GreatThingRequest } from '../types/great-things.request';
 import { logger, baseLogObject } from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
 import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
 import { MongooseFilterQuery } from 'mongoose';
-import { Picture } from '../models/Picture';
 import { mapResponseWithPicture } from './great-things.controller.helper';
 import { pictureService } from '../services/pictures/picture.service';
+import { greatThingService } from '../services/great-things/great-things.service';
 
 const router = express.Router();
 
 router.post('/', async (req: Request, res: Response) => {
-  const gtReq = <GreatThingRequest>req.body;
-  const currentTime = new Date().getTime();
-
-  if (gtReq && gtReq.text && gtReq.text.length > 0) {
-    try {
-      if (gtReq.pictureId) {
-        const picture = await Picture.findById(gtReq.pictureId);
-        if (!picture || picture.ownerId !== req.jwt.id) {
-          logger.debug({
-            msg: 'User tried to add a new Great Thing with a picture that doesn\'t belong to them or doesn\'t exist',
-            ...baseLogObject(req)
-          });
-          res.status(404).send();
-        }
-      }
-
-      const greatThing = await new GreatThing(<GreatThingDocument>{
-        text: gtReq.text,
-        createdAt: currentTime,
-        lastUpdatedAt: currentTime,
-        ownerId: req.jwt.id,
-        pictureId: gtReq.pictureId
-      }).save();
-
-      logger.info({
-        msg: 'User successfully created a new Great Thing',
-        greatThingId: greatThing._id,
-        ...baseLogObject(req)
-      });
-
-      res.status(201).send(await mapResponseWithPicture([greatThing]));
-    } catch (e) {
-      logger.error({
-        msg: 'User encountered an error while creating a Great Thing',
-        error: e,
-        ...baseLogObject(req)
-      });
-      return res.sendStatus(500);
-    }
-  } else {
-    logger.debug({
-      msg: 'User tried to create a new Great Thing with invalid input(s)',
-      request: req.body,
-      ...baseLogObject(req)
-    });
-    return res.sendStatus(400);
+  try {
+    const greatThing = await greatThingService.create(req);
+    return res.status(201).send(greatThing);
+  } catch (e) {
+    return res.sendStatus(parseInt(e.message, 10));
   }
 });
 
 router.delete('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Response) => {
   try {
-    const deletedDocument = await GreatThing.findByIdAndDelete({ _id: req.params.greatThingId });
-
-    if (!deletedDocument) {
-      return res.sendStatus(404);
-    }
-
-    if (deletedDocument.pictureId) {
-      await pictureService.deleteImage(deletedDocument.pictureId, req);
-    }
-
-    logger.info({
-      msg: 'User successfully deleted a Great Thing',
-      deletedGreatThingId: deletedDocument._id,
-      ...baseLogObject(req)
-    });
-
+    await greatThingService.remove(req);
     return res.sendStatus(204);
   } catch (e) {
-    logger.error({
-      msg: 'User encountered an error while deleting a Great Thing',
-      error: e,
-      greatThingId: req.params.greatThingId,
-      ...baseLogObject(req)
-    });
-    return res.sendStatus(500);
+    return res.sendStatus(parseInt(e.message, 10));
   }
 });
 
 router.put('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Response) => {
   try {
-    const updatedGreatThing = <GreatThingRequest>req.body;
-    await GreatThing.findByIdAndUpdate({ _id: req.params.greatThingId }, {
-      text: updatedGreatThing.text,
-      lastUpdatedAt: new Date().getTime()
-    });
-
-    logger.info({
-      msg: 'User successfully updated a new Great Thing',
-      greatThingId: req.params.greatThingId,
-      ...baseLogObject(req)
-    });
-
+    await greatThingService.update(req);
     return res.sendStatus(204);
   } catch (e) {
-    logger.error({
-      msg: 'User encountered an error while updating a Great Thing',
-      error: e,
-      greatThingId: req.params.greatThingId,
-      ...baseLogObject(req)
-    });
-    return res.sendStatus(500);
+    return res.sendStatus(parseInt(e.message, 10));
   }
 });
 
