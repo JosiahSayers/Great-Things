@@ -2,7 +2,7 @@ import { PictureDocument } from '../../models/Picture';
 import { baseLogObject, logger } from '../../util/logger';
 import { Request } from 'express';
 import { GreatThingRequest } from '../../types/great-things.request';
-import { GreatThingDocument, mapGreatThing, GreatThingInterface } from '../../models/Great-Thing';
+import { GreatThingDocument, GreatThingInterface } from '../../models/Great-Thing';
 import { GreatThingResponse, MappedResponseObject } from '../../types/great-thing-response';
 import { pictureService } from '../pictures/picture.service';
 

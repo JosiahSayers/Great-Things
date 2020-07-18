@@ -39,106 +39,20 @@ router.put('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Re
 });
 
 router.get('/', validateQueryParams, async (req: Request, res: Response) => {
-  const sortBy = <string>req.query['sort-by'];
-  const sortOrder = <string>req.query['sort-order'];
-  const page = parseInt(<string>req.query['page']);
-  const searchText = <string>req.query['search'];
-  const limit = parseInt(<string>req.query['limit']);
-  const before = parseInt(<string>req.query['before']);
-  const after = parseInt(<string>req.query['after']);
-
-  const sortOptions: { [key: string]: string } = {};
-  sortOptions[sortBy] = sortOrder;
-
-  const skipValue = (page - 1) * limit;
-
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const findObject: MongooseFilterQuery<Pick<GreatThingDocument, any>> = { ownerId: req.jwt.id };
-
-    if (searchText) {
-      const searchString = `\\Q${searchText}\\E`;
-      findObject.text = { $regex: searchString, $options: 'i' };
-    }
-
-    const query = GreatThing
-      .find(findObject)
-      .sort(sortOptions)
-      .skip(skipValue);
-
-    if (before) {
-      query.lt('createdAt', before);
-    }
-
-    if (after) {
-      query.gt('createdAt', after);
-    }
-
-    const totalMatches = await GreatThing.countDocuments(query.getQuery()).exec();
-    const greatThingsList = await query.limit(limit).exec();
-    const response = await mapResponseWithPicture(greatThingsList);
-    const remainingMatches = totalMatches - greatThingsList.length - ((page - 1) * limit);
-
-    logger.info({
-      msg: 'User successfully searched for Great Things',
-      queryParams: req.query,
-      ...baseLogObject(req)
-    });
-
-    return res.status(200).send({ ...response, remainingMatches });
+    const searchResults = await greatThingService.retrieve(req, false);
+    return res.status(200).send(searchResults);
   } catch (e) {
-    logger.error({
-      msg: 'User encountered an error while trying to search for Great Things',
-      error: e,
-      queryParams: req.query,
-      ...baseLogObject(req)
-    });
-    return res.sendStatus(500);
+    return res.sendStatus(parseInt(e.message, 10));
   }
 });
 
 router.get('/random', validateQueryParamsForRandom, async (req: Request, res: Response) => {
-  const limit = parseInt(<string>req.query['limit']);
-
   try {
-    const userGreatThingCount = await GreatThing.find({ ownerId: req.jwt.id }).countDocuments().exec();
-
-    if (userGreatThingCount > 0) {
-      const greatThingsList: GreatThingDocument[] = [];
-      for (let i = 0; i < limit; i++) {
-        const randomSkip = Math.floor(Math.random() * userGreatThingCount);
-        greatThingsList.push(
-          await GreatThing
-            .findOne({ ownerId: req.jwt.id })
-            .skip(randomSkip)
-            .exec()
-        );
-      }
-
-      logger.info({
-        msg: 'User successfully retrieved random Great Thing(s)',
-        queryParams: req.query,
-        ...baseLogObject(req)
-      });
-
-      return res.status(200).send(await mapResponseWithPicture(greatThingsList));
-    } else {
-      logger.debug({
-        msg: 'User tried to get random Great Thing(s) but they haven\'t created any Great Things yet',
-        queryParams: req.query,
-        ...baseLogObject(req)
-      });
-
-      return res.status(404);
-    }
+    const randomResults = await greatThingService.retrieve(req, true);
+    return res.status(200).send(randomResults);
   } catch (e) {
-    logger.error({
-      msg: 'User encoutered an error while trying to retrieve random Great Thing(s)',
-      error: e,
-      queryParams: req.query,
-      ...baseLogObject(req)
-    });
-    return res.sendStatus(500);
+    return res.sendStatus(parseInt(e.message, 10));
   }
 });
 
