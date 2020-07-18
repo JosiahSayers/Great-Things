@@ -1,11 +1,7 @@
 import express from 'express';
 import { Request, Response } from 'express';
-import { GreatThing, GreatThingDocument } from '../models/Great-Thing';
-import { logger, baseLogObject } from '../util/logger';
 import { doesUserOwnGreatThing } from '../middleware/auth.middleware';
 import { validateQueryParams, validateQueryParamsForRandom } from '../middleware/great-things-query.middleware';
-import { MongooseFilterQuery } from 'mongoose';
-import { mapResponseWithPicture } from './great-things.controller.helper';
 import { pictureService } from '../services/pictures/picture.service';
 import { greatThingService } from '../services/great-things/great-things.service';
 

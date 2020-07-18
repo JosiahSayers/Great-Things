@@ -3,7 +3,7 @@ import { GreatThingResponse, MappedResponseObject } from '../../types/great-thin
 import { GreatThingRequest } from '../../types/great-things.request';
 import { baseLogObject, logger } from '../../util/logger';
 import { greatThingsServiceHelper as helper } from './great-things-helper.service';
-import { Picture, PictureDocument } from '../../models/Picture';
+import { PictureDocument } from '../../models/Picture';
 import { GreatThing, GreatThingDocument } from '../../models/Great-Thing';
 import { pictureService } from '../pictures/picture.service';
 import { MongooseFilterQuery } from 'mongoose';
