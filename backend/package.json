@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "watch": "ENVIRONMENT=local concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-ts": "tsc -w",
     "watch-node": "nodemon dist/server.js",
@@ -28,6 +28,7 @@
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.6",
     "@types/express-fileupload": "^1.1.3",
+    "@types/jest": "^26.0.5",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mongoose": "^5.7.21",
     "@types/node": "^14.0.5",
@@ -38,7 +39,9 @@
     "@typescript-eslint/parser": "^3.0.2",
     "concurrently": "^5.2.0",
     "eslint": "^7.1.0",
+    "jest": "^26.1.0",
     "nodemon": "^2.0.4",
+    "ts-jest": "^26.1.3",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.3"
   },
