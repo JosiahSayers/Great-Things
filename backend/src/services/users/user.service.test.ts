@@ -248,6 +248,46 @@ describe('UserService', () => {
       });
     });
   });
+
+  describe('refresh', () => {
+    beforeEach(() => {
+      helper.refreshJwt = jest.fn().mockReturnValue('REFRESHED_JWT');
+    });
+
+    it('sends the JWT from the request to the helper service to refresh it', () => {
+      UserService.refresh(mockReq({}));
+      expect(helper.refreshJwt).toHaveBeenCalledWith(mockReq({}).jwt);
+    });
+
+    it('logs an info message after a successful refresh', () => {
+      UserService.refresh(mockReq({}));
+
+      expect(helper.buildUserForLog).toHaveBeenCalledWith({ jwt: mockReq({}).jwt });
+      expect(logger.info).toHaveBeenCalledWith({
+        msg: 'User successfully refreshed their JWT',
+        transactionId: 'TRANSACTION_ID',
+        user: 'USER_FOR_LOG'
+      });
+    });
+
+    it('logs and error message and throws a 500 error when an uncaught exception occurs', () => {
+      const testError = new Error('TEST');
+      helper.refreshJwt = jest.fn().mockImplementation(() => { throw testError; });
+      try {
+        UserService.refresh(mockReq({}));
+      } catch (e) {
+        expect(e.message).toBe('500');
+      }
+
+      expect(helper.buildUserForLog).toHaveBeenCalledWith({ jwt: mockReq({}).jwt });
+      expect(logger.error).toHaveBeenCalledWith({
+        msg: 'User encountered an error while refreshing their JWT',
+        transactionId: 'TRANSACTION_ID',
+        user: 'USER_FOR_LOG',
+        error: testError
+      });
+    });
+  });
 });
 
 function mockReq(values: Partial<RegisterBody>): any {
@@ -260,7 +300,8 @@ function mockReq(values: Partial<RegisterBody>): any {
     },
     headers: {
       'transaction-id': 'TRANSACTION_ID'
-    }
+    },
+    jwt: 'JWT_FROM_REQUEST'
   };
 }
 
