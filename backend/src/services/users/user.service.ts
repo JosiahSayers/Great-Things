@@ -50,10 +50,9 @@ const register = async (req: Request): Promise<string> => {
   let jwt;
   const auth: RegisterBody = req.body;
 
-  const isValidEmail = await helper.isValidEmail(auth.username);
-  const isValidPass = helper.isValidPassword(auth.password);
-
   try {
+    const isValidEmail = await helper.isValidEmail(auth.username);
+    const isValidPass = helper.isValidPassword(auth.password);
 
     if (!isValidEmail || !isValidPass) {
       throw new Error('400');
