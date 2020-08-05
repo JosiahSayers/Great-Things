@@ -50,7 +50,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(fileUpload());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/v1/auth', logRequest, validateHeaders, authController);
 app.use('/v1/users/:userid/great-things', logRequest, injectStorageBucket, validateHeaders, isAuthorized, isCurrentUser, greatThingsController);
