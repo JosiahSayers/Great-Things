@@ -10,8 +10,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build:web": "ng build --prod",
+    "build:ios": "tns build ios --no-hmr",
+    "build:android": "tns build android --no-hmr",
     "test": "ng test",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "android": "tns run android --no-hmr",
@@ -19,7 +22,8 @@
     "mobile": "tns run",
     "preview": "tns preview",
     "ngcc": "ngcc --properties es2015 module main --first-only",
-    "postinstall": "npm run ngcc"
+    "postinstall": "npm run ngcc",
+    "ci": "npm i && npm run test:ci && npm run build:web"
   },
   "private": true,
   "dependencies": {
