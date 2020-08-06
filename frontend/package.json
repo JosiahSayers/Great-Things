@@ -1,7 +1,10 @@
 {
   "name": "great-things",
   "nativescript": {
-    "id": "org.nativescript.greatthings"
+    "id": "org.nativescript.greatthings",
+    "tns-ios": {
+      "version": "6.5.2"
+    }
   },
   "version": "0.0.0",
   "scripts": {

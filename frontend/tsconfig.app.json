@@ -9,7 +9,8 @@
         "src/*.web",
         "src/*"
       ]
-    }
+    },
+    "noEmitHelpers": false,
   },
   "files": [
     "src/main.ts",
