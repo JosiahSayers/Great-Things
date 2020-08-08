@@ -8,8 +8,7 @@ const router = express.Router();
 router.post('/authenticate', async (req: Request, res: Response) => {
   try {
     const jwt = await UserService.authenticate(req);
-    res.cookie('Authorization', `Bearer ${jwt}`, { encode: String });
-    res.sendStatus(200);
+    res.status(200).send({ jwt });
   } catch (e) {
     return res.sendStatus(parseInt(e.message, 10));
   }

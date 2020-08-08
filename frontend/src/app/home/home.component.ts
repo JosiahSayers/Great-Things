@@ -14,9 +14,12 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
   }
 
   login(): void {
-    this.authService.login().subscribe();
+    this.authService.login('josiah.sayers15@gmail.com', '3C0ZB$klqYpSmkVU!1hYO!^W').subscribe(() => {
+      console.log(this.authService.jwt());
+    });
   }
 }

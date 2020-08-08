@@ -1,18 +1,24 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { providerDeclarations } from './shared-services.common';
-import { HttpClientModule } from '@angular/common/http';
-
-
+import { StorageService } from './storage/storage.service';
+import { WebStorageService } from './storage/web-storage.service';
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,
-    HttpClientModule
+    CommonModule
   ],
   providers: [
-    ...providerDeclarations
+    ...providerDeclarations,
+    {
+      provide: 'window',
+      useValue: window
+    },
+    {
+      provide: StorageService,
+      useClass: WebStorageService
+    }
   ]
 })
 export class SharedServicesModule { }
