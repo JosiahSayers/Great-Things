@@ -30,7 +30,7 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     const jwtString = this.storage.get(storageKeys.JWT);
-    return jwtString && !this.jwtHelper.isTokenExpired(jwtString);
+    return !!jwtString && !this.jwtHelper.isTokenExpired(jwtString);
   }
 
   tokenExpiration(): Date {
