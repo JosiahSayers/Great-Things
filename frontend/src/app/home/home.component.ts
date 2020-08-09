@@ -15,7 +15,7 @@ export class HomeComponent {
 
   login(): void {
     this.authService.login('josiah.sayers15@gmail.com', '3C0ZB$klqYpSmkVU!1hYO!^W').subscribe(() => {
-      console.log(this.authService.jwt());
+      console.log(this.authService.jwt);
     });
   }
 }

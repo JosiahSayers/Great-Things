@@ -37,7 +37,7 @@ export class AuthService {
     return this.jwtHelper.getTokenExpirationDate(this.storage.get(storageKeys.JWT));
   }
 
-  jwt(): JWT {
+  get jwt(): JWT {
     return this.jwtHelper.decodeToken(this.storage.get(storageKeys.JWT));
   }
 }
