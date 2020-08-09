@@ -3,13 +3,12 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { AuthService } from './auth.service';
 import { Spied } from '../../../utils/testing/spied.interface';
 import { StorageService } from '../storage/storage.service';
-import { provideMock, spyOnClass } from '../../../utils/testing/helper-functions';
+import { spyOnClass } from '../../../utils/testing/helper-functions';
 import { WebStorageService } from '../storage/web-storage.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { JWT } from '../../../models/jwt.interface';
-import { MILLISECONDS_IN_SECOND, SECONDS_IN_MINUTE } from '../../../models/constants/time.constants';
 import { storageKeys } from '../storage/storage-keys';
 
 describe('AuthService', () => {
@@ -133,6 +132,13 @@ describe('AuthService', () => {
       expect(service.jwt()).toEqual(createJwt({}));
       expect(storage.get).toHaveBeenCalledWith(storageKeys.JWT);
       expect(jwtHelper.decodeToken).toHaveBeenCalledWith('ENCODED_JWT');
+    });
+  });
+
+  describe('encodedJwt', () => {
+    it('returns the jwt from storage', () => {
+      storage.get.and.returnValue('ENCODED_JWT');
+      expect(service.encodedJwt()).toBe('ENCODED_JWT');
     });
   });
 });

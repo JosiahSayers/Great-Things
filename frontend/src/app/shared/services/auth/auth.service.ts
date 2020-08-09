@@ -37,15 +37,19 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    const jwtString = this.storage.get(storageKeys.JWT);
+    const jwtString = this.encodedJwt();
     return !!jwtString && !this.jwtHelper.isTokenExpired(jwtString);
   }
 
   tokenExpiration(): Date {
-    return this.jwtHelper.getTokenExpirationDate(this.storage.get(storageKeys.JWT));
+    return this.jwtHelper.getTokenExpirationDate(this.encodedJwt());
   }
 
-  get jwt(): JWT {
-    return this.jwtHelper.decodeToken(this.storage.get(storageKeys.JWT));
+  jwt(): JWT {
+    return this.jwtHelper.decodeToken(this.encodedJwt());
+  }
+
+  encodedJwt(): string {
+    return this.storage.get(storageKeys.JWT);
   }
 }
