@@ -54,7 +54,8 @@ describe('AuthService', () => {
   describe('login', () => {
     it('makes an http post request to the configured endpoint', () => {
       testSub = service.login('', '').subscribe();
-      http.expectOne(environment.BACKEND.login);
+      const req = http.expectOne(environment.BACKEND.login);
+      expect(req.request.method).toBe('POST');
     });
 
     it('passes the username and password into the body of the request', () => {
@@ -80,6 +81,30 @@ describe('AuthService', () => {
         done();
       });
       http.expectOne(environment.BACKEND.login).flush({ jwt: 'ENCODED_JWT' });
+    });
+  });
+
+  describe('refreshJwt', () => {
+    it('makes an http get request to the configured endpoint', () => {
+      testSub = service.refreshJwt().subscribe();
+      const req = http.expectOne(environment.BACKEND.refreshToken);
+      expect(req.request.method).toBe('GET');
+    });
+
+    it('taps the response and saves it to the storage service', (done) => {
+      testSub = service.refreshJwt().subscribe(() => {
+        expect(storage.set).toHaveBeenCalledWith(storageKeys.JWT, 'ENCODED_JWT');
+        done();
+      });
+      http.expectOne(environment.BACKEND.refreshToken).flush({ jwt: 'ENCODED_JWT' });
+    });
+
+    it('maps the response to undefined', (done) => {
+      testSub = service.refreshJwt().subscribe((res) => {
+        expect(res).toBeUndefined();
+        done();
+      });
+      http.expectOne(environment.BACKEND.refreshToken).flush({ jwt: 'ENCODED_JWT' });
     });
   });
 
