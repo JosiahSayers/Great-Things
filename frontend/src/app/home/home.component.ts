@@ -18,4 +18,8 @@ export class HomeComponent {
       console.log(this.authService.jwt);
     });
   }
+
+  refresh(): void {
+    this.authService.refreshJwt().subscribe(() => console.log(this.authService.jwt));
+  }
 }

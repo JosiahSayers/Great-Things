@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { StorageService } from '../storage/storage.service';
 import { storageKeys } from '../storage/storage-keys';
-import { LoginResponse } from '../../../models/api-responses/login.interface';
+import { AuthCallResponse } from '../../../models/api-responses/login.interface';
 import { JWT } from '../../../models/jwt.interface';
 import { environment } from '../../../../environments/environment';
 
@@ -19,13 +19,21 @@ export class AuthService {
   ) { }
 
   login(username: string, password: string): Observable<void> {
-    return this.http.post<LoginResponse>(environment.BACKEND.login, {
+    return this.http.post<AuthCallResponse>(environment.BACKEND.login, {
       username,
       password
     }).pipe(
-      tap((res) => this.storage.set(storageKeys.JWT, res.jwt)),
+      tap((res: AuthCallResponse) => this.storage.set(storageKeys.JWT, res.jwt)),
       map(() => undefined)
     );
+  }
+
+  refreshJwt(): Observable<void> {
+    return this.http.get<AuthCallResponse>(environment.BACKEND.refreshToken)
+      .pipe(
+        tap((res: AuthCallResponse) => this.storage.set(storageKeys.JWT, res.jwt)),
+        map(() => undefined)
+      );
   }
 
   isLoggedIn(): boolean {
