@@ -7,6 +7,7 @@ import { HomeComponent } from '@src/app/home/home.component';
 import { SharedServicesModule } from './shared/services/shared-services.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { GreatThingsInterceptorService } from './shared/interceptors/great-things.interceptor';
+import { ComponentsModule } from './components/components.module';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { GreatThingsInterceptorService } from './shared/interceptors/great-thing
     BrowserModule,
     AppRoutingModule,
     SharedServicesModule,
-    HttpClientModule
+    HttpClientModule,
+    ComponentsModule
   ],
   providers: [
     {
