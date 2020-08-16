@@ -4,6 +4,7 @@ import { AuthenticationBaseComponent } from '@src/app/authentication/authenticat
 import { LoginComponent } from '@src/app/authentication/login/login.component';
 import { RegisterComponent } from '@src/app/authentication/register/register.component';
 import { AuthenticationRoutingModule } from './authentication-routing.module';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -11,7 +12,8 @@ import { AuthenticationRoutingModule } from './authentication-routing.module';
   declarations: [AuthenticationBaseComponent, LoginComponent, RegisterComponent],
   imports: [
     CommonModule,
-    AuthenticationRoutingModule
+    AuthenticationRoutingModule,
+    RouterModule
   ]
 })
 export class AuthenticationModule { }

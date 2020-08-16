@@ -9,6 +9,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { GreatThingsInterceptorService } from './shared/interceptors/great-things.interceptor';
 import { ComponentsModule } from './components/components.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    RouterModule,
     SharedServicesModule,
     HttpClientModule,
     ComponentsModule,
