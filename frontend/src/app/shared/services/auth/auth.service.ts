@@ -18,9 +18,20 @@ export class AuthService {
     private jwtHelper: JwtHelperService
   ) { }
 
-  login(username: string, password: string): Observable<void> {
+  register(email: string, password: string, name: string): Observable<void> {
+    return this.http.post<AuthCallResponse>(environment.BACKEND.register, {
+      email,
+      password,
+      name
+    }).pipe(
+      tap((res: AuthCallResponse) => this.storage.set(storageKeys.JWT, res.jwt)),
+      map(() => undefined)
+    );
+  }
+
+  login(email: string, password: string): Observable<void> {
     return this.http.post<AuthCallResponse>(environment.BACKEND.login, {
-      username,
+      email,
       password
     }).pipe(
       tap((res: AuthCallResponse) => this.storage.set(storageKeys.JWT, res.jwt)),

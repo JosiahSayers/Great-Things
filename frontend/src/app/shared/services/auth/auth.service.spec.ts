@@ -51,6 +51,40 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 
+  describe('register', () => {
+    it('makes an http post request to the configured endpoint', () => {
+      testSub = service.register('', '', '').subscribe();
+      const req = http.expectOne(environment.BACKEND.register);
+      expect(req.request.method).toBe('POST');
+    });
+
+    it('passes the email, password, and name into the body of the request', () => {
+      testSub = service.register('EMAIL', 'PASSWORD', 'FIRST LAST').subscribe();
+      const req = http.expectOne(environment.BACKEND.register);
+      expect(req.request.body).toEqual({
+        email: 'EMAIL',
+        password: 'PASSWORD',
+        name: 'FIRST LAST'
+      });
+    });
+
+    it('taps the response and saves it to the storage service', (done) => {
+      testSub = service.register('', '', '').subscribe(() => {
+        expect(storage.set).toHaveBeenCalledWith(storageKeys.JWT, 'ENCODED_JWT');
+        done();
+      });
+      http.expectOne(environment.BACKEND.register).flush({ jwt: 'ENCODED_JWT' });
+    });
+
+    it('maps the response to undefined', (done) => {
+      testSub = service.register('', '', '').subscribe((res) => {
+        expect(res).toBeUndefined();
+        done();
+      });
+      http.expectOne(environment.BACKEND.register).flush({ jwt: 'ENCODED_JWT' });
+    });
+  });
+
   describe('login', () => {
     it('makes an http post request to the configured endpoint', () => {
       testSub = service.login('', '').subscribe();
@@ -58,11 +92,11 @@ describe('AuthService', () => {
       expect(req.request.method).toBe('POST');
     });
 
-    it('passes the username and password into the body of the request', () => {
-      testSub = service.login('USERNAME', 'PASSWORD').subscribe();
+    it('passes the email and password into the body of the request', () => {
+      testSub = service.login('EMAIL', 'PASSWORD').subscribe();
       const req = http.expectOne(environment.BACKEND.login);
       expect(req.request.body).toEqual({
-        username: 'USERNAME',
+        email: 'EMAIL',
         password: 'PASSWORD'
       });
     });
