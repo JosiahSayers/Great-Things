@@ -1,12 +1,13 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { NativeScriptCommonModule } from '@nativescript/angular';
+import { NativeScriptCommonModule, NativeScriptRouterModule } from '@nativescript/angular';
 
 
 
 @NgModule({
   declarations: [],
   imports: [
-    NativeScriptCommonModule
+    NativeScriptCommonModule,
+    NativeScriptRouterModule
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })
