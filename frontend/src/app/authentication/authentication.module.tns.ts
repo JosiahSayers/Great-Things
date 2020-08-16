@@ -4,6 +4,8 @@ import { AuthenticationBaseComponent } from '@src/app/authentication/authenticat
 import { LoginComponent } from '@src/app/authentication/login/login.component';
 import { RegisterComponent } from '@src/app/authentication/register/register.component';
 import { AuthenticationRoutingModule } from './authentication-routing.module.tns';
+import { ReactiveFormsModule } from '@angular/forms';
+import { providerDeclarations } from './authentication.common';
 
 
 
@@ -12,7 +14,11 @@ import { AuthenticationRoutingModule } from './authentication-routing.module.tns
   imports: [
     NativeScriptCommonModule,
     AuthenticationRoutingModule,
-    NativeScriptRouterModule
+    NativeScriptRouterModule,
+    ReactiveFormsModule
+  ],
+  providers: [
+    ...providerDeclarations
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

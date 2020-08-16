@@ -5,6 +5,8 @@ import { LoginComponent } from '@src/app/authentication/login/login.component';
 import { RegisterComponent } from '@src/app/authentication/register/register.component';
 import { AuthenticationRoutingModule } from './authentication-routing.module';
 import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import { providerDeclarations } from './authentication.common';
 
 
 
@@ -13,7 +15,11 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     AuthenticationRoutingModule,
-    RouterModule
+    RouterModule,
+    ReactiveFormsModule
+  ],
+  providers: [
+    ...providerDeclarations
   ]
 })
 export class AuthenticationModule { }
