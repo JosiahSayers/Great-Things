@@ -13,6 +13,7 @@ import { logger } from './util/logger';
 import fileUpload from 'express-fileupload';
 import { Storage } from '@google-cloud/storage';
 import * as fs from 'fs';
+import cors from 'cors';
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 app.use(fileUpload());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use('/v1/auth', logRequest, validateHeaders, authController);
 app.use('/v1/users/:userid/great-things', logRequest, injectStorageBucket, validateHeaders, isAuthorized, isCurrentUser, greatThingsController);

@@ -7,16 +7,16 @@ import { GreatThing } from '../models/Great-Thing';
 import { logger, baseLogObject } from '../util/logger';
 
 export const isAuthorized = (req: Request, res: Response, next: NextFunction): Response | void => {
-  const authCookie = req.cookies.Authorization;
-  if (!authCookie) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
     logger.debug({
-      msg: 'User sent a request without an Authorization cookie',
+      msg: 'User sent a request without an Authorization header',
       transactionId: <string>req.headers['transaction-id']
     });
     return res.sendStatus(401);
   }
   try {
-    const encodedJWT = authCookie.split(' ')[1];
+    const encodedJWT = authHeader.split(' ')[1];
     const userJWT = <UserJWT>jwt.verify(encodedJWT, JWT_SECRET);
 
     req.jwt = userJWT;
