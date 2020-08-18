@@ -20,19 +20,8 @@
     </div>
   </div>
 
-  <div *ngIf="this.password?.touched || this.password?.value?.length > 0">
-    <p>Password Requirements</p>
-    <ul>
-      <li
-        [class]="this.password?.errors?.minlength || this.password?.value?.length === 0 ? 'has-text-danger' : 'has-text-success'">
-        length</li>
-      <li [class]="this.password?.errors?.containsLowerCase ? 'has-text-danger' : 'has-text-success'">lower case</li>
-      <li [class]="this.password?.errors?.containsUpperCase ? 'has-text-danger' : 'has-text-success'">upper case</li>
-      <li [class]="this.password?.errors?.containsNumbers ? 'has-text-danger' : 'has-text-success'">number</li>
-      <li [class]="this.password?.errors?.containsSpecialCharacters ? 'has-text-danger' : 'has-text-success'">special
-        character</li>
-    </ul>
-  </div>
+  <app-password-check [errors]="passwordErrors" [isOpen]="this.password?.touched || this.password?.value?.length > 0">
+  </app-password-check>
 
   <button type="submit" class="button is-block is-info is-large is-fullwidth" [disabled]="!this.form?.valid">Register <i
       class="fa fa-sign-in" aria-hidden="true"></i></button>

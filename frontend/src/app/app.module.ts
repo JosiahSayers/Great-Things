@@ -10,6 +10,7 @@ import { GreatThingsInterceptorService } from './shared/interceptors/great-thing
 import { ComponentsModule } from './components/components.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { RouterModule } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { RouterModule } from '@angular/router';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     RouterModule,
     SharedServicesModule,

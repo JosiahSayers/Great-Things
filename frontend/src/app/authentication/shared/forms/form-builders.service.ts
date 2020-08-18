@@ -52,28 +52,37 @@ export class FormBuildersService {
   private lowerCaseValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const containsLowerCase = /[a-z]/.test(control.value);
-      return !containsLowerCase ? { containsLowerCase: { value: control.value } } : null;
+      return !containsLowerCase ? { lowerCase: { value: control.value } } : null;
     };
   }
 
   private upperCaseValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const containsUpperCase = /[A-Z]/.test(control.value);
-      return !containsUpperCase ? { containsUpperCase: { value: control.value } } : null;
+      return !containsUpperCase ? { upperCase: { value: control.value } } : null;
     };
   }
 
   private numberValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const containsNumbers = /[0-9]/.test(control.value);
-      return !containsNumbers ? { containsNumbers: { value: control.value } } : null;
+      return !containsNumbers ? { numbers: { value: control.value } } : null;
     };
   }
 
   private specialCharacterValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const containsSpecialCharacter = /[!@#\$%\^&\*]/.test(control.value);
-      return !containsSpecialCharacter ? { containsSpecialCharacters: { value: control.value } } : null;
+      return !containsSpecialCharacter ? { specialCharacters: { value: control.value } } : null;
     };
   }
+}
+
+export interface PasswordErrors {
+  required: boolean;
+  minlength: boolean;
+  lowerCase: boolean;
+  upperCase: boolean;
+  numbers: boolean;
+  specialCharacters: boolean;
 }

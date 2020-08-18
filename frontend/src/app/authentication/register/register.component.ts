@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { FormBuildersService } from '../shared/forms/form-builders.service';
+import { FormBuildersService, PasswordErrors } from '../shared/forms/form-builders.service';
+import { NumberSymbol } from '@angular/common';
 
 @Component({
   selector: 'app-register',
@@ -61,4 +62,15 @@ export class RegisterComponent implements OnInit {
     return this.form?.controls?.email;
   }
 
+  get passwordErrors(): PasswordErrors {
+    const errors = this.password?.errors ?? {};
+    return {
+      required: !!errors.required,
+      minlength: !!errors.minlength,
+      lowerCase: !!errors.lowerCase,
+      upperCase: !!errors.upperCase,
+      numbers: !!errors.numbers,
+      specialCharacters: !!errors.specialCharacters
+    };
+  }
 }

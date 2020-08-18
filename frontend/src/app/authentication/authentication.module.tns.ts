@@ -3,14 +3,15 @@ import { NativeScriptCommonModule, NativeScriptRouterModule } from '@nativescrip
 import { AuthenticationBaseComponent } from '@src/app/authentication/authentication-base/authentication-base.component';
 import { LoginComponent } from '@src/app/authentication/login/login.component';
 import { RegisterComponent } from '@src/app/authentication/register/register.component';
-import { AuthenticationRoutingModule } from './authentication-routing.module.tns';
+import { AuthenticationRoutingModule } from '@src/app/authentication/authentication-routing.module.tns';
 import { ReactiveFormsModule } from '@angular/forms';
-import { providerDeclarations } from './authentication.common';
+import { providerDeclarations } from '@src/app/authentication/authentication.common';
+import { PasswordCheckComponent } from '@src/app/authentication/shared/components/password-check/password-check.component';
 
 
 
 @NgModule({
-  declarations: [AuthenticationBaseComponent, LoginComponent, RegisterComponent],
+  declarations: [AuthenticationBaseComponent, LoginComponent, RegisterComponent, PasswordCheckComponent],
   imports: [
     NativeScriptCommonModule,
     AuthenticationRoutingModule,
