@@ -33,9 +33,9 @@
             Log in
           </a>
 
-          <a class="button is-primary" *ngIf="isLoggedIn">
+          <button class="button is-primary" *ngIf="isLoggedIn" (click)="logout()">
             Log out
-          </a>
+          </button>
         </div>
       </div>
     </div>

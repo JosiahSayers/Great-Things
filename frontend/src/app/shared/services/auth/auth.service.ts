@@ -39,6 +39,10 @@ export class AuthService {
     );
   }
 
+  logout(): void {
+    this.storage.remove(storageKeys.JWT);
+  }
+
   refreshJwt(): Observable<void> {
     return this.http.get<AuthCallResponse>(environment.BACKEND.refreshToken)
       .pipe(
