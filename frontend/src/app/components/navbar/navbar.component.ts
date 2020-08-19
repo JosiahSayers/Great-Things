@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject, HostListener } from '@angular/core';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
@@ -30,9 +30,15 @@ export class NavbarComponent {
   hamburgerState: 'open' | 'closed';
 
   constructor(
-    private auth: AuthService
+    private auth: AuthService,
+    @Inject('window') private window: Window
   ) {
-    this.hamburgerState = 'closed';
+    this.setHamburgerStateOnResize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.setHamburgerStateOnResize();
   }
 
   hamburgerClick(event): void {
@@ -41,7 +47,15 @@ export class NavbarComponent {
     hamburgerElement?.classList.toggle('is-active');
     menuElement?.classList.toggle('is-active');
 
-    this.hamburgerState = hamburgerElement?.classList.contains('is-active') ? 'open' : 'closed';
+    this.hamburgerState = this.isMobileView && hamburgerElement?.classList.contains('is-active') ? 'open' : 'closed';
+  }
+
+  setHamburgerStateOnResize(): void {
+    this.hamburgerState = this.isMobileView ? 'closed' : 'open';
+  }
+
+  get isMobileView(): boolean {
+    return this.window.innerWidth < 1024;
   }
 
   get isLoggedIn(): boolean {

@@ -1,6 +1,7 @@
 const production = false;
 
-const BACKEND_BASE = 'http://localhost:3000/v1';
+// const BACKEND_BASE = 'http://localhost:3000/v1';
+const BACKEND_BASE = 'https://great-things-test.herokuapp.com/v1';
 
 const BACKEND = {
   login: `${BACKEND_BASE}/auth/authenticate`,
