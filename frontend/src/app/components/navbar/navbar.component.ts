@@ -43,11 +43,19 @@ export class NavbarComponent {
     this.setHamburgerStateOnResize();
   }
 
-  hamburgerClick(event): void {
-    const hamburgerElement = <HTMLElement>event.target;
-    const menuElement = <HTMLElement>document.querySelector(`#${event.target.dataset.target}`);
-    hamburgerElement?.classList.toggle('is-active');
-    menuElement?.classList.toggle('is-active');
+  toggleMenuState(stateToSet?: 'open' | 'closed'): void {
+    const hamburgerElement = <HTMLElement>document.querySelector('#navbar-burger');
+    const menuElement = <HTMLElement>document.querySelector(`#${hamburgerElement.dataset.target}`);
+    if (stateToSet === 'open') {
+      hamburgerElement?.classList.add('is-active');
+      menuElement?.classList.add('is-active');
+    } else if (stateToSet === 'closed') {
+      hamburgerElement?.classList.remove('is-active');
+      menuElement?.classList.remove('is-active');
+    } else {
+      hamburgerElement?.classList.toggle('is-active');
+      menuElement?.classList.toggle('is-active');
+    }
 
     this.hamburgerState = this.isMobileView && hamburgerElement?.classList.contains('is-active') ? 'open' : 'closed';
   }
@@ -59,6 +67,10 @@ export class NavbarComponent {
   logout(): void {
     this.auth.logout();
     this.router.navigateByUrl('/');
+  }
+
+  closeMenu(): void {
+
   }
 
   get isMobileView(): boolean {

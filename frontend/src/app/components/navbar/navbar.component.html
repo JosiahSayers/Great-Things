@@ -1,11 +1,11 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
-    <a class="navbar-item" routerLink="/">
+    <a class="navbar-item" routerLink="/" (click)="toggleMenuState('closed')">
       Great Things
     </a>
 
-    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu"
-      (click)="hamburgerClick($event)">
+    <a role="button" class="navbar-burger burger" id="navbar-burger" aria-label="menu" aria-expanded="false"
+      data-target="navbarMenu" (click)="toggleMenuState()">
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
@@ -14,11 +14,11 @@
 
   <div id="navbarMenu" class="navbar-menu" [@openClose]="hamburgerState">
     <div class="navbar-start">
-      <a class="navbar-item" routerLink="/">
+      <a class="navbar-item" routerLink="/" (click)="toggleMenuState('closed')">
         Home
       </a>
 
-      <a class="navbar-item" routerLink="/new">
+      <a class="navbar-item" routerLink="/new" (click)="toggleMenuState('closed')">
         New
       </a>
     </div>
@@ -26,14 +26,16 @@
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
-          <a class="button is-primary" *ngIf="!isLoggedIn" routerLink="/authentication/register">
+          <a class="button is-primary" *ngIf="!isLoggedIn" routerLink="/authentication/register"
+            (click)="toggleMenuState('closed')">
             <strong>Sign up</strong>
           </a>
-          <a class="button is-light" *ngIf="!isLoggedIn" routerLink="/authentication/login">
+          <a class="button is-light" *ngIf="!isLoggedIn" routerLink="/authentication/login"
+            (click)="toggleMenuState('closed')">
             Log in
           </a>
 
-          <button class="button is-primary" *ngIf="isLoggedIn" (click)="logout()">
+          <button class="button is-primary" *ngIf="isLoggedIn" (click)="logout()" (click)="toggleMenuState('closed')">
             Log out
           </button>
         </div>
