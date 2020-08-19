@@ -40,11 +40,8 @@ export class FormBuildersService {
       Validators.minLength(8),
       this.lowerCaseValidator(),
       this.upperCaseValidator(),
-      this.numberValidator(),
-      this.specialCharacterValidator()
-    ] : [
-        Validators.required
-      ];
+      this.numberValidator()
+    ] : [Validators.required];
 
     return new FormControl('', validators);
   }
@@ -69,13 +66,6 @@ export class FormBuildersService {
       return !containsNumbers ? { numbers: { value: control.value } } : null;
     };
   }
-
-  private specialCharacterValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const containsSpecialCharacter = /[!@#\$%\^&\*]/.test(control.value);
-      return !containsSpecialCharacter ? { specialCharacters: { value: control.value } } : null;
-    };
-  }
 }
 
 export interface PasswordErrors {
@@ -84,5 +74,4 @@ export interface PasswordErrors {
   lowerCase: boolean;
   upperCase: boolean;
   numbers: boolean;
-  specialCharacters: boolean;
 }

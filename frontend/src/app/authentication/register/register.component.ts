@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { FormBuildersService, PasswordErrors } from '../shared/forms/form-builders.service';
-import { NumberSymbol } from '@angular/common';
 
 @Component({
   selector: 'app-register',
@@ -69,8 +68,7 @@ export class RegisterComponent implements OnInit {
       minlength: !!errors.minlength,
       lowerCase: !!errors.lowerCase,
       upperCase: !!errors.upperCase,
-      numbers: !!errors.numbers,
-      specialCharacters: !!errors.specialCharacters
+      numbers: !!errors.numbers
     };
   }
 }

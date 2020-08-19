@@ -38,10 +38,10 @@ export class NavbarComponent {
   hamburgerClick(event): void {
     const hamburgerElement = <HTMLElement>event.target;
     const menuElement = <HTMLElement>document.querySelector(`#${event.target.dataset.target}`);
-    hamburgerElement.classList.toggle('is-active');
-    menuElement.classList.toggle('is-active');
+    hamburgerElement?.classList.toggle('is-active');
+    menuElement?.classList.toggle('is-active');
 
-    this.hamburgerState = hamburgerElement.classList.contains('is-active') ? 'open' : 'closed';
+    this.hamburgerState = hamburgerElement?.classList.contains('is-active') ? 'open' : 'closed';
   }
 
   get isLoggedIn(): boolean {
