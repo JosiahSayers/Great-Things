@@ -23,6 +23,8 @@
   <app-password-check [errors]="passwordErrors" [isOpen]="this.password?.touched || this.password?.value?.length > 0">
   </app-password-check>
 
-  <button type="submit" class="button is-block is-info is-large is-fullwidth" [disabled]="!this.form?.valid">Register <i
-      class="fa fa-sign-in" aria-hidden="true"></i></button>
+  <button type="submit" class="button is-block is-info is-large is-fullwidth" [ngClass]="{'is-loading': isLoading}"
+    [disabled]="!this.form?.valid">
+    Register
+  </button>
 </form>

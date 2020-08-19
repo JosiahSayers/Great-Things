@@ -11,6 +11,7 @@ import { AuthService } from '../../shared/services/auth/auth.service';
 export class LoginComponent implements OnInit {
 
   form: FormGroup;
+  isLoading = false;
 
   constructor(
     private formBuilder: FormBuildersService,
@@ -23,7 +24,11 @@ export class LoginComponent implements OnInit {
 
   onFormSubmit(): void {
     if (this.form.valid) {
-      this.authService.login(this.email, this.password).subscribe(() => console.log('LOGGED IN!'));
+      this.isLoading = true;
+      this.authService.login(this.email, this.password).subscribe({
+        next: () => { this.isLoading = false; console.log('Logged in!'); },
+        error: () => { this.isLoading = false; console.log('Log in failed!'); }
+      });
     }
   }
 

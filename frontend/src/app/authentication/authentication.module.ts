@@ -24,7 +24,7 @@ import { ComponentsModule } from '../components/components.module';
     AuthenticationRoutingModule,
     RouterModule,
     ReactiveFormsModule,
-    ComponentsModule,
+    ComponentsModule
   ],
   providers: [
     ...providerDeclarations

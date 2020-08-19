@@ -11,6 +11,6 @@
     </div>
   </div>
 
-  <button type="submit" class="button is-block is-info is-large is-fullwidth">Log in <i class="fa fa-sign-in"
-      aria-hidden="true"></i></button>
+  <button type="submit" class="button is-block is-info is-large is-fullwidth" [ngClass]="{'is-loading': isLoading}"
+    [disabled]="!form.valid">Log in</button>
 </form>

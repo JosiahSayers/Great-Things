@@ -11,6 +11,7 @@ import { AuthService } from '../../shared/services/auth/auth.service';
 export class RegisterComponent implements OnInit {
 
   form: FormGroup;
+  isLoading = false;
 
   constructor(
     private formBuilder: FormBuildersService,
@@ -23,7 +24,11 @@ export class RegisterComponent implements OnInit {
 
   onFormSubmit(): void {
     if (this.form.valid) {
-      this.authService.register(this.email.value, this.password.value, this.name.value).subscribe(() => console.log('Registered!'));
+      this.isLoading = true;
+      this.authService.register(this.email.value, this.password.value, this.name.value).subscribe({
+        next: () => { this.isLoading = false; console.log('Registered!'); },
+        error: () => { this.isLoading = false; console.log('Registration failed!'); }
+      });
     }
   }
 
