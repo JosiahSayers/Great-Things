@@ -46,6 +46,7 @@ export class NavbarComponent {
   toggleMenuState(stateToSet?: 'open' | 'closed'): void {
     const hamburgerElement = <HTMLElement>document.querySelector('#navbar-burger');
     const menuElement = <HTMLElement>document.querySelector(`#${hamburgerElement.dataset.target}`);
+
     if (stateToSet === 'open') {
       hamburgerElement?.classList.add('is-active');
       menuElement?.classList.add('is-active');
@@ -57,7 +58,9 @@ export class NavbarComponent {
       menuElement?.classList.toggle('is-active');
     }
 
-    this.hamburgerState = this.isMobileView && hamburgerElement?.classList.contains('is-active') ? 'open' : 'closed';
+    if (this.isMobileView) {
+      this.hamburgerState = hamburgerElement?.classList.contains('is-active') ? 'open' : 'closed';
+    }
   }
 
   setHamburgerStateOnResize(): void {
