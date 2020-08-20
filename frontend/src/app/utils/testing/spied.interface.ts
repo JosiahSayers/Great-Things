@@ -1,9 +1,7 @@
-export type Spied<T> = {
-  [Method in keyof T]: jasmine.Spy;
-};
+import { Observer } from 'rxjs';
 
-export interface Writeable<T> {
-  setProperty<P extends keyof T>(propertyName: P, value: T[P]): void;
-}
+export type SpyWithObservables = jasmine.Spy & { observer?: Observer<any>, observers?: Observer<any>[] };
 
-export type Stubbed<T> = Spied<T> & Writeable<T>;
+export interface ObservableCleanup { cleanupObservables: () => void; }
+
+export type Spied<T> = { [Method in keyof T]: SpyWithObservables; } & ObservableCleanup;

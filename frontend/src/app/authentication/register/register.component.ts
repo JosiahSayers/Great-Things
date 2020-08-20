@@ -37,7 +37,7 @@ export class RegisterComponent implements OnInit {
   }
 
   get isNameInvalid(): boolean {
-    return this.name?.touched && !this.name?.valid;
+    return this.name?.touched && this.name?.invalid;
   }
 
   get isEmailValid(): boolean {
@@ -45,7 +45,7 @@ export class RegisterComponent implements OnInit {
   }
 
   get isEmailInvalid(): boolean {
-    return this.email?.touched && !this.email?.valid;
+    return this.email?.touched && this.email?.invalid;
   }
 
   get isPasswordValid(): boolean {
@@ -53,7 +53,7 @@ export class RegisterComponent implements OnInit {
   }
 
   get isPasswordInvalid(): boolean {
-    return this.password?.touched && !this.password?.valid;
+    return this.password?.touched && this.password?.invalid;
   }
 
   get name(): AbstractControl {

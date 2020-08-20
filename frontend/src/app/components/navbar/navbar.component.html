@@ -1,5 +1,6 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
+
     <a class="navbar-item" routerLink="/" (click)="toggleMenuState('closed')">
       Great Things
     </a>
@@ -10,9 +11,11 @@
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
     </a>
+
   </div>
 
   <div id="navbarMenu" class="navbar-menu" [@openClose]="hamburgerState">
+
     <div class="navbar-start">
       <a class="navbar-item" routerLink="/" (click)="toggleMenuState('closed')">
         Home

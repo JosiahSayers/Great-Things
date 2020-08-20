@@ -118,6 +118,13 @@ describe('AuthService', () => {
     });
   });
 
+  describe('logout', () => {
+    it('calls the remove function of the storage service with the correct key', () => {
+      service.logout();
+      expect(storage.remove).toHaveBeenCalledWith(storageKeys.JWT);
+    });
+  });
+
   describe('refreshJwt', () => {
     it('makes an http get request to the configured endpoint', () => {
       testSub = service.refreshJwt().subscribe();
