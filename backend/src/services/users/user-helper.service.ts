@@ -35,7 +35,7 @@ async function isValidEmail(email: string): Promise<boolean> {
 }
 
 function isValidPassword(password: string): boolean {
-  const passwordCheckRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+  const passwordCheckRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
   return password && passwordCheckRegex.test(password);
 }
 

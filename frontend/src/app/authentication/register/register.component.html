@@ -1,0 +1,30 @@
+<form [formGroup]="form" (submit)="onFormSubmit()">
+  <div class="field">
+    <div class="control">
+      <input class="input is-medium" [class]="{ 'is-success': isNameValid, 'is-danger': isNameInvalid }" type="text"
+        placeholder="Your Name" autofocus="" formControlName="name">
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="control">
+      <input class="input is-medium" [class]="{ 'is-success': isEmailValid, 'is-danger': isEmailInvalid }" type="email"
+        placeholder="Your Email" autofocus="" formControlName="email">
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="control">
+      <input class="input is-medium" [class]="{ 'is-success': isPasswordValid, 'is-danger': isPasswordInvalid }"
+        type="password" placeholder="Your Password" formControlName="password">
+    </div>
+  </div>
+
+  <app-password-check [errors]="passwordErrors" [isOpen]="this.password?.touched || this.password?.value?.length > 0">
+  </app-password-check>
+
+  <button type="submit" class="button is-block is-info is-large is-fullwidth" [ngClass]="{'is-loading': isLoading}"
+    [disabled]="!this.form?.valid">
+    Register
+  </button>
+</form>

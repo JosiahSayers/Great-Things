@@ -10,7 +10,7 @@
         "src/*"
       ]
     },
-    "noEmitHelpers": false,
+    "noEmitHelpers": false
   },
   "files": [
     "src/main.ts",

@@ -1,0 +1,16 @@
+<form [formGroup]="form" (submit)="onFormSubmit()">
+  <div class="field">
+    <div class="control">
+      <input class="input is-medium" type="email" placeholder="Your Email" autofocus="" formControlName="email">
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="control">
+      <input class="input is-medium" type="password" placeholder="Your Password" formControlName="password">
+    </div>
+  </div>
+
+  <button type="submit" class="button is-block is-info is-large is-fullwidth" [ngClass]="{'is-loading': isLoading}"
+    [disabled]="!form.valid">Log in</button>
+</form>
