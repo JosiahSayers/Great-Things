@@ -62,7 +62,7 @@ describe('AuthService', () => {
       testSub = service.register('EMAIL', 'PASSWORD', 'FIRST LAST').subscribe();
       const req = http.expectOne(environment.BACKEND.register);
       expect(req.request.body).toEqual({
-        email: 'EMAIL',
+        username: 'EMAIL',
         password: 'PASSWORD',
         name: 'FIRST LAST'
       });
@@ -96,7 +96,7 @@ describe('AuthService', () => {
       testSub = service.login('EMAIL', 'PASSWORD').subscribe();
       const req = http.expectOne(environment.BACKEND.login);
       expect(req.request.body).toEqual({
-        email: 'EMAIL',
+        username: 'EMAIL',
         password: 'PASSWORD'
       });
     });

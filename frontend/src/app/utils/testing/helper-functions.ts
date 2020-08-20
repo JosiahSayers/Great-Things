@@ -2,6 +2,15 @@ import { Type } from '@angular/core';
 import { Spied, SpyWithObservables } from './spied.interface';
 import { Observable } from 'rxjs';
 
+export function provideMock<T>(spiedClass: Type<T>, localVariable: Spied<T>, observables?: (keyof T)[]): ProviderMock {
+  const spy = spyOnClass(spiedClass, observables);
+  const output = {
+    provide: spiedClass,
+    useFactory: () => localVariable = spy
+  };
+  return output;
+}
+
 export function spyOnClass<T>(spiedClass: Type<T>, observables?: (keyof T)[]): Spied<T> {
   const prototype = spiedClass.prototype;
   let spy = jasmine.createSpyObj('spy', getMethodNames(prototype), getPropertyNames(prototype));
@@ -60,10 +69,14 @@ function stubObservables<T>(spy: Spied<T>, observables: (keyof T)[] = []): Spied
 }
 
 function cleanupObservables(): void {
-  debugger;
   Object.keys(this).forEach(key => {
     if (this[key].observers) {
       this[key].observers.forEach((obs) => obs.complete());
     }
   });
+}
+
+export interface ProviderMock {
+  provide: any;
+  useFactory: () => any;
 }

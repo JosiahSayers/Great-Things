@@ -72,10 +72,6 @@ export class NavbarComponent {
     this.router.navigateByUrl('/');
   }
 
-  closeMenu(): void {
-
-  }
-
   get isMobileView(): boolean {
     return this.window.innerWidth < 1024;
   }
