@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { providerDeclarations } from '@src/app/authentication/authentication.common';
 import { PasswordCheckComponent } from '@src/app/authentication/shared/components/password-check/password-check.component';
-import { ComponentsModule } from '../components/components.module';
+import { ComponentsModule } from '../shared/components/components.module';
 
 
 

@@ -1,10 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NavbarComponent } from '@src/app/components/navbar/navbar.component';
-import { AuthService } from '../../shared/services/auth/auth.service';
-import { Spied } from '../../utils/testing/spied.interface';
+import { NavbarComponent } from '@src/app/shared/components/navbar/navbar.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { Spied } from '../../../utils/testing/spied.interface';
 import { Router } from '@angular/router';
-import { spyOnClass } from '../../utils/testing/helper-functions';
+import { spyOnClass } from '../../../utils/testing/helper-functions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 
