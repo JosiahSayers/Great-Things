@@ -1,0 +1,12 @@
+<div [@fade]="state" [ngClass]="{'mt-4': state === 'shown'}">
+  <div class="box has-background-danger-light has-text-danger has-text-left">
+    <div class="columns is-vcentered is-mobile">
+      <div class="column is-1">
+        <fa-icon [icon]="icon"></fa-icon>
+      </div>
+      <div class="column">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+</div>

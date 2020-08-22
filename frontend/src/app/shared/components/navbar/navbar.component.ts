@@ -1,5 +1,5 @@
 import { Component, Inject, HostListener } from '@angular/core';
-import { AuthService } from '../../shared/services/auth/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Router } from '@angular/router';
 

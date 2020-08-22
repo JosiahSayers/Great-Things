@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PassFailListItemComponent } from '@src/app/components/pass-fail-list-item/pass-fail-list-item.component';
+import { PassFailListItemComponent } from '@src/app/shared/components/pass-fail-list-item/pass-fail-list-item.component';
 import { MockComponent } from 'ng-mocks';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faCheckSquare, faBan } from '@fortawesome/free-solid-svg-icons';

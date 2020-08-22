@@ -7,7 +7,7 @@ import { HomeComponent } from '@src/app/home/home.component';
 import { SharedServicesModule } from './shared/services/shared-services.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { GreatThingsInterceptorService } from './shared/interceptors/great-things.interceptor';
-import { ComponentsModule } from './components/components.module';
+import { ComponentsModule } from './shared/components/components.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';

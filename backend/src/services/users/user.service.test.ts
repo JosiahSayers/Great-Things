@@ -25,6 +25,16 @@ describe('UserService', () => {
       }
     });
 
+    it('throws an error when the user can\'t be found in the database', async () => {
+      User.findOne = jest.fn().mockResolvedValue(null);
+      try {
+        await UserService.authenticate(<any>{ body: { username: 'USERNAME', password: 'PASSWORD'}});
+        expect(false).toBe(true);
+      } catch (e) {
+        expect(e.message).toBe('401');
+      }
+    });
+
     describe('when password verification succeeds', () => {
       let foundUser: UserDocument;
 

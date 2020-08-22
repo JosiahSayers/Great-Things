@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { FormBuildersService, PasswordErrors } from '../shared/forms/form-builders.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -12,10 +13,12 @@ export class RegisterComponent implements OnInit {
 
   form: FormGroup;
   isLoading = false;
+  errorNotificationState: 'shown' | 'hidden' = 'hidden';
 
   constructor(
     private formBuilder: FormBuildersService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -25,9 +28,10 @@ export class RegisterComponent implements OnInit {
   onFormSubmit(): void {
     if (this.form.valid) {
       this.isLoading = true;
+      this.errorNotificationState = 'hidden';
       this.authService.register(this.email.value, this.password.value, this.name.value).subscribe({
-        next: () => { this.isLoading = false; console.log('Registered!'); },
-        error: () => { this.isLoading = false; console.log('Registration failed!'); }
+        next: () => { this.isLoading = false; this.router.navigateByUrl('/home'); },
+        error: () => { this.isLoading = false; this.errorNotificationState = 'shown'; }
       });
     }
   }
