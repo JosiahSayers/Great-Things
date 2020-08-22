@@ -8,25 +8,35 @@ import { spyOnClass } from '../../utils/testing/helper-functions';
 import { PasswordCheckComponent } from '../shared/components/password-check/password-check.component';
 import { MockComponent } from 'ng-mocks';
 import { By } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { ErrorNotificationComponent } from '../../shared/components/error-notification/error-notification.component';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let formBuilder: FormBuildersService;
   let authService: Spied<AuthService>;
+  let router: Spied<Router>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         RegisterComponent,
-        MockComponent(PasswordCheckComponent)
+        MockComponent(PasswordCheckComponent),
+        MockComponent(ErrorNotificationComponent)
       ],
-      imports: [ReactiveFormsModule],
+      imports: [
+        ReactiveFormsModule
+      ],
       providers: [
         FormBuildersService,
         {
           provide: AuthService,
           useFactory: () => authService = spyOnClass(AuthService, ['register'])
+        },
+        {
+          provide: Router,
+          useFactory: () => router = spyOnClass(Router)
         }
       ]
     })
@@ -260,7 +270,7 @@ describe('RegisterComponent', () => {
     });
 
     it('is enabled when the form is valid', () => {
-      spyOnProperty(component.form, 'valid').and.returnValue(true);
+      spyOnProperty(component.form, 'invalid').and.returnValue(false);
       fixture.detectChanges();
       expect(button.disabled).toBeFalse();
     });
@@ -270,6 +280,67 @@ describe('RegisterComponent', () => {
       component.isLoading = true;
       fixture.detectChanges();
       expect(button.classList.contains('is-loading')).toBeTrue();
+    });
+  });
+
+  describe('onFormSubmit', () => {
+    describe('when the form is valid', () => {
+
+      beforeEach(() => {
+        spyOnProperty(component.form, 'valid').and.returnValue(true);
+        component.form.controls.name.setValue('NAME');
+        component.form.controls.email.setValue('EMAIL');
+        component.form.controls.password.setValue('PASSWORD');
+      });
+
+      it('sets isLoading to true', () => {
+        expect(component.isLoading).toBeFalse();
+        component.onFormSubmit();
+        expect(component.isLoading).toBeTrue();
+      });
+
+      it('sets errorNotificationState to "hidden"', () => {
+        component.errorNotificationState = 'shown';
+        component.onFormSubmit();
+        expect(component.errorNotificationState).toBe('hidden');
+      });
+
+      it('calls authService.register with the expected arguments', () => {
+        component.onFormSubmit();
+        expect(authService.register).toHaveBeenCalledWith(
+          'EMAIL',
+          'PASSWORD',
+          'NAME'
+        );
+      });
+
+      describe('when the registration call succeeds', () => {
+        it('sets isLoading to false', () => {
+          component.onFormSubmit();
+          authService.register.observer.next({});
+          expect(component.isLoading).toBeFalse();
+        });
+
+        it('navigates the user to the "/home" route', () => {
+          component.onFormSubmit();
+          authService.register.observer.next({});
+          expect(router.navigateByUrl).toHaveBeenCalledWith('/home');
+        });
+      });
+
+      describe('when the authorization call fails', () => {
+        it('sets isLoading to false', () => {
+          component.onFormSubmit();
+          authService.register.observer.error({});
+          expect(component.isLoading).toBeFalse();
+        });
+
+        it('sets errorNotificationState to "shown"', () => {
+          component.onFormSubmit();
+          authService.register.observer.error({});
+          expect(component.errorNotificationState).toBe('shown');
+        });
+      });
     });
   });
 });

@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ErrorNotificationComponent } from '@src/app/shared/components/error-notification/error-notification.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MockComponent } from 'ng-mocks';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 describe('ErrorNotificationComponent', () => {
   let component: ErrorNotificationComponent;
@@ -8,9 +11,13 @@ describe('ErrorNotificationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ErrorNotificationComponent ]
+      declarations: [
+        ErrorNotificationComponent,
+        MockComponent(FaIconComponent)
+      ],
+      imports: [BrowserAnimationsModule]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

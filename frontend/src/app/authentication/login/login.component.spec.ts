@@ -6,22 +6,35 @@ import { Spied } from '../../utils/testing/spied.interface';
 import { spyOnClass } from '../../utils/testing/helper-functions';
 import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { MockComponent } from 'ng-mocks';
+import { ErrorNotificationComponent } from '../../shared/components/error-notification/error-notification.component';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let formBuilder: FormBuildersService;
   let authService: Spied<AuthService>;
+  let router: Spied<Router>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [LoginComponent],
-      imports: [ReactiveFormsModule],
+      declarations: [
+        LoginComponent,
+        MockComponent(ErrorNotificationComponent)
+      ],
+      imports: [
+        ReactiveFormsModule
+      ],
       providers: [
         FormBuildersService,
         {
           provide: AuthService,
           useFactory: () => authService = spyOnClass(AuthService, ['login'])
+        },
+        {
+          provide: Router,
+          useFactory: () => router = spyOnClass(Router)
         }
       ]
     })
@@ -136,16 +149,32 @@ describe('LoginComponent', () => {
         expect(authService.login).toHaveBeenCalledWith('VALID@EMAIL.COM', 'PASSWORD');
       });
 
-      it('sets isLoading to false when the login call returns', () => {
-        component.onFormSubmit();
-        authService.login.observer.next({});
-        expect(component.isLoading).toBeFalse();
+      describe('when the auth call is successful', () => {
+        it('sets isLoading to false', () => {
+          component.onFormSubmit();
+          authService.login.observer.next({});
+          expect(component.isLoading).toBeFalse();
+        });
+
+        it('navigates the user to the "/home" route', () => {
+          component.onFormSubmit();
+          authService.login.observer.next({});
+          expect(router.navigateByUrl).toHaveBeenCalledWith('/home');
+        });
       });
 
-      it('sets isLoading to false when the login call errors', () => {
-        component.onFormSubmit();
-        authService.login.observer.error({});
-        expect(component.isLoading).toBeFalse();
+      describe('when the auth call fails', () => {
+        it('sets isLoading to false', () => {
+          component.onFormSubmit();
+          authService.login.observer.error({});
+          expect(component.isLoading).toBeFalse();
+        });
+
+        it('sets errorNotificationState to "shown"', () => {
+          component.onFormSubmit();
+          authService.login.observer.error({});
+          expect(component.errorNotificationState).toBe('shown');
+        });
       });
     });
   });
