@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormBuildersService } from '../shared/forms/form-builders.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuildersService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -28,7 +30,7 @@ export class LoginComponent implements OnInit {
       this.isLoading = true;
       this.errorNotificationState = 'hidden';
       this.authService.login(this.email, this.password).subscribe({
-        next: () => this.isLoading = false,
+        next: () => { this.isLoading = false; this.router.navigateByUrl('/home'); },
         error: () => { this.isLoading = false; this.errorNotificationState = 'shown'; }
       });
     }
