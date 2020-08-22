@@ -16,7 +16,7 @@
 
   <div id="navbarMenu" class="navbar-menu" [@openClose]="hamburgerState">
 
-    <div class="navbar-start">
+    <div class="navbar-start" *ngIf="isLoggedIn">
       <a class="navbar-item" routerLink="/" (click)="toggleMenuState('closed')">
         Home
       </a>
