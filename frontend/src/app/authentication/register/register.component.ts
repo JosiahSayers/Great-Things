@@ -12,6 +12,7 @@ export class RegisterComponent implements OnInit {
 
   form: FormGroup;
   isLoading = false;
+  errorNotificationState: 'shown' | 'hidden' = 'hidden';
 
   constructor(
     private formBuilder: FormBuildersService,
@@ -25,9 +26,10 @@ export class RegisterComponent implements OnInit {
   onFormSubmit(): void {
     if (this.form.valid) {
       this.isLoading = true;
+      this.errorNotificationState = 'hidden';
       this.authService.register(this.email.value, this.password.value, this.name.value).subscribe({
-        next: () => { this.isLoading = false; console.log('Registered!'); },
-        error: () => { this.isLoading = false; console.log('Registration failed!'); }
+        next: () => this.isLoading = false,
+        error: () => { this.isLoading = false; this.errorNotificationState = 'shown'; }
       });
     }
   }

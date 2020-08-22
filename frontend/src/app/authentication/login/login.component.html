@@ -12,7 +12,7 @@
   </div>
 
   <button type="submit" class="button is-block is-info is-large is-fullwidth" [ngClass]="{'is-loading': isLoading}"
-    [disabled]="!form.valid">Log in</button>
+    [disabled]="form.invalid">Log in</button>
 
   <app-error-notification [state]="errorNotificationState">
     Something went wrong, please check your email and password.

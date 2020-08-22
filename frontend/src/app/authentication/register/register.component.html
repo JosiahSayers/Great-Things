@@ -20,11 +20,15 @@
     </div>
   </div>
 
-  <app-password-check [errors]="passwordErrors" [isOpen]="this.password?.touched || this.password?.value?.length > 0">
+  <app-password-check [errors]="passwordErrors" [isOpen]="password?.touched || password?.value?.length > 0">
   </app-password-check>
 
   <button type="submit" class="button is-block is-info is-large is-fullwidth" [ngClass]="{'is-loading': isLoading}"
-    [disabled]="!this.form?.valid">
+    [disabled]="form?.invalid">
     Register
   </button>
+
+  <app-error-notification [state]="errorNotificationState">
+    Something went wrong, please try again.
+  </app-error-notification>
 </form>
