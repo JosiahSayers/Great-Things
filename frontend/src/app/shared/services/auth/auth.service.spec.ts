@@ -8,7 +8,7 @@ import { WebStorageService } from '../storage/web-storage.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { JWT } from '../../../models/jwt.interface';
+import { JWT } from '../../models/jwt.interface';
 import { storageKeys } from '../storage/storage-keys';
 
 describe('AuthService', () => {

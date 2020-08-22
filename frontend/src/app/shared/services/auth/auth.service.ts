@@ -5,8 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { StorageService } from '../storage/storage.service';
 import { storageKeys } from '../storage/storage-keys';
-import { AuthCallResponse } from '../../../models/api-responses/login.interface';
-import { JWT } from '../../../models/jwt.interface';
+import { AuthCallResponse } from '../../models/api-responses/login.interface';
+import { JWT } from '../../models/jwt.interface';
 import { environment } from '../../../../environments/environment';
 
 @Injectable()
