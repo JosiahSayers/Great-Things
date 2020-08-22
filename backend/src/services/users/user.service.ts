@@ -15,6 +15,10 @@ const authenticate = async (req: Request): Promise<string> => {
 
   try {
     const user = await User.findOne({ email: auth.username });
+    if (!user) {
+      throw new Error('401');
+    }
+    
     const correctPassword = user.comparePassword(auth.password);
 
     if (correctPassword) {
@@ -49,7 +53,7 @@ const authenticate = async (req: Request): Promise<string> => {
 const register = async (req: Request): Promise<string> => {
   let jwt;
   const auth: RegisterBody = req.body;
-
+  
   try {
     const isValidEmail = await helper.isValidEmail(auth.username);
     const isValidPass = helper.isValidPassword(auth.password);

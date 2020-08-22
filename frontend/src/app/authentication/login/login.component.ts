@@ -12,6 +12,7 @@ export class LoginComponent implements OnInit {
 
   form: FormGroup;
   isLoading = false;
+  errorNotificationState: 'shown' | 'hidden' = 'hidden';
 
   constructor(
     private formBuilder: FormBuildersService,
@@ -25,9 +26,10 @@ export class LoginComponent implements OnInit {
   onFormSubmit(): void {
     if (this.form.valid) {
       this.isLoading = true;
+      this.errorNotificationState = 'hidden';
       this.authService.login(this.email, this.password).subscribe({
         next: () => this.isLoading = false,
-        error: () => this.isLoading = false
+        error: () => { this.isLoading = false; this.errorNotificationState = 'shown'; }
       });
     }
   }

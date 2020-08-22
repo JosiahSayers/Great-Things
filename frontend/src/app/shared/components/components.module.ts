@@ -4,11 +4,13 @@ import { NavbarComponent } from '@src/app/shared/components/navbar/navbar.compon
 import { RouterModule } from '@angular/router';
 import { PassFailListItemComponent } from '@src/app/shared/components/pass-fail-list-item/pass-fail-list-item.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ErrorNotificationComponent } from '@src/app/shared/components/error-notification/error-notification.component';
 
 @NgModule({
   declarations: [
     NavbarComponent,
-    PassFailListItemComponent
+    PassFailListItemComponent,
+    ErrorNotificationComponent
   ],
   imports: [
     CommonModule,
@@ -17,7 +19,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   ],
   exports: [
     NavbarComponent,
-    PassFailListItemComponent
+    PassFailListItemComponent,
+    ErrorNotificationComponent
   ]
 })
 export class ComponentsModule { }
