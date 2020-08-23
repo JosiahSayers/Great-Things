@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedServicesModule } from '../shared/services/shared-services.module';
 import { GreatThingsRoutingModule } from './great-things-routing.module';
-import { componentDeclarations } from './great-things.common';
+import { componentDeclarations, providerDeclarations } from './great-things.common';
 
 @NgModule({
   declarations: [
@@ -12,6 +12,9 @@ import { componentDeclarations } from './great-things.common';
     CommonModule,
     SharedServicesModule,
     GreatThingsRoutingModule
+  ],
+  providers: [
+    ...providerDeclarations
   ]
 })
 export class GreatThingsModule { }
