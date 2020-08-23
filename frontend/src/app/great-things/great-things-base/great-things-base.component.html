@@ -4,6 +4,7 @@
   <div *ngIf="greatThings.length > 0 else noGreatThings">
     <app-great-thing *ngFor="let greatThing of greatThings" [greatThing]="greatThing"></app-great-thing>
   </div>
+
   <ng-template #noGreatThings>No Great Things to load</ng-template>
 </div>
 

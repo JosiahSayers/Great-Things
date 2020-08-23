@@ -11,6 +11,7 @@ import { ComponentsModule } from '@src/app/shared/components/components.module';
 import { AuthenticationModule } from '@src/app/authentication/authentication.module';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HomeGuard } from './home/home.guard';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       provide: HTTP_INTERCEPTORS,
       useClass: GreatThingsInterceptorService,
       multi: true
-    }
+    },
+    HomeGuard
   ],
   bootstrap: [AppComponent]
 })
