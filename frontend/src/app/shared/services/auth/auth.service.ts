@@ -67,4 +67,8 @@ export class AuthService {
   encodedJwt(): string {
     return this.storage.get(storageKeys.JWT);
   }
+
+  userId(): string {
+    return this.jwt()?.id;
+  }
 }

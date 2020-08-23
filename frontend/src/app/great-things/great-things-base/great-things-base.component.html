@@ -1,0 +1,12 @@
+<p>great-things-base</p>
+
+<div *ngIf="greatThings$ | async as greatThings else loading">
+  <div *ngIf="greatThings.length > 0 else noGreatThings">
+    <app-great-thing *ngFor="let greatThing of greatThings" [greatThing]="greatThing"></app-great-thing>
+  </div>
+  <ng-template #noGreatThings>No Great Things to load</ng-template>
+</div>
+
+<ng-template #loading>
+  <progress class="progress is-primary"></progress>
+</ng-template>
