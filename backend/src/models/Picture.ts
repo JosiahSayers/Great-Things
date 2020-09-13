@@ -5,7 +5,6 @@ export type PictureDocument = mongoose.Document & PictureInterface;
 export type PictureInterface = {
   id?: string;
   ownerId: string;
-  createdAt: number;
   href: string,
   height: number,
   width: number,
@@ -19,6 +18,6 @@ const pictureSchema = new mongoose.Schema({
   height: Number,
   width: Number,
   format: String,
-});
+}, { timestamps: true });
 
 export const Picture = mongoose.model<PictureDocument>('pictures', pictureSchema);

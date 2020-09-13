@@ -10,7 +10,6 @@ import { MongooseFilterQuery } from 'mongoose';
 
 const create = async (req: Request): Promise<MappedResponseObject | GreatThingResponse> => {
   const gtReq = <GreatThingRequest>req.body;
-  const currentTime = new Date().getTime();
   let picture: PictureDocument;
 
   try {
@@ -28,8 +27,6 @@ const create = async (req: Request): Promise<MappedResponseObject | GreatThingRe
 
     const greatThing = await new GreatThing(<GreatThingDocument>{
       text: gtReq.text,
-      createdAt: currentTime,
-      lastUpdatedAt: currentTime,
       ownerId: req.jwt.id,
       pictureId: gtReq.pictureId
     }).save();
@@ -93,8 +90,7 @@ const update = async (req: Request): Promise<void> => {
     const updatedGreatThing = <GreatThingRequest>req.body;
 
     await GreatThing.findByIdAndUpdate({ _id: req.params.greatThingId }, {
-      text: updatedGreatThing.text,
-      lastUpdatedAt: new Date().getTime()
+      text: updatedGreatThing.text
     });
 
     logger.info({
