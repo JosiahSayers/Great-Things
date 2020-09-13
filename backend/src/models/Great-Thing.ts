@@ -5,8 +5,6 @@ export type GreatThingDocument = mongoose.Document & GreatThingInterface;
 export interface GreatThingInterface {
   id: string;
   text: string;
-  createdAt: number;
-  lastUpdatedAt: number;
   ownerId: string;
   pictureId?: string;
 }
@@ -17,6 +15,6 @@ const greatThingSchema = new mongoose.Schema({
   lastUpdatedAt: Number,
   ownerId: String,
   pictureId: String
-});
+}, { timestamps: true });
 
 export const GreatThing = mongoose.model<GreatThingDocument>('GreatThing', greatThingSchema);

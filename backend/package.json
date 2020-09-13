@@ -10,7 +10,7 @@
     "watch-node": "nodemon dist/server.js",
     "build": "tsc",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\"",
-    "ci": "npm i && npm run lint && npm run test:single && npm run build",
+    "ci": "npm i && npm run lint && npm run test:single",
     "start": "node dist/server.js",
     "postinstall": "npm run build"
   },
