@@ -11,7 +11,7 @@ import { ComponentsModule } from '@src/app/shared/components/components.module';
 import { AuthenticationModule } from '@src/app/authentication/authentication.module';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HomeGuard } from './home/home.guard';
+import { HomeGuard } from '@src/app/home/home.guard';
 
 
 @NgModule({

@@ -6,7 +6,8 @@ import { AppComponent } from '@src/app/app.component';
 import { HomeComponent } from '@src/app/home/home.component';
 import { SharedServicesModule } from '@src/app/shared/services/shared-services.module.tns';
 import { AuthenticationModule } from '@src/app/authentication/authentication.module.tns';
-import { HomeGuard } from './home/home.guard';
+import { HomeGuard } from '@src/app/home/home.guard';
+import { GreatThingsTilesComponent } from '@src/app/great-things-tiles/great-things-tiles.component';
 
 
 // Uncomment and add to NgModule imports if you need to use two-way binding and/or HTTP wrapper
@@ -16,6 +17,7 @@ import { HomeGuard } from './home/home.guard';
   declarations: [
     AppComponent,
     HomeComponent,
+    GreatThingsTilesComponent,
   ],
   imports: [
     NativeScriptModule,
