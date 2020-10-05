@@ -19,7 +19,7 @@ export class AuthService {
   ) { }
 
   register(username: string, password: string, name: string): Observable<void> {
-    return this.http.post<AuthCallResponse>(environment.BACKEND.register, {
+    return this.http.post<AuthCallResponse>(`${environment.BACKEND_BASE}/auth/register`, {
       username,
       password,
       name
@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<void> {
-    return this.http.post<AuthCallResponse>(environment.BACKEND.login, {
+    return this.http.post<AuthCallResponse>(`${environment.BACKEND_BASE}/auth/authenticate`, {
       username,
       password
     }).pipe(
@@ -44,7 +44,7 @@ export class AuthService {
   }
 
   refreshJwt(): Observable<void> {
-    return this.http.get<AuthCallResponse>(environment.BACKEND.refreshToken)
+    return this.http.get<AuthCallResponse>(`${environment.BACKEND_BASE}/auth/refresh`)
       .pipe(
         tap((res: AuthCallResponse) => this.storage.set(storageKeys.JWT, res.jwt)),
         map(() => undefined)

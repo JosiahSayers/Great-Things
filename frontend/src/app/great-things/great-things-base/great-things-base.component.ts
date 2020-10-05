@@ -17,7 +17,9 @@ export class GreatThingsBaseComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.greatThings$ = this.greatThingsService.get();
+    this.greatThings$ = this.greatThingsService.retrieve({
+      limit: 30
+    });
   }
 
 }

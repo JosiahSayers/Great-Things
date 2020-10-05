@@ -12,6 +12,8 @@ import { AuthenticationModule } from '@src/app/authentication/authentication.mod
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeGuard } from '@src/app/home/home.guard';
+import { sidelogConfigInjectionToken } from 'sidelog-angular';
+import { environment } from '../environments/environment';
 
 
 @NgModule({
@@ -35,7 +37,8 @@ import { HomeGuard } from '@src/app/home/home.guard';
       useClass: GreatThingsInterceptorService,
       multi: true
     },
-    HomeGuard
+    HomeGuard,
+    { provide: sidelogConfigInjectionToken, useValue: environment.SIDELOG_CONFIG }
   ],
   bootstrap: [AppComponent]
 })
