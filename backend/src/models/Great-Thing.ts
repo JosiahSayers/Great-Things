@@ -11,8 +11,6 @@ export interface GreatThingInterface {
 
 const greatThingSchema = new mongoose.Schema({
   text: { type: String, text: true },
-  createdAt: Number,
-  lastUpdatedAt: Number,
   ownerId: String,
   pictureId: String
 }, { timestamps: true });
