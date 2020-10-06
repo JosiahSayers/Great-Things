@@ -17,6 +17,6 @@ const greatThingSchema = new mongoose.Schema({
   lastUpdatedAt: Number,
   ownerId: String,
   pictureId: String
-});
+}, { timestamps: true });
 
 export const GreatThing = mongoose.model<GreatThingDocument>('GreatThing', greatThingSchema);

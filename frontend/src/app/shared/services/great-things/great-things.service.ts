@@ -44,7 +44,7 @@ export class GreatThingsService extends BaseApiService {
     return this.delete<void>(url, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.DELETE);
   }
 
-  private mapResponse(res: GreatThingsResponse): any[] {
+  private mapResponse(res: GreatThingsResponse): GreatThing[] {
     let greatThings = [];
 
     if (Array.isArray(res?.greatThings)) {
