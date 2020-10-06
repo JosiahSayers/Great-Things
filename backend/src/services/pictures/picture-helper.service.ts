@@ -23,7 +23,6 @@ const processImageAndUpload = async (req: Request): Promise<PictureInterface> =>
 
     return {
       ownerId: req.jwt.id,
-      createdAt: new Date().getTime(),
       href: GCP_PHOTO_URL_BASE + fileName,
       format: processedImage.format,
       width: processedImage.width,

@@ -59,9 +59,9 @@ const mapSingleGreatThingResponse = async (greatThing: GreatThingDocument): Prom
 const mapGreatThing = (gt: GreatThingDocument): GreatThingInterface => ({
   id: gt.id,
   text: gt.text,
+  ownerId: gt.ownerId,
   createdAt: gt.createdAt,
-  lastUpdatedAt: gt.lastUpdatedAt,
-  ownerId: gt.ownerId
+  updatedAt: gt.updatedAt
 });
 
 const sanitizeSearchString = (search: string): string => {

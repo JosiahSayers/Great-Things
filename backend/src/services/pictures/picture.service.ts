@@ -11,11 +11,11 @@ const mapPicture = (pic: PictureDocument): PictureInterface => {
   return {
     id: pic.id,
     ownerId: pic.ownerId,
-    createdAt: pic.createdAt,
     href: pic.href,
     height: pic.height,
     width: pic.width,
-    format: pic.format
+    format: pic.format,
+    createdAt: pic.createdAt
   };
 };
 
