@@ -7,6 +7,8 @@ export interface GreatThingInterface {
   text: string;
   ownerId: string;
   pictureId?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 const greatThingSchema = new mongoose.Schema({

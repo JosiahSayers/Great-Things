@@ -9,11 +9,11 @@ export type PictureInterface = {
   height: number,
   width: number,
   format: string,
+  createdAt?: string
 }
 
 const pictureSchema = new mongoose.Schema({
   ownerId: String,
-  createdAt: Number,
   href: String,
   height: Number,
   width: Number,

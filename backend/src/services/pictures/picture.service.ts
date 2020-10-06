@@ -14,7 +14,8 @@ const mapPicture = (pic: PictureDocument): PictureInterface => {
     href: pic.href,
     height: pic.height,
     width: pic.width,
-    format: pic.format
+    format: pic.format,
+    createdAt: pic.createdAt
   };
 };
 
