@@ -5,7 +5,7 @@ export class Picture {
 
   constructor(
     public id: string,
-    private createdAtTime: number,
+    private createdAtTime: string,
     public href: string,
     public height: number,
     public width: number,

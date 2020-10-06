@@ -16,7 +16,7 @@ describe('GreatThingComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(GreatThingComponent);
     component = fixture.componentInstance;
-    component.greatThing = new GreatThing('ID', 'TEXT', 1, 1);
+    component.greatThing = new GreatThing('ID', 'TEXT', '1', '1');
     fixture.detectChanges();
   });
 

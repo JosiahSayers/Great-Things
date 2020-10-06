@@ -5,8 +5,8 @@ export interface GreatThingsResponse {
 export interface GreatThingFromApi {
   id: string;
   text: string;
-  createdAt: number;
-  lastUpdatedAt: number;
+  createdAt: string;
+  updatedAt: string;
   ownerId: string;
   picture?: GreatThingsPictureFromApi;
 }
@@ -14,7 +14,7 @@ export interface GreatThingFromApi {
 export interface GreatThingsPictureFromApi {
   id: string;
   ownerId: string;
-  createdAt: number;
+  createdAt: string;
   href: string;
   height: number;
   width: number;

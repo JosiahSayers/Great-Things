@@ -9,8 +9,8 @@ export class GreatThing {
   constructor(
     public id: string,
     public text: string,
-    private createdAtTime: number,
-    private lastUpdatedAtTime: number,
+    private createdAtTime: string,
+    private lastUpdatedAtTime: string,
     public picture?: Picture
   ) {
     this.createdAt = new Date(createdAtTime);

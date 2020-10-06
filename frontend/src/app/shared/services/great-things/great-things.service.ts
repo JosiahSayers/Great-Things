@@ -62,7 +62,7 @@ export class GreatThingsService extends BaseApiService {
           item.id,
           item.text,
           item.createdAt,
-          item.lastUpdatedAt,
+          item.updatedAt,
           picture
         );
       });
