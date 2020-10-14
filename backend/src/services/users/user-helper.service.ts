@@ -9,10 +9,10 @@ function createJwt(user: UserDocument): string {
       email: user.email,
       id: user.id,
       name: user.profile.name,
-      picture: user.profile.picture
+      picture: user.profile.pictureId
     },
     JWT_SECRET,
-    { expiresIn: '15m' }
+    { expiresIn: '24h' }
   );
 }
 
@@ -25,7 +25,7 @@ function refreshJwt(current: UserJWT): string {
       picture: current.picture
     },
     JWT_SECRET,
-    { expiresIn: '15m' }
+    { expiresIn: '24h' }
   );
 }
 

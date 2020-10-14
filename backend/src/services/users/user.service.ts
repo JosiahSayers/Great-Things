@@ -4,6 +4,7 @@ import { UserServiceHelper as helper } from './user-helper.service';
 import { logger } from '../../util/logger';
 import { Request } from 'express';
 import { RegisterBody } from '../../types/register-body';
+import { MongoError } from 'mongodb';
 
 const authenticate = async (req: Request): Promise<string> => {
   let jwt;
@@ -67,7 +68,7 @@ const register = async (req: Request): Promise<string> => {
       password: auth.password,
       profile: {
         name: auth.name,
-        picture: auth.picture
+        pictureId: auth.pictureId
       }
     }).save();
 
@@ -94,7 +95,7 @@ const register = async (req: Request): Promise<string> => {
           email: auth.username,
           profile: {
             name: auth.name,
-            picture: auth.picture
+            pictureId: auth.pictureId
           }
         },
         error: e,
@@ -133,8 +134,51 @@ const refresh = (req: Request): string => {
   }
 };
 
+const updateUser = async (req: Request): Promise<string> => {
+  try {
+    const currentUser = await User.findById(req.jwt.id);
+    let updatedPictureId;
+
+    if (req.body.pictureId === null) {
+      updatedPictureId = null;
+    } else if (req.body.pictureId === undefined) {
+      updatedPictureId = currentUser.profile.pictureId;
+    } else {
+      updatedPictureId = req.body.pictureId;
+    }
+
+    currentUser.email = req.body.email || currentUser.email;
+    currentUser.password = req.body.password || currentUser.password;
+    currentUser.profile = {
+      name: req.body.name || currentUser.profile.name,
+      pictureId: updatedPictureId
+    };
+
+    return helper.createJwt(await currentUser.save());
+  } catch (e) {
+    if (e instanceof MongoError && e.code === 11000) {
+      logger.error({
+        msg: 'User tried to update their email to an email that already exists in the database',
+        user: helper.buildUserForLog({ jwt: req.jwt }),
+        error: e
+      });
+      e.message = '409';
+    } else {
+      logger.error({
+        msg: 'User encountered an error while updating their information',
+        user: helper.buildUserForLog({ jwt: req.jwt }),
+        error: e
+      });
+      e.message = '500';
+    }
+
+    throw e;
+  }
+};
+
 export const UserService = {
   authenticate,
   register,
-  refresh
+  refresh,
+  updateUser
 };

@@ -9,7 +9,7 @@ export type UserDocument = mongoose.Document & {
 
   profile: {
     name: string;
-    picture: string;
+    pictureId: string;
   };
 
   comparePassword: comparePasswordFunction;
@@ -25,14 +25,14 @@ const userSchema = new mongoose.Schema({
 
   profile: {
     name: String,
-    picture: String
+    pictureId: String
   }
 }, { timestamps: true });
 
 /**
  * Password hash middleware.
  */
-userSchema.pre('save', function save(next) {
+userSchema.pre('save', function hashPassword(next: any) {
   const user = this as UserDocument;
   if (!user.isModified('password')) { return next(); }
   bcrypt.genSalt(10, (err, salt) => {
