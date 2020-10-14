@@ -2,7 +2,13 @@
 
   <div *ngIf="greatThings$ | async as greatThings else loading">
     <div *ngIf="greatThings.length > 0 else noGreatThings">
-      <app-great-things-tiles [greatThings]="greatThings"></app-great-things-tiles>
+
+      <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <app-great-thing *ngFor="let greatThing of greatThings" [greatThing]="greatThing"></app-great-thing>
+        </div>
+      </div>
+
     </div>
 
     <ng-template #noGreatThings>No Great Things to load</ng-template>
