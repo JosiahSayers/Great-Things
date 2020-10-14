@@ -5,6 +5,7 @@ import passport from 'passport';
 import { PORT, MONGO_CONNECTION_STRING, GCP_ID, GCP_USER_PHOTOS, GCP_KEY_FILE_PATH, GCP_KEY } from './util/environment';
 import authController from './controllers/auth.controller';
 import greatThingsController from './controllers/great-things.controller';
+import usersController from './controllers/users.controller';
 import mongoose from 'mongoose';
 import { logRequest } from './middleware/logger.middleware';
 import { validateHeaders } from './middleware/validation.middleware';
@@ -53,8 +54,10 @@ app.use(passport.initialize());
 app.use(fileUpload());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(logRequest);
 
-app.use('/v1/auth', logRequest, validateHeaders, authController);
-app.use('/v1/users/:userid/great-things', logRequest, injectStorageBucket, validateHeaders, isAuthorized, isCurrentUser, greatThingsController);
+app.use('/v1/auth', validateHeaders, authController);
+app.use('/v1/users/:userid', injectStorageBucket, validateHeaders, isAuthorized, isCurrentUser, usersController);
+app.use('/v1/users/:userid/great-things', injectStorageBucket, validateHeaders, isAuthorized, isCurrentUser, greatThingsController);
 
 export default app;

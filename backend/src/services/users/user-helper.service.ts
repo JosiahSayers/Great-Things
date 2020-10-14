@@ -2,30 +2,18 @@ import jwt from 'jsonwebtoken';
 import { User, UserDocument } from '../../models/User';
 import { JWT_SECRET } from '../../util/environment';
 import { UserJWT } from '../../types/jwt';
+import { PictureDocument } from '../../models/Picture';
 
-function createJwt(user: UserDocument): string {
+function createJwt(user: UserDocument, picture?: PictureDocument): string {
   return jwt.sign(
     {
       email: user.email,
       id: user.id,
       name: user.profile.name,
-      picture: user.profile.picture
+      picture: picture?.href
     },
     JWT_SECRET,
-    { expiresIn: '15m' }
-  );
-}
-
-function refreshJwt(current: UserJWT): string {
-  return jwt.sign(
-    {
-      email: current.email,
-      id: current.id,
-      name: current.name,
-      picture: current.picture
-    },
-    JWT_SECRET,
-    { expiresIn: '15m' }
+    { expiresIn: '24h' }
   );
 }
 
@@ -59,7 +47,6 @@ function buildUserForLog(req: UserForLogRequest): UserForLog {
 
 export const UserServiceHelper = {
   createJwt,
-  refreshJwt,
   isValidEmail,
   isValidPassword,
   buildUserForLog
