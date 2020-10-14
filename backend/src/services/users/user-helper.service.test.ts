@@ -34,10 +34,25 @@ describe('User Service Helper', () => {
         email: 'EMAIL',
         id: 'ID',
         name: 'NAME',
-        picture: 'PICTURE'
+        picture: undefined
       },
       JWT_SECRET,
-      { expiresIn: '15m' }
+      { expiresIn: '24h' }
+      );
+      expect(returnValue).toBe('JWT');
+    });
+
+    it('adds the picture href when a PictureDocument is provided', () => {
+      const returnValue = UserServiceHelper.createJwt(testUserDoc, <any>{ href: 'TEST HREF'});
+
+      expect(jwt.sign).toHaveBeenCalledWith({
+        email: 'EMAIL',
+        id: 'ID',
+        name: 'NAME',
+        picture: 'TEST HREF'
+      },
+        JWT_SECRET,
+        { expiresIn: '24h' }
       );
       expect(returnValue).toBe('JWT');
     });
@@ -116,7 +131,7 @@ describe('User Service Helper', () => {
         email: 'EMAIL',
         profile: {
           name: 'NAME',
-          picture: 'PICTURE'
+          pictureId: 'PICTURE'
         }
       });
     });

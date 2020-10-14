@@ -36,7 +36,6 @@ const authenticate = async (req: Request): Promise<string> => {
         picture = await pictureService.findById(user.profile.pictureId);
       }
 
-
       jwt = helper.createJwt(user, picture);
     } else {
       logger.debug({

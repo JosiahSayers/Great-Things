@@ -3,6 +3,7 @@ import { User, UserDocument } from '../../models/User';
 import { UserService } from './user.service';
 import { UserServiceHelper as helper } from './user-helper.service';
 import { RegisterBody } from '../../types/register-body';
+import { pictureService } from '../pictures/picture.service';
 
 describe('UserService', () => {
   beforeEach(() => {
@@ -11,6 +12,7 @@ describe('UserService', () => {
     logger.error = jest.fn();
     helper.buildUserForLog = jest.fn().mockReturnValue('USER_FOR_LOG');
     helper.createJwt = jest.fn().mockReturnValue('JWT');
+    pictureService.findById = jest.fn().mockResolvedValue({ href: 'HREF' });
   });
 
   describe('authenticate', () => {
@@ -41,7 +43,11 @@ describe('UserService', () => {
       beforeEach(() => {
         foundUser = mockUser({
           email: 'EMAIL',
-          password: 'PASSWORD'
+          password: 'PASSWORD',
+          profile: {
+            pictureId: 'PICTURE ID',
+            name: ''
+          }
         }, true);
         User.findOne = jest.fn().mockResolvedValue(foundUser);
       });
@@ -65,9 +71,9 @@ describe('UserService', () => {
           username: 'USERNAME',
           password: 'PASSWORD'
         }));
-
+        
         expect(returnValue).toBe('JWT');
-        expect(helper.createJwt).toHaveBeenCalledWith(foundUser);
+        expect(helper.createJwt).toHaveBeenCalledWith(foundUser, { href: 'HREF' });
       });
     });
 
@@ -149,7 +155,7 @@ describe('UserService', () => {
         email: 'EMAIL',
         profile: {
           name: 'NAME',
-          picture: 'PICTURE'
+          pictureId: 'PICTURE'
         }
       });
       User.prototype.save = jest.spyOn(User.prototype, 'save').mockResolvedValue(createdUser);
@@ -208,7 +214,7 @@ describe('UserService', () => {
         username: 'USERNAME',
         password: 'PASSWORD',
         name: 'NAME',
-        picture: 'PICTURE'
+        pictureId: 'PICTURE'
       }));
 
       expect(User.prototype.save).toHaveBeenCalledWith();
@@ -238,7 +244,7 @@ describe('UserService', () => {
         await UserService.register(mockReq({
           username: 'EMAIL',
           name: 'NAME',
-          picture: 'PICTURE'
+          pictureId: 'PICTURE ID'
         }));
       } catch(e) {
         expect(e.message).toBe('500');
@@ -250,7 +256,7 @@ describe('UserService', () => {
           email: 'EMAIL',
           profile: {
             name: 'NAME',
-            picture: 'PICTURE'
+            pictureId: 'PICTURE ID'
           }
         },
         error: testError,
@@ -260,17 +266,39 @@ describe('UserService', () => {
   });
 
   describe('refresh', () => {
+    let userSpy: jest.SpyInstance;
+    let pictureSpy: jest.SpyInstance;
+    const testUser = mockUser({
+      profile: {
+        pictureId: 'PICTURE ID',
+        name: ''
+      }
+    });
+    const testPicture = { href: 'HREF' };
+
     beforeEach(() => {
-      helper.refreshJwt = jest.fn().mockReturnValue('REFRESHED_JWT');
+      userSpy = jest.spyOn(User, 'findById').mockResolvedValue(testUser);
+      pictureSpy = jest.spyOn(pictureService, 'findById').mockResolvedValue(<any>testPicture);
     });
 
-    it('sends the JWT from the request to the helper service to refresh it', () => {
-      UserService.refresh(mockReq({}));
-      expect(helper.refreshJwt).toHaveBeenCalledWith(mockReq({}).jwt);
+    it('fetches the latest user document from the database', async () => {
+      await UserService.refresh(mockReq({}));
+      expect(userSpy).toHaveBeenCalledWith(mockReq({}).jwt.id);
     });
 
-    it('logs an info message after a successful refresh', () => {
-      UserService.refresh(mockReq({}));
+    it('fetches the latest picture document from the database if the user has one', async () => {
+      await UserService.refresh(mockReq({}));
+      expect(pictureSpy).toHaveBeenCalledWith('PICTURE ID');
+    });
+
+    it('passes the two retrieved documents to helper.createJwt and returns that return value', async () => {
+      const returnValue = await UserService.refresh(mockReq({}));
+      expect(returnValue).toBe('JWT');
+      expect(helper.createJwt).toHaveBeenCalledWith(testUser, testPicture);
+    });
+
+    it('logs an info message after a successful refresh', async () => {
+      await UserService.refresh(mockReq({}));
 
       expect(helper.buildUserForLog).toHaveBeenCalledWith({ jwt: mockReq({}).jwt });
       expect(logger.info).toHaveBeenCalledWith({
@@ -280,11 +308,11 @@ describe('UserService', () => {
       });
     });
 
-    it('logs and error message and throws a 500 error when an uncaught exception occurs', () => {
+    it('logs and error message and throws a 500 error when an uncaught exception occurs', async () => {
       const testError = new Error('TEST');
-      helper.refreshJwt = jest.fn().mockImplementation(() => { throw testError; });
+      User.findById = jest.fn().mockImplementation(() => { throw testError; });
       try {
-        UserService.refresh(mockReq({}));
+        await UserService.refresh(mockReq({}));
       } catch (e) {
         expect(e.message).toBe('500');
       }
@@ -306,7 +334,7 @@ function mockReq(values: Partial<RegisterBody>): any {
       username: values.username || '',
       password: values.password || '',
       name: values.name || '',
-      picture: values.picture || ''
+      pictureId: values.pictureId || ''
     },
     headers: {
       'transaction-id': 'TRANSACTION_ID'
@@ -319,6 +347,10 @@ function mockUser(userDetails: Partial<UserDocument>, comparePasswordReturnValue
   return <any>{
     comparePassword: () => comparePasswordReturnValue,
     email: userDetails.email || '',
-    password: userDetails.password || ''
+    password: userDetails.password || '',
+    profile: {
+      name: userDetails.profile?.name || '',
+      pictureId: userDetails.profile?.pictureId || ''
+    }
   };
 }
