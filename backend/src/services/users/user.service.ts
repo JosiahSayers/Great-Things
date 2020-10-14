@@ -5,6 +5,7 @@ import { logger } from '../../util/logger';
 import { Request } from 'express';
 import { RegisterBody } from '../../types/register-body';
 import { MongoError } from 'mongodb';
+import { pictureService } from '../pictures/picture.service';
 
 const authenticate = async (req: Request): Promise<string> => {
   let jwt;
@@ -16,6 +17,8 @@ const authenticate = async (req: Request): Promise<string> => {
 
   try {
     const user = await User.findOne({ email: auth.username });
+    let picture;
+
     if (!user) {
       throw new Error('401');
     }
@@ -29,7 +32,12 @@ const authenticate = async (req: Request): Promise<string> => {
         transactionId: req.headers['transaction-id']
       });
 
-      jwt = helper.createJwt(user);
+      if (user.profile.pictureId) {
+        picture = await pictureService.findById(user.profile.pictureId);
+      }
+
+
+      jwt = helper.createJwt(user, picture);
     } else {
       logger.debug({
         msg: 'User tried to authenticate with an incorrect password',
@@ -110,9 +118,14 @@ const register = async (req: Request): Promise<string> => {
   return jwt;
 };
 
-const refresh = (req: Request): string => {
+const refresh = async (req: Request): Promise<string> => {
   try {
-    const jwt = helper.refreshJwt(req.jwt);
+    const user = await User.findById(req.jwt.id);
+    let picture;
+
+    if (user.profile.pictureId) {
+      picture = await pictureService.findById(user.profile.pictureId);
+    }
 
     logger.info({
       msg: 'User successfully refreshed their JWT',
@@ -120,7 +133,7 @@ const refresh = (req: Request): string => {
       user: helper.buildUserForLog({ jwt: req.jwt })
     });
 
-    return jwt;
+    return helper.createJwt(user, picture);
 
   } catch (e) {
     logger.error({
@@ -154,7 +167,9 @@ const updateUser = async (req: Request): Promise<string> => {
       pictureId: updatedPictureId
     };
 
-    return helper.createJwt(await currentUser.save());
+    const newPicture = await pictureService.findById(updatedPictureId);
+
+    return helper.createJwt(await currentUser.save(), newPicture);
   } catch (e) {
     if (e instanceof MongoError && e.code === 11000) {
       logger.error({
