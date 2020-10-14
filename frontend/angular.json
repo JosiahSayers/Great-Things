@@ -29,7 +29,8 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "preserveSymlinks": true
           },
           "configurations": {
             "production": {
@@ -76,6 +77,9 @@
           "configurations": {
             "production": {
               "browserTarget": "great-things:build:production"
+            },
+            "test": {
+              "browserTarget": "great-things:build:test"
             }
           }
         },

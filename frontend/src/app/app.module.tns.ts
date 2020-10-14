@@ -4,8 +4,10 @@ import { NativeScriptModule, NativeScriptRouterModule } from '@nativescript/angu
 import { AppRoutingModule } from '@src/app/app-routing.module';
 import { AppComponent } from '@src/app/app.component';
 import { HomeComponent } from '@src/app/home/home.component';
-import { SharedServicesModule } from './shared/services/shared-services.module.tns';
-import { AuthenticationModule } from './authentication/authentication.module.tns';
+import { SharedServicesModule } from '@src/app/shared/services/shared-services.module.tns';
+import { AuthenticationModule } from '@src/app/authentication/authentication.module.tns';
+import { HomeGuard } from '@src/app/home/home.guard';
+import { GreatThingsTilesComponent } from '@src/app/great-things-tiles/great-things-tiles.component';
 
 
 // Uncomment and add to NgModule imports if you need to use two-way binding and/or HTTP wrapper
@@ -15,6 +17,7 @@ import { AuthenticationModule } from './authentication/authentication.module.tns
   declarations: [
     AppComponent,
     HomeComponent,
+    GreatThingsTilesComponent,
   ],
   imports: [
     NativeScriptModule,
@@ -23,7 +26,9 @@ import { AuthenticationModule } from './authentication/authentication.module.tns
     AuthenticationModule,
     NativeScriptRouterModule
   ],
-  providers: [],
+  providers: [
+    HomeGuard
+  ],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA]
 })
