@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { GreatThingsResponse } from '../../models/api-responses/great-thing.interface';
 import { GreatThing } from '../../models/GreatThing.model';
 import { Picture } from '../../models/Picture.model';
-import { BaseApiService } from '../base-api-service/base-api-service.service';
+import { BaseApiService } from '../base-api-service/base-api.service';
 import { API_LOG_IDENTIFIERS } from '../../constants/api-log-identifiers';
 import { GetRequestParams } from './get-request-params.interface';
 import { SidelogService } from 'sidelog-angular';

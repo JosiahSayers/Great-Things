@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { SidelogService } from 'sidelog-angular';
 import { spyOnClass } from '../../../utils/testing/helper-functions';
 import { Spied } from '../../../utils/testing/spied.interface';
-import { BaseApiService } from './base-api-service.service';
+import { BaseApiService } from './base-api.service';
 
 @Injectable()
 class TestClass extends BaseApiService {
