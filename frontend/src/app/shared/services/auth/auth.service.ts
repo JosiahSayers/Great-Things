@@ -71,4 +71,12 @@ export class AuthService {
   userId(): string {
     return this.jwt()?.id;
   }
+
+  get firstName(): string {
+    return this.jwt()?.name?.split(' ')[0];
+  }
+
+  get photoHref(): string {
+    return this.jwt()?.picture;
+  }
 }

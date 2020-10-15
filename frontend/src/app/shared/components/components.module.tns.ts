@@ -3,11 +3,12 @@ import { NativeScriptCommonModule, NativeScriptRouterModule } from '@nativescrip
 import { PassFailListItemComponent } from '@src/app/shared/components/pass-fail-list-item/pass-fail-list-item.component';
 import { ErrorNotificationComponent } from '@src/app/shared/components/error-notification/error-notification.component';
 import { GreatThingComponent } from '@src/app/great-things/great-thing/great-thing.component';
+import { NavbarUserInfoComponent } from '@src/app/shared/components/navbar/navbar-user-info/navbar-user-info.component';
 
 
 
 @NgModule({
-  declarations: [PassFailListItemComponent, ErrorNotificationComponent, GreatThingComponent],
+  declarations: [PassFailListItemComponent, ErrorNotificationComponent, GreatThingComponent, NavbarUserInfoComponent],
   imports: [
     NativeScriptCommonModule,
     NativeScriptRouterModule
