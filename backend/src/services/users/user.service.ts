@@ -6,6 +6,9 @@ import { Request } from 'express';
 import { RegisterBody } from '../../types/register-body';
 import { MongoError } from 'mongodb';
 import { pictureService } from '../pictures/picture.service';
+import { GreatThing } from '../../models/Great-Thing';
+import { Picture } from '../../models/Picture';
+import archiver from 'archiver';
 
 const authenticate = async (req: Request): Promise<string> => {
   let jwt;
@@ -190,9 +193,33 @@ const updateUser = async (req: Request): Promise<string> => {
   }
 };
 
+const downloadAllData = async (req: Request): Promise<archiver.Archiver> => {
+  const archive = archiver('zip');
+  const allGreatThings = await GreatThing.find({ ownerId: req.jwt.id });
+  const allPhotos = await Picture.find({ ownerId: req.jwt.id });
+
+  for (const greatThing of allGreatThings) {
+    const createdAt = new Date(greatThing.createdAt);
+    const nameInArchive = `great-things/${createdAt.getUTCFullYear()}/${createdAt.getUTCMonth()}/${createdAt.getUTCDate()}/${greatThing.id}.json`;
+    archive.append(JSON.stringify(greatThing), { name: nameInArchive });
+  }
+
+  for (const photo of allPhotos) {
+    const pathSegments = photo.href.split('/');
+    const filename = pathSegments[pathSegments.length - 1];
+    const photoStream = req.photoStorage.file(filename).createReadStream();
+    const createdAt = new Date(photo.createdAt);
+    const nameInArchive = `photos/${createdAt.getUTCFullYear()}/${createdAt.getUTCMonth()}/${createdAt.getUTCDate()}/${filename}`;
+    archive.append(photoStream, { name: nameInArchive });
+  }
+
+  return archive;
+};
+
 export const UserService = {
   authenticate,
   register,
   refresh,
-  updateUser
+  updateUser,
+  downloadAllData
 };

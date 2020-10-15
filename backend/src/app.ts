@@ -47,6 +47,10 @@ const injectStorageBucket = (req: Request, res: Response, next: NextFunction): v
   next();
 };
 
+if (!fs.existsSync('user-data-downloads')) {
+  fs.mkdirSync('user-data-downloads');
+}
+
 app.set('port', PORT || 3000);
 app.use(bodyParser.json());
 app.use(cookieParser());

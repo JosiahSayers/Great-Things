@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/JosiahSayers/Great-Things#readme",
   "devDependencies": {
+    "@types/archiver": "^3.1.1",
     "@types/bcrypt-nodejs": "0.0.31",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.7",
@@ -50,6 +51,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^5.1.0",
+    "archiver": "^5.0.2",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
