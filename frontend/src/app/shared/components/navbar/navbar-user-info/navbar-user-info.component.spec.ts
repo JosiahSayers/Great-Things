@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { NavbarUserInfoComponent } from '@src/app/shared/components/navbar/navbar-user-info/navbar-user-info.component';
 import { spyOnClass } from '../../../../utils/testing/helper-functions';
 import { Spied } from '../../../../utils/testing/spied.interface';
@@ -31,5 +30,12 @@ describe('NavbarUserInfoComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('firstName', () => {
+    it('returns the value of auth.firstName', () => {
+      auth.firstName.and.returnValue('FIRST');
+      expect(component.firstName).toBe('FIRST');
+    });
   });
 });

@@ -13,7 +13,7 @@ export class NavbarUserInfoComponent {
   ) { }
 
   get firstName(): string {
-    return this.auth.firstName;
+    return this.auth.firstName();
   }
 
 }
