@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { componentDeclarations, providerDeclarations } from './account.common';
 import { AccountRoutingModule } from './account-routing.module';
+import { SharedServicesModule } from '../shared/services/shared-services.module';
 
 
 
@@ -11,7 +12,8 @@ import { AccountRoutingModule } from './account-routing.module';
   ],
   imports: [
     CommonModule,
-    AccountRoutingModule
+    AccountRoutingModule,
+    SharedServicesModule
   ],
   providers: [
     ...providerDeclarations
