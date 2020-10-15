@@ -9,6 +9,7 @@ import { pictureService } from '../pictures/picture.service';
 import { GreatThing } from '../../models/Great-Thing';
 import { Picture } from '../../models/Picture';
 import archiver from 'archiver';
+import { arch } from 'os';
 
 const authenticate = async (req: Request): Promise<string> => {
   let jwt;
@@ -197,6 +198,11 @@ const downloadAllData = async (req: Request): Promise<archiver.Archiver> => {
   const archive = archiver('zip');
   const allGreatThings = await GreatThing.find({ ownerId: req.jwt.id });
   const allPhotos = await Picture.find({ ownerId: req.jwt.id });
+  const user = await User.findById(req.jwt.id);
+
+  const userToSend = user.toObject();
+  delete userToSend.password;
+  archive.append(JSON.stringify(userToSend), { name: 'profile/data.json'});
 
   for (const greatThing of allGreatThings) {
     const createdAt = new Date(greatThing.createdAt);
@@ -210,7 +216,12 @@ const downloadAllData = async (req: Request): Promise<archiver.Archiver> => {
     const photoStream = req.photoStorage.file(filename).createReadStream();
     const createdAt = new Date(photo.createdAt);
     const nameInArchive = `photos/${createdAt.getUTCFullYear()}/${createdAt.getUTCMonth()}/${createdAt.getUTCDate()}/${filename}`;
-    archive.append(photoStream, { name: nameInArchive });
+    
+    if (photo.id === user.profile.pictureId) {
+      archive.append(photoStream, { name: `profile/user-image.${photo.format}` });
+    } else {
+      archive.append(photoStream, { name: nameInArchive });
+    }
   }
 
   return archive;
