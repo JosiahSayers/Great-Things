@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { spyOnClass } from '../../../utils/testing/helper-functions';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
+import { MockComponent } from 'ng-mocks';
+import { NavbarUserInfoComponent } from './navbar-user-info/navbar-user-info.component';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
@@ -17,7 +19,10 @@ describe('NavbarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [NavbarComponent],
+      declarations: [
+        NavbarComponent,
+        MockComponent(NavbarUserInfoComponent)
+      ],
       imports: [
         RouterTestingModule,
         BrowserAnimationsModule

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { HomeComponent } from '@src/app/home/home.component';
-import { HomeGuard } from './home/home.guard';
+import { HomeGuard } from '@src/app/home/home.guard';
 
 export const routes: Routes = [
   {
@@ -21,5 +21,9 @@ export const routes: Routes = [
   {
     path: 'great-things',
     loadChildren: () => import('./great-things/great-things.module').then(m => m.GreatThingsModule)
-  }
+  },
+  {
+    path: 'account',
+    loadChildren: () => import('./account/account.module').then(m => m.AccountModule)
+  },
 ];

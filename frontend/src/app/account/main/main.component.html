@@ -1,0 +1,15 @@
+<div class="container">
+  <h1 class="is-size-1 my-4">Your Account</h1>
+
+  <div class="tabs">
+    <ul>
+      <li *ngFor="let tab of navigationTabs; let i=index" [class.is-active]="tab.isActive">
+        <a (click)="onTabClick(i)" routerLink="{{tab.routerLink}}">
+          <span>{{tab.name}}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>

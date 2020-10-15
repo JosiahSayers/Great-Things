@@ -1,0 +1,5 @@
+.tabs ul {
+	flex-shrink: 1;
+	flex-wrap: wrap;
+	border-bottom-color: transparent;
+}
