@@ -1,14 +1,12 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { NativeScriptCommonModule } from '@nativescript/angular';
-import { SharedServicesModule } from '../shared/services/shared-services.module.tns';
-import { AccountRoutingModule } from './account-routing.module.tns';
-import { componentDeclarations, providerDeclarations } from './account.common';
-
-
+import { SharedServicesModule } from '@src/app/shared/services/shared-services.module.tns';
+import { AccountRoutingModule } from '@src/app/account/account-routing.module.tns';
+import { componentDeclarations, providerDeclarations } from '@src/app/account/account.common';
 
 @NgModule({
   declarations: [
-    ...componentDeclarations
+    ...componentDeclarations,
   ],
   imports: [
     NativeScriptCommonModule,

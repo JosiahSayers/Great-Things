@@ -18,7 +18,7 @@ export class MainComponent implements OnInit {
     this.navigationTabs.push(
       {
         name: 'Overview',
-        routerLink: '/account/overview',
+        routerLink: '/account',
         isActive: false
       },
       {
