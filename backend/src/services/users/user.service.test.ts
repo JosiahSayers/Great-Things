@@ -1,11 +1,25 @@
+import { mocked } from 'ts-jest/utils';
 import { logger } from '../../util/logger';
 import { User, UserDocument } from '../../models/User';
 import { UserService } from './user.service';
 import { UserServiceHelper as helper } from './user-helper.service';
 import { RegisterBody } from '../../types/register-body';
 import { pictureService } from '../pictures/picture.service';
+import { GreatThing } from '../../models/Great-Thing';
+import { Picture } from '../../models/Picture';
+import archiver from 'archiver';
+jest.mock('archiver');
 
 describe('UserService', () => {
+  const archiverMock = mocked(archiver, true);
+  const mockedArchiveObject = {
+    append: jest.fn()
+  };
+  const mockedCreatReadStream = jest.fn().mockReturnValue('READ STREAM');
+  const mockedPhotoStorage = {
+    file: jest.fn().mockReturnValue({ createReadStream: mockedCreatReadStream })
+  };
+
   beforeEach(() => {
     logger.info = jest.fn();
     logger.debug = jest.fn();
@@ -13,6 +27,12 @@ describe('UserService', () => {
     helper.buildUserForLog = jest.fn().mockReturnValue('USER_FOR_LOG');
     helper.createJwt = jest.fn().mockReturnValue('JWT');
     pictureService.findById = jest.fn().mockResolvedValue({ href: 'HREF' });
+    archiverMock.mockReturnValue(<any>mockedArchiveObject);
+  });
+
+  afterEach(() => {
+    archiverMock.mockReset();
+    mockedArchiveObject.append.mockReset();
   });
 
   describe('authenticate', () => {
@@ -30,7 +50,7 @@ describe('UserService', () => {
     it('throws an error when the user can\'t be found in the database', async () => {
       User.findOne = jest.fn().mockResolvedValue(null);
       try {
-        await UserService.authenticate(<any>{ body: { username: 'USERNAME', password: 'PASSWORD'}});
+        await UserService.authenticate(<any>{ body: { username: 'USERNAME', password: 'PASSWORD' } });
         expect(false).toBe(true);
       } catch (e) {
         expect(e.message).toBe('401');
@@ -71,7 +91,7 @@ describe('UserService', () => {
           username: 'USERNAME',
           password: 'PASSWORD'
         }));
-        
+
         expect(returnValue).toBe('JWT');
         expect(helper.createJwt).toHaveBeenCalledWith(foundUser, { href: 'HREF' });
       });
@@ -188,7 +208,7 @@ describe('UserService', () => {
       helper.isValidPassword = jest.fn().mockReturnValue(false);
       try {
         await UserService.register(mockReq({ username: 'USERNAME' }));
-      } catch {}
+      } catch { }
 
       expect(logger.debug).toHaveBeenCalledWith({
         msg: 'User tried to register with an invalid email or password',
@@ -238,7 +258,7 @@ describe('UserService', () => {
 
     it('logs an error message if an unhandled exception occurs', async () => {
       const testError = new Error('TEST_ERROR');
-      helper.isValidPassword = jest.fn().mockImplementation(() => {throw testError;});
+      helper.isValidPassword = jest.fn().mockImplementation(() => { throw testError; });
 
       try {
         await UserService.register(mockReq({
@@ -246,7 +266,7 @@ describe('UserService', () => {
           name: 'NAME',
           pictureId: 'PICTURE ID'
         }));
-      } catch(e) {
+      } catch (e) {
         expect(e.message).toBe('500');
       }
 
@@ -326,31 +346,134 @@ describe('UserService', () => {
       });
     });
   });
+
+  describe('aggregateAllData', () => {
+    beforeEach(() => {
+      GreatThing.find = jest.fn().mockResolvedValue([]);
+      Picture.find = jest.fn().mockResolvedValue([]);
+      User.findById = jest.fn().mockResolvedValue(mockUser({}));
+    });
+
+    it('creates a new archiver zip object', async () => {
+      await UserService.aggregateAllData(mockReq({}));
+      expect(archiverMock).toHaveBeenCalledWith('zip');
+    });
+
+    it('finds all of a users great things', async () => {
+      await UserService.aggregateAllData(mockReq({}));
+      expect(GreatThing.find).toHaveBeenCalledWith({ ownerId: 'JWT_ID' });
+    });
+
+    it('finds all of a users pictures', async () => {
+      await UserService.aggregateAllData(mockReq({}));
+      expect(Picture.find).toHaveBeenCalledWith({ ownerId: 'JWT_ID' });
+    });
+
+    it('retrieves the user document from the db', async () => {
+      await UserService.aggregateAllData(mockReq({}));
+      expect(User.findById).toHaveBeenCalledWith('JWT_ID');
+    });
+
+    it('converts the user document to an object, removes the password, and appends it to the archive', async () => {
+      await UserService.aggregateAllData(mockReq({}));
+      const expectedUser = mockUser({}).toObject();
+      delete expectedUser.password;
+      expect(mockedArchiveObject.append).toHaveBeenCalledWith(JSON.stringify(expectedUser), { name: 'profile/data.json' });
+    });
+
+    it('loops through the found great things and appends them to the archive', async () => {
+      const testGreatThings = [
+        {
+          id: 'ID',
+          createdAt: new Date('01/01/2000').toUTCString()
+        },
+        {
+          id: 'ID_2',
+          createdAt: new Date('06/22/2005').toUTCString()
+        }
+      ];
+      GreatThing.find = jest.fn().mockResolvedValue(testGreatThings);
+      await UserService.aggregateAllData(mockReq({}));
+      expect(mockedArchiveObject.append).toHaveBeenCalledWith(JSON.stringify(testGreatThings[0]), { name: 'great-things/2000/1/1/ID.json' });
+      expect(mockedArchiveObject.append).toHaveBeenCalledWith(JSON.stringify(testGreatThings[1]), { name: 'great-things/2005/6/22/ID_2.json' });
+    });
+
+    it('loops through the found pictures, creates a read stream and appends it to the archive', async () => {
+      const pictures = [
+        {
+          href: 'https://photostorage.com/ID_1',
+          format: 'FORMAT',
+          createdAt: new Date('01/01/2000').toUTCString()
+        },
+        {
+          href: 'https://photostorage.com/ID_2',
+          format: 'FORMAT',
+          createdAt: new Date('06/22/2005').toUTCString()
+        }
+      ];
+      Picture.find = jest.fn().mockResolvedValue(pictures);
+      await UserService.aggregateAllData(mockReq({}));
+      expect(mockedArchiveObject.append).toHaveBeenCalledWith('READ STREAM', { name: 'photos/2000/1/1/ID_1'});
+      expect(mockedArchiveObject.append).toHaveBeenCalledWith('READ STREAM', { name: 'photos/2005/6/22/ID_2' });
+    });
+
+    it('appends the user profile picture to the profile folder instead of the photos folder', async () => {
+      User.findById = jest.fn().mockResolvedValue(mockUser({
+        profile: {
+          pictureId: 'PROFILE_PICTURE_ID',
+          name: ''
+        }
+      }));
+
+      const pictures = [
+        {
+          id: 'PROFILE_PICTURE_ID',
+          href: 'https://photostorage.com/ID_1',
+          format: 'FORMAT',
+          createdAt: new Date('01/01/2000').toUTCString()
+        }
+      ];
+      Picture.find = jest.fn().mockResolvedValue(pictures);
+      await UserService.aggregateAllData(mockReq({}));
+      expect(mockedArchiveObject.append).toHaveBeenCalledWith('READ STREAM', { name: 'profile/user-image.FORMAT' });
+    });
+
+    it('returns the archive object', async () => {
+      const returnValue = await UserService.aggregateAllData(mockReq({}));
+      expect(returnValue).toBe(mockedArchiveObject);
+    });
+  });
+
+
+  function mockReq(values: Partial<RegisterBody>): any {
+    return <any>{
+      body: {
+        username: values.username || '',
+        password: values.password || '',
+        name: values.name || '',
+        pictureId: values.pictureId || ''
+      },
+      headers: {
+        'transaction-id': 'TRANSACTION_ID'
+      },
+      jwt: {
+        id: 'JWT_ID'
+      },
+      photoStorage: mockedPhotoStorage
+    };
+  }
+
+  function mockUser(userDetails: Partial<UserDocument>, comparePasswordReturnValue?: boolean): UserDocument {
+    return <any>{
+      comparePassword: () => comparePasswordReturnValue,
+      email: userDetails.email || '',
+      password: userDetails.password || '',
+      profile: {
+        name: userDetails.profile?.name || '',
+        pictureId: userDetails.profile?.pictureId || ''
+      },
+      toObject: function () { return this; }
+    };
+  }
+
 });
-
-function mockReq(values: Partial<RegisterBody>): any {
-  return <any>{
-    body: {
-      username: values.username || '',
-      password: values.password || '',
-      name: values.name || '',
-      pictureId: values.pictureId || ''
-    },
-    headers: {
-      'transaction-id': 'TRANSACTION_ID'
-    },
-    jwt: 'JWT_FROM_REQUEST'
-  };
-}
-
-function mockUser(userDetails: Partial<UserDocument>, comparePasswordReturnValue?: boolean): UserDocument {
-  return <any>{
-    comparePassword: () => comparePasswordReturnValue,
-    email: userDetails.email || '',
-    password: userDetails.password || '',
-    profile: {
-      name: userDetails.profile?.name || '',
-      pictureId: userDetails.profile?.pictureId || ''
-    }
-  };
-}

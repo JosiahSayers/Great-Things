@@ -15,7 +15,7 @@ router.patch('/', async (req: Request, res: Response) => {
 
 router.get('/all-data', async (req: Request, res: Response) => {
   try {
-    const downloadArchive = await UserService.downloadAllData(req);
+    const downloadArchive = await UserService.aggregateAllData(req);
     res.set('Content-Type', 'application/zip');
     res.set('Content-Disposition', `attachment; filename=${req.jwt.name?.replace(/ /g, '_')}-Great_Things_Data_Download-${new Date().toDateString().replace(/ /g, '_')}.zip`);
     downloadArchive.pipe(res);

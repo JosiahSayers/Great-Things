@@ -193,7 +193,7 @@ const updateUser = async (req: Request): Promise<string> => {
   }
 };
 
-const downloadAllData = async (req: Request): Promise<archiver.Archiver> => {
+const aggregateAllData = async (req: Request): Promise<archiver.Archiver> => {
   const archive = archiver('zip');
   const allGreatThings = await GreatThing.find({ ownerId: req.jwt.id });
   const allPhotos = await Picture.find({ ownerId: req.jwt.id });
@@ -205,7 +205,7 @@ const downloadAllData = async (req: Request): Promise<archiver.Archiver> => {
 
   for (const greatThing of allGreatThings) {
     const createdAt = new Date(greatThing.createdAt);
-    const nameInArchive = `great-things/${createdAt.getUTCFullYear()}/${createdAt.getUTCMonth()}/${createdAt.getUTCDate()}/${greatThing.id}.json`;
+    const nameInArchive = `great-things/${createdAt.getUTCFullYear()}/${createdAt.getUTCMonth() + 1}/${createdAt.getUTCDate()}/${greatThing.id}.json`;
     archive.append(JSON.stringify(greatThing), { name: nameInArchive });
   }
 
@@ -218,7 +218,7 @@ const downloadAllData = async (req: Request): Promise<archiver.Archiver> => {
       archive.append(photoStream, { name: `profile/user-image.${photo.format}` });
     } else {
       const createdAt = new Date(photo.createdAt);
-      const nameInArchive = `photos/${createdAt.getUTCFullYear()}/${createdAt.getUTCMonth()}/${createdAt.getUTCDate()}/${filename}`;
+      const nameInArchive = `photos/${createdAt.getUTCFullYear()}/${createdAt.getUTCMonth() + 1}/${createdAt.getUTCDate()}/${filename}`;
       archive.append(photoStream, { name: nameInArchive });
     }
   }
@@ -231,5 +231,5 @@ export const UserService = {
   register,
   refresh,
   updateUser,
-  downloadAllData
+  aggregateAllData
 };
