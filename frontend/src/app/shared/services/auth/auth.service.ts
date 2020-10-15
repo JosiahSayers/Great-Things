@@ -72,11 +72,19 @@ export class AuthService {
     return this.jwt()?.id;
   }
 
+  fullName(): string {
+    return this.jwt()?.name;
+  }
+
   firstName(): string {
     return this.jwt()?.name?.split(' ')[0];
   }
 
   photoHref(): string {
     return this.jwt()?.picture;
+  }
+
+  emailAddress(): string {
+    return this.jwt()?.email;
   }
 }
