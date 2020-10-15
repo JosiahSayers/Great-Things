@@ -9,7 +9,6 @@ import { pictureService } from '../pictures/picture.service';
 import { GreatThing } from '../../models/Great-Thing';
 import { Picture } from '../../models/Picture';
 import archiver from 'archiver';
-import { arch } from 'os';
 
 const authenticate = async (req: Request): Promise<string> => {
   let jwt;
@@ -214,12 +213,12 @@ const downloadAllData = async (req: Request): Promise<archiver.Archiver> => {
     const pathSegments = photo.href.split('/');
     const filename = pathSegments[pathSegments.length - 1];
     const photoStream = req.photoStorage.file(filename).createReadStream();
-    const createdAt = new Date(photo.createdAt);
-    const nameInArchive = `photos/${createdAt.getUTCFullYear()}/${createdAt.getUTCMonth()}/${createdAt.getUTCDate()}/${filename}`;
     
     if (photo.id === user.profile.pictureId) {
       archive.append(photoStream, { name: `profile/user-image.${photo.format}` });
     } else {
+      const createdAt = new Date(photo.createdAt);
+      const nameInArchive = `photos/${createdAt.getUTCFullYear()}/${createdAt.getUTCMonth()}/${createdAt.getUTCDate()}/${filename}`;
       archive.append(photoStream, { name: nameInArchive });
     }
   }
