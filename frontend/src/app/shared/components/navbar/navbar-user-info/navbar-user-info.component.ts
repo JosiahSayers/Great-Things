@@ -12,4 +12,8 @@ export class NavbarUserInfoComponent {
     private auth: AuthService
   ) { }
 
+  get firstName(): string {
+    return this.auth.firstName;
+  }
+
 }
