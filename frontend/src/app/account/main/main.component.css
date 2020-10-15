@@ -1,5 +1,9 @@
-.tabs ul {
-	flex-shrink: 1;
-	flex-wrap: wrap;
-	border-bottom-color: transparent;
+@media only screen and (max-width: 768px) {
+  .tabs ul {
+	  flex-direction: column;
+  }
+
+  li {
+    width: 100%;
+  }
 }
