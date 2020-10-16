@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormBuildersService } from '../../shared/services/forms/form-builders.service';
-import { AuthService } from '../../shared/services/auth/auth.service';
-import { AccountService } from '../shared/services/account.service';
+import { FormBuildersService } from '@src/app/shared/services/forms/form-builders.service';
+import { AuthService } from '@src/app/shared/services/auth/auth.service';
+import { AccountService } from '@src/app/account/shared/services/account.service';
 
 @Component({
   selector: 'app-change-name',
