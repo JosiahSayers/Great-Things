@@ -6,13 +6,15 @@ import { PassFailListItemComponent } from '@src/app/shared/components/pass-fail-
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ErrorNotificationComponent } from '@src/app/shared/components/error-notification/error-notification.component';
 import { NavbarUserInfoComponent } from '@src/app/shared/components/navbar/navbar-user-info/navbar-user-info.component';
+import { PasswordCheckComponent } from '@src/app/shared/components/password-check/password-check.component';
 
 @NgModule({
   declarations: [
     NavbarComponent,
     PassFailListItemComponent,
     ErrorNotificationComponent,
-    NavbarUserInfoComponent
+    NavbarUserInfoComponent,
+    PasswordCheckComponent
   ],
   imports: [
     CommonModule,
@@ -22,7 +24,8 @@ import { NavbarUserInfoComponent } from '@src/app/shared/components/navbar/navba
   exports: [
     NavbarComponent,
     PassFailListItemComponent,
-    ErrorNotificationComponent
+    ErrorNotificationComponent,
+    PasswordCheckComponent
   ]
 })
 export class ComponentsModule { }

@@ -64,7 +64,6 @@ export class MainComponent implements OnInit {
       this.navigationTabs[0].isActive = true;
     }
   }
-
 }
 
 interface NavigationTab {

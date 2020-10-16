@@ -6,12 +6,13 @@ import { RegisterComponent } from '@src/app/authentication/register/register.com
 import { AuthenticationRoutingModule } from '@src/app/authentication/authentication-routing.module.tns';
 import { ReactiveFormsModule } from '@angular/forms';
 import { providerDeclarations } from '@src/app/authentication/authentication.common';
-import { PasswordCheckComponent } from '@src/app/authentication/shared/components/password-check/password-check.component';
-
-
 
 @NgModule({
-  declarations: [AuthenticationBaseComponent, LoginComponent, RegisterComponent, PasswordCheckComponent],
+  declarations: [
+    AuthenticationBaseComponent,
+    LoginComponent,
+    RegisterComponent,
+  ],
   imports: [
     NativeScriptCommonModule,
     AuthenticationRoutingModule,

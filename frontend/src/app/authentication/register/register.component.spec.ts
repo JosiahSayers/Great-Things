@@ -5,7 +5,7 @@ import { FormBuildersService } from '../../shared/services/forms/form-builders.s
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { Spied } from '../../utils/testing/spied.interface';
 import { spyOnClass } from '../../utils/testing/helper-functions';
-import { PasswordCheckComponent } from '../shared/components/password-check/password-check.component';
+import { PasswordCheckComponent } from '@src/app/shared/components/password-check/password-check.component';
 import { MockComponent } from 'ng-mocks';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
