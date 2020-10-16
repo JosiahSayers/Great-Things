@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ChangeNameComponent } from '@src/app/account/change-name/change-name.component';
 import { MockComponent } from 'ng-mocks';
@@ -20,6 +20,9 @@ describe('ChangeNameComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        ReactiveFormsModule
+      ],
       declarations: [
         ChangeNameComponent,
         MockComponent(ErrorNotificationComponent)
