@@ -25,6 +25,11 @@ export class BaseApiService {
     return this.sendWithLogs<T>(apiCall, { logIdentifier, options, url });
   }
 
+  protected patch<T>(url: string, payload: any, options: HttpOptions, logIdentifier: string): Observable<T> {
+    const apiCall = () => this.http.patch<T>(url, payload, options);
+    return this.sendWithLogs<T>(apiCall, { logIdentifier, options, url, payload });
+  }
+
   private sendWithLogs<T>(
     apiCall: () => Observable<T>,
     callInfo: { logIdentifier: string, options: HttpOptions, url: string, payload?: any }): Observable<T> {

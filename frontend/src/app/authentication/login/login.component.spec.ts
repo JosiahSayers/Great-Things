@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from '@src/app/authentication/login/login.component';
-import { FormBuildersService } from '../shared/forms/form-builders.service';
+import { FormBuildersService } from '../../shared/services/forms/form-builders.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { Spied } from '../../utils/testing/spied.interface';
 import { spyOnClass } from '../../utils/testing/helper-functions';
@@ -8,7 +8,7 @@ import { By } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MockComponent } from 'ng-mocks';
-import { ErrorNotificationComponent } from '../../shared/components/error-notification/error-notification.component';
+import { ErrorNotificationComponent } from '@src/app/shared/components/error-notification/error-notification.component';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;

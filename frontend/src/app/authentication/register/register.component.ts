@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { FormBuildersService, PasswordErrors } from '../shared/forms/form-builders.service';
-import { AuthService } from '../../shared/services/auth/auth.service';
+import { FormBuildersService, PasswordErrors } from '@src/app/shared/services/forms/form-builders.service';
+import { AuthService } from '@src/app/shared/services/auth/auth.service';
 import { Router } from '@angular/router';
 
 @Component({

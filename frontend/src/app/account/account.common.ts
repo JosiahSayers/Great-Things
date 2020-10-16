@@ -6,6 +6,7 @@ import { DeleteAccountComponent } from '@src/app/account/delete-account/delete-a
 import { DownloadPersonalDataComponent } from '@src/app/account/download-personal-data/download-personal-data.component';
 import { MainComponent } from '@src/app/account/main/main.component';
 import { OverviewComponent } from '@src/app/account/overview/overview.component';
+import { AccountService } from '@src/app/account/shared/services/account.service';
 
 export const componentDeclarations: any[] = [
   MainComponent,
@@ -18,6 +19,7 @@ export const componentDeclarations: any[] = [
 ];
 
 export const providerDeclarations: any[] = [
+  AccountService
 ];
 
 export const routes: Routes = [
