@@ -30,7 +30,7 @@ export class ChangePasswordComponent implements OnInit {
       this.isLoading = true;
       this.errorNotificationState = 'hidden';
       this.accountService.update({ currentPassword: this.currentPassword.value, newPassword: this.newPassword.value }).subscribe({
-        next: () => { this.isLoading = false; this.router.navigateByUrl('/home'); },
+        next: () => { this.isLoading = false; this.router.navigateByUrl('/account'); },
         error: () => { this.isLoading = false; this.errorNotificationState = 'shown'; }
       });
     }
@@ -49,11 +49,11 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   get isNewPasswordValid(): boolean {
-    return this.newPassword.touched && this.currentPassword.valid;
+    return this.newPassword.touched && this.newPassword.valid;
   }
 
   get isNewPasswordInvalid(): boolean {
-    return this.newPassword.touched && this.currentPassword.invalid;
+    return this.newPassword.touched && this.newPassword.invalid;
   }
 
   get passwordErrors(): PasswordErrors {
