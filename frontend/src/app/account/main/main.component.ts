@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -63,11 +63,6 @@ export class MainComponent implements OnInit {
     } else {
       this.navigationTabs[0].isActive = true;
     }
-  }
-
-  onTabClick(clickedIndex: number) {
-    this.navigationTabs.find((tab) => tab.isActive).isActive = false;
-    this.navigationTabs[clickedIndex].isActive = true;
   }
 
 }
