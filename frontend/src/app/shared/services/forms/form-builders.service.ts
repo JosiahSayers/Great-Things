@@ -25,6 +25,13 @@ export class FormBuildersService {
     });
   }
 
+  changePasswordForm(): FormGroup {
+    return new FormGroup({
+      currentPassword: this.newPasswordControl(false),
+      newPassword: this.newPasswordControl()
+    });
+  }
+
   private newNameControl(currentValue?: string): FormControl {
     return new FormControl(currentValue || '', [
       Validators.required,
