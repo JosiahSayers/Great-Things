@@ -51,6 +51,10 @@ export class AuthService {
       );
   }
 
+  updateJwt(newJwt: string): void {
+    this.storage.set(storageKeys.JWT, newJwt);
+  }
+
   isLoggedIn(): boolean {
     const jwtString = this.encodedJwt();
     return !!jwtString && !this.jwtHelper.isTokenExpired(jwtString);

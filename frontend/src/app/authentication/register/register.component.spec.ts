@@ -1,15 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegisterComponent } from '@src/app/authentication/register/register.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormBuildersService } from '../shared/forms/form-builders.service';
+import { FormBuildersService } from '../../shared/services/forms/form-builders.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { Spied } from '../../utils/testing/spied.interface';
 import { spyOnClass } from '../../utils/testing/helper-functions';
-import { PasswordCheckComponent } from '../shared/components/password-check/password-check.component';
+import { PasswordCheckComponent } from '@src/app/shared/components/password-check/password-check.component';
 import { MockComponent } from 'ng-mocks';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { ErrorNotificationComponent } from '../../shared/components/error-notification/error-notification.component';
+import { ErrorNotificationComponent } from '@src/app/shared/components/error-notification/error-notification.component';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;

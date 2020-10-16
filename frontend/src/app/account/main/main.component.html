@@ -4,7 +4,7 @@
   <div class="tabs">
     <ul>
       <li *ngFor="let tab of navigationTabs; let i=index" [class.is-active]="tab.isActive">
-        <a (click)="onTabClick(i)" routerLink="{{tab.routerLink}}">
+        <a routerLink="{{tab.routerLink}}">
           <span>{{tab.name}}</span>
         </a>
       </li>

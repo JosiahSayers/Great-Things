@@ -19,8 +19,14 @@ export class FormBuildersService {
     });
   }
 
-  private newNameControl(): FormControl {
-    return new FormControl('', [
+  changeNameForm(currentName: string): FormGroup {
+    return new FormGroup({
+      name: this.newNameControl(currentName)
+    });
+  }
+
+  private newNameControl(currentValue?: string): FormControl {
+    return new FormControl(currentValue || '', [
       Validators.required,
       Validators.maxLength(35)
     ]);

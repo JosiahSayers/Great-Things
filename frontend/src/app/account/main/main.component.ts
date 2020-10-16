@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-main',
@@ -8,50 +9,54 @@ import { Router } from '@angular/router';
 })
 export class MainComponent implements OnInit {
 
-  navigationTabs: NavigationTab[] = [];
+  navigationTabs: NavigationTab[] = [
+    {
+      name: 'Overview',
+      routerLink: '/account',
+      isActive: false
+    },
+    {
+      name: 'Change Profile Picture',
+      routerLink: '/account/change-profile-picture',
+      isActive: false
+    },
+    {
+      name: 'Change Password',
+      routerLink: '/account/change-password',
+      isActive: false
+    },
+    {
+      name: 'Change Name',
+      routerLink: '/account/change-name',
+      isActive: false
+    },
+    {
+      name: 'Download Personal Data',
+      routerLink: '/account/download-personal-data',
+      isActive: false
+    },
+    {
+      name: 'Delete Account',
+      routerLink: '/account/delete-account',
+      isActive: false
+    }
+  ];
 
   constructor(
     private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.navigationTabs.push(
-      {
-        name: 'Overview',
-        routerLink: '/account',
-        isActive: false
-      },
-      {
-        name: 'Change Profile Picture',
-        routerLink: '/account/change-profile-picture',
-        isActive: false
-      },
-      {
-        name: 'Change Password',
-        routerLink: '/account/change-password',
-        isActive: false
-      },
-      {
-        name: 'Change Name',
-        routerLink: '/account/change-name',
-        isActive: false
-      },
-      {
-        name: 'Download Personal Data',
-        routerLink: '/account/download-personal-data',
-        isActive: false
-      },
-      {
-        name: 'Delete Account',
-        routerLink: '/account/delete-account',
-        isActive: false
-      }
-    );
-    this.setActiveTabOnPageLoad();
+    this.setActiveTab();
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => this.setActiveTab());
   }
 
-  setActiveTabOnPageLoad(): void {
+  setActiveTab(): void {
     const activeTabBasedOnRoute = this.navigationTabs.find((tab) => tab.routerLink === this.router.url);
+
+    this.navigationTabs.forEach((tab) => tab.isActive = false);
 
     if (activeTabBasedOnRoute) {
       activeTabBasedOnRoute.isActive = true;
@@ -59,12 +64,6 @@ export class MainComponent implements OnInit {
       this.navigationTabs[0].isActive = true;
     }
   }
-
-  onTabClick(clickedIndex: number) {
-    this.navigationTabs.find((tab) => tab.isActive).isActive = false;
-    this.navigationTabs[clickedIndex].isActive = true;
-  }
-
 }
 
 interface NavigationTab {

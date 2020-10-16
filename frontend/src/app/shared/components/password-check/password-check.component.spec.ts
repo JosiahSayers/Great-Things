@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PasswordCheckComponent } from '@src/app/authentication/shared/components/password-check/password-check.component';
+import { PasswordCheckComponent } from '@src/app/shared/components/password-check/password-check.component';
 import { MockComponent } from 'ng-mocks';
-import { PassFailListItemComponent } from '../../../../shared/components/pass-fail-list-item/pass-fail-list-item.component';
+import { PassFailListItemComponent } from '../pass-fail-list-item/pass-fail-list-item.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';

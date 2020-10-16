@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { PasswordErrors } from '../../forms/form-builders.service';
+import { PasswordErrors } from '@src/app/shared/services/forms/form-builders.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({

@@ -7,7 +7,6 @@ import { AuthenticationRoutingModule } from '@src/app/authentication/authenticat
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { providerDeclarations } from '@src/app/authentication/authentication.common';
-import { PasswordCheckComponent } from '@src/app/authentication/shared/components/password-check/password-check.component';
 import { ComponentsModule } from '../shared/components/components.module';
 
 
@@ -17,7 +16,6 @@ import { ComponentsModule } from '../shared/components/components.module';
     AuthenticationBaseComponent,
     LoginComponent,
     RegisterComponent,
-    PasswordCheckComponent
   ],
   imports: [
     CommonModule,
