@@ -10,7 +10,7 @@
           </div>
 
           <button type="submit" class="button is-block is-info is-large is-fullwidth"
-            [ngClass]="{'is-loading': isLoading}" [disabled]="form.invalid">Update Name</button>
+            [ngClass]="{'is-loading': isLoading}" [disabled]="disableSubmit">Update Name</button>
 
           <app-error-notification [state]="errorNotificationState">
             Something went wrong, please try again.

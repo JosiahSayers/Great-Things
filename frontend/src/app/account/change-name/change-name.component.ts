@@ -42,4 +42,8 @@ export class ChangeNameComponent implements OnInit {
     return this.form.controls.name.value;
   }
 
+  get disableSubmit(): boolean {
+    return this.form.invalid || this.name === this.auth.fullName();
+  }
+
 }
