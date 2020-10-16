@@ -25,7 +25,7 @@ const authenticate = async (req: Request): Promise<string> => {
     if (!user) {
       throw new Error('401');
     }
-    
+
     const correctPassword = user.comparePassword(auth.password);
 
     if (correctPassword) {
@@ -64,7 +64,7 @@ const authenticate = async (req: Request): Promise<string> => {
 const register = async (req: Request): Promise<string> => {
   let jwt;
   const auth: RegisterBody = req.body;
-  
+
   try {
     const isValidEmail = await helper.isValidEmail(auth.username);
     const isValidPass = helper.isValidPassword(auth.password);
@@ -162,8 +162,21 @@ const updateUser = async (req: Request): Promise<string> => {
       updatedPictureId = req.body.pictureId;
     }
 
+    if (req.body.currentPassword && !req.body.newPassword) {
+      throw new Error('New Password Missing');
+    } else if (!req.body.currentPassword && req.body.newPassword) {
+      throw new Error('Current Password Missing');
+    } else if (req.body.currentPassword && req.body.newPassword) {
+      if (!currentUser.comparePassword(req.body.currentPassword)) {
+        throw new Error('Incorrect Password');
+      }
+      if (!helper.isValidPassword(req.body.newPassword)) {
+        throw new Error('Invalid New Password');
+      }
+    }
+
     currentUser.email = req.body.email || currentUser.email;
-    currentUser.password = req.body.password || currentUser.password;
+    currentUser.password = req.body.newPassword || currentUser.password;
     currentUser.profile = {
       name: req.body.name || currentUser.profile.name,
       pictureId: updatedPictureId
@@ -180,6 +193,34 @@ const updateUser = async (req: Request): Promise<string> => {
         error: e
       });
       e.message = '409';
+    } else if (e.message === 'New Password Missing') {
+      logger.error({
+        msg: 'User tried to change their password but did not provide a new password',
+        user: helper.buildUserForLog({ jwt: req.jwt }),
+        error: e
+      });
+      e.message = '400';
+    } else if (e.message === 'Current Password Missing') {
+      logger.error({
+        msg: 'User tried to change their password but did not provide their current password',
+        user: helper.buildUserForLog({ jwt: req.jwt }),
+        error: e
+      });
+      e.message = '400';
+    } else if (e.message === 'Incorrect Password') {
+      logger.error({
+        msg: 'User tried to change their password but provided an incorrect current password',
+        user: helper.buildUserForLog({ jwt: req.jwt }),
+        error: e
+      });
+      e.message = '403';
+    } else if (e.message === 'Invalid New Password') {
+      logger.error({
+        msg: 'User tried to change their password but provided an invalid new password',
+        user: helper.buildUserForLog({ jwt: req.jwt }),
+        error: e
+      });
+      e.message = '400';
     } else {
       logger.error({
         msg: 'User encountered an error while updating their information',
@@ -201,7 +242,7 @@ const aggregateAllData = async (req: Request): Promise<archiver.Archiver> => {
 
   const userToSend = user.toObject();
   delete userToSend.password;
-  archive.append(JSON.stringify(userToSend), { name: 'profile/data.json'});
+  archive.append(JSON.stringify(userToSend), { name: 'profile/data.json' });
 
   for (const greatThing of allGreatThings) {
     const createdAt = new Date(greatThing.createdAt);
@@ -213,7 +254,7 @@ const aggregateAllData = async (req: Request): Promise<archiver.Archiver> => {
     const pathSegments = photo.href.split('/');
     const filename = pathSegments[pathSegments.length - 1];
     const photoStream = req.photoStorage.file(filename).createReadStream();
-    
+
     if (photo.id === user.profile.pictureId) {
       archive.append(photoStream, { name: `profile/user-image.${photo.format}` });
     } else {
