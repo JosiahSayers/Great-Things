@@ -56,6 +56,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(logRequest);
 
+app.options('*', cors());
 app.use('/v1/auth', validateHeaders, authController);
 app.use('/v1/users/:userid', injectStorageBucket, validateHeaders, isAuthorized, isCurrentUser, usersController);
 app.use('/v1/users/:userid/great-things', injectStorageBucket, validateHeaders, isAuthorized, isCurrentUser, greatThingsController);
