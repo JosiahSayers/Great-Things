@@ -31,7 +31,8 @@ export class AccountService extends BaseApiService {
 
 interface AccountUpdateParams {
   email?: string;
-  password?: string;
+  currentPassword?: string;
+  newPassword?: string;
   name?: string;
   pictureId?: string;
 }
