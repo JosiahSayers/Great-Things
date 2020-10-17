@@ -17,6 +17,22 @@ describe('AccountService', () => {
 
   const testUserId = 'USER_ID';
   const updateUrl = `${environment.BACKEND_BASE}/users/USER_ID`;
+  const downloadAllDataUrl = `${environment.BACKEND_BASE}/users/USER_ID/all-data`;
+
+  const mockAnchor = {
+    href: '',
+    download: '',
+    click: jasmine.createSpy('click')
+  };
+  const mockBlob = {};
+  const mockWindow = {
+    document: {
+      createElement: jasmine.createSpy('createElement').and.returnValue(mockAnchor),
+      body: jasmine.createSpyObj('body', ['appendChild', 'removeChild'])
+    },
+    URL: jasmine.createSpyObj('URL', ['createObjectURL']),
+    Blob: jasmine.createSpy('Blob').and.returnValue(mockBlob)
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -32,6 +48,10 @@ describe('AccountService', () => {
         {
           provide: AuthService,
           useFactory: () => auth = spyOnClass(AuthService)
+        },
+        {
+          provide: 'window',
+          useFactory: () => ({ ...mockWindow })
         }
       ]
     });
@@ -76,6 +96,14 @@ describe('AccountService', () => {
         done();
       });
       http.expectOne(updateUrl).flush({ jwt: 'NEW JWT' });
+    });
+  });
+
+  describe('downloadAllData', () => {
+    it('sends a GET request to the correct URL', () => {
+      testSub = service.downloadAllData().subscribe();
+      const request = http.expectOne(downloadAllDataUrl).request;
+      expect(request.method).toBe('GET');
     });
   });
 });

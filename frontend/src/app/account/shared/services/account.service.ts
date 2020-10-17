@@ -15,7 +15,7 @@ export class AccountService extends BaseApiService {
     protected http: HttpClient,
     protected sidelog: SidelogService,
     private auth: AuthService,
-    @Inject('window') private window
+    @Inject('window') private window: Window
   ) {
     super(http, sidelog);
   }
@@ -35,13 +35,15 @@ export class AccountService extends BaseApiService {
     return this.get<HttpResponse<Blob>>(url, { responseType: 'blob', observe: 'response' }, logIdentifier).pipe(
       tap((res: HttpResponse<Blob>) => {
         const blob = new Blob([res.body], { type: res.headers.get('Content-Type') });
+        console.log(res.body);
         const filename = res.headers.get('Content-Disposition').split('filename=')[1];
 
-        const downloadLink = document.createElement('a');
-        downloadLink.href = window.URL.createObjectURL(blob);
+        const downloadLink = this.window.document.createElement('a');
+        downloadLink.href = (this.window as any).URL.createObjectURL(blob);
         downloadLink.download = filename;
-        document.body.appendChild(downloadLink);
+        this.window.document.body.appendChild(downloadLink);
         downloadLink.click();
+        this.window.document.body.removeChild(downloadLink);
       }),
       map(() => null)
     );
