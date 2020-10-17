@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { SidelogService } from 'sidelog-angular';
@@ -14,7 +14,8 @@ export class AccountService extends BaseApiService {
   constructor(
     protected http: HttpClient,
     protected sidelog: SidelogService,
-    private auth: AuthService
+    private auth: AuthService,
+    @Inject('window') private window: Window
   ) {
     super(http, sidelog);
   }
@@ -24,6 +25,26 @@ export class AccountService extends BaseApiService {
     const logIdentifier = API_LOG_IDENTIFIERS.USERS.PATCH;
     return this.patch<UserUpdateResponse>(url, params, {}, logIdentifier).pipe(
       tap((res) => this.auth.updateJwt(res.jwt)),
+      map(() => null)
+    );
+  }
+
+  downloadAllData(): Observable<void> {
+    const url = `${environment.BACKEND_BASE}/users/${this.auth.userId()}/all-data`;
+    const logIdentifier = API_LOG_IDENTIFIERS.USERS.DOWNLOAD_ALL_DATA;
+    return this.get<HttpResponse<Blob>>(url, { responseType: 'blob', observe: 'response' }, logIdentifier).pipe(
+      tap((res: HttpResponse<Blob>) => {
+        const blob = new Blob([res.body], { type: res.headers.get('Content-Type') });
+        console.log(res.body);
+        const filename = res.headers.get('Content-Disposition').split('filename=')[1];
+
+        const downloadLink = this.window.document.createElement('a');
+        downloadLink.href = (this.window as any).URL.createObjectURL(blob);
+        downloadLink.download = filename;
+        this.window.document.body.appendChild(downloadLink);
+        downloadLink.click();
+        this.window.document.body.removeChild(downloadLink);
+      }),
       map(() => null)
     );
   }
