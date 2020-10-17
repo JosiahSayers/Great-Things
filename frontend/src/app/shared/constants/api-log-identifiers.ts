@@ -5,6 +5,7 @@ export const API_LOG_IDENTIFIERS = {
     DELETE: 'Great Things - DELETE /great-things'
   },
   USERS: {
-    PATCH: 'User Accounts - PATCH'
+    PATCH: 'User Accounts - PATCH',
+    DOWNLOAD_ALL_DATA: 'User Accounts - GET /all-data'
   }
 };

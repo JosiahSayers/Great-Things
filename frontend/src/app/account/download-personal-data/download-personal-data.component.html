@@ -1,1 +1,19 @@
-<p>download-personal-data works!</p>
+<section class="hero">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <div class="box column is-4 is-offset-4">
+        <p>This service will create a .zip file containing all of the personal information that Great Things has
+          stored about you. This may take a few minutes to generate, please do not leave this page until the download
+          starts.</p>
+        <br>
+        <button class="button is-block is-info is-large is-fullwidth" [ngClass]="{'is-loading': isLoading}"
+          (click)="startDownload()">Generate and
+          Download</button>
+
+        <app-error-notification [state]="errorNotificationState">
+          Something went wrong, please try again.
+        </app-error-notification>
+      </div>
+    </div>
+  </div>
+</section>

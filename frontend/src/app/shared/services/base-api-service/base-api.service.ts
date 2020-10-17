@@ -73,4 +73,6 @@ export class BaseApiService {
 interface HttpOptions {
   headers?: HttpHeaders;
   params?: HttpParams;
+  observe?: any;
+  responseType?: any;
 }
