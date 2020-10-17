@@ -34,10 +34,7 @@
             Log in
           </a>
 
-          <!-- <button class="button is-primary" *ngIf="isLoggedIn" (click)="logout()" (click)="toggleMenuState('closed')">
-            Log out
-          </button> -->
-          <app-navbar-user-info (click)="toggleMenuState('closed')"></app-navbar-user-info>
+          <app-navbar-user-info *ngIf="isLoggedIn" (click)="toggleMenuState('closed')"></app-navbar-user-info>
         </div>
       </div>
     </div>
