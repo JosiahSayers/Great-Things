@@ -1,7 +1,6 @@
 import { Component, Inject, HostListener } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -32,8 +31,7 @@ export class NavbarComponent {
 
   constructor(
     private auth: AuthService,
-    @Inject('window') private window: Window,
-    private router: Router
+    @Inject('window') private window: Window
   ) {
     this.setHamburgerStateOnResize();
   }
@@ -65,11 +63,6 @@ export class NavbarComponent {
 
   setHamburgerStateOnResize(): void {
     this.hamburgerState = this.isMobileView ? 'closed' : 'open';
-  }
-
-  logout(): void {
-    this.auth.logout();
-    this.router.navigateByUrl('/');
   }
 
   get isMobileView(): boolean {
