@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '@src/app/shared/services/auth/auth.service';
 
 @Component({
@@ -13,13 +14,19 @@ export class OverviewComponent implements OnInit {
   email: string;
 
   constructor(
-    private auth: AuthService
+    private auth: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.photoHref = this.auth.photoHref();
     this.name = this.auth.fullName();
     this.email = this.auth.emailAddress();
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigateByUrl('/');
   }
 
 }
