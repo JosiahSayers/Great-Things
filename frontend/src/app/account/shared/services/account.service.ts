@@ -7,6 +7,7 @@ import { environment } from '@src/environments/environment';
 import { API_LOG_IDENTIFIERS } from '@src/app/shared/constants/api-log-identifiers';
 import { AuthService } from '@src/app/shared/services/auth/auth.service';
 import { BaseApiService } from '@src/app/shared/services/base-api-service/base-api.service';
+import { FileSaver, fileSaverInjectionToken } from '../providers/file-saver.provider';
 
 @Injectable()
 export class AccountService extends BaseApiService {
@@ -15,7 +16,8 @@ export class AccountService extends BaseApiService {
     protected http: HttpClient,
     protected sidelog: SidelogService,
     private auth: AuthService,
-    @Inject('window') private window: Window
+    @Inject('window') private window: Window,
+    @Inject(fileSaverInjectionToken) private fileSaver: FileSaver
   ) {
     super(http, sidelog);
   }
@@ -35,15 +37,8 @@ export class AccountService extends BaseApiService {
     return this.get<HttpResponse<Blob>>(url, { responseType: 'blob', observe: 'response' }, logIdentifier).pipe(
       tap((res: HttpResponse<Blob>) => {
         const blob = new Blob([res.body], { type: res.headers.get('Content-Type') });
-        console.log(res.body);
         const filename = res.headers.get('Content-Disposition').split('filename=')[1];
-
-        const downloadLink = this.window.document.createElement('a');
-        downloadLink.href = (this.window as any).URL.createObjectURL(blob);
-        downloadLink.download = filename;
-        this.window.document.body.appendChild(downloadLink);
-        downloadLink.click();
-        this.window.document.body.removeChild(downloadLink);
+        this.fileSaver(blob, filename);
       }),
       map(() => null)
     );

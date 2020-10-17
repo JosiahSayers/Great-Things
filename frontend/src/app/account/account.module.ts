@@ -5,6 +5,7 @@ import { AccountRoutingModule } from '@src/app/account/account-routing.module';
 import { SharedServicesModule } from '@src/app/shared/services/shared-services.module';
 import { ComponentsModule } from '../shared/components/components.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { fileSaverInjectionToken, getFileSaver } from './shared/providers/file-saver.provider';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,11 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule
   ],
   providers: [
-    ...providerDeclarations
+    ...providerDeclarations,
+    {
+      provide: fileSaverInjectionToken,
+      useFactory: getFileSaver
+    }
   ]
 })
 export class AccountModule { }
