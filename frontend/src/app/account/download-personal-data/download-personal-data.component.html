@@ -2,10 +2,13 @@
   <div class="hero-body">
     <div class="container has-text-centered">
       <div class="box column is-4 is-offset-4">
-        <p>This service will create a .zip file containing all of the personal information that Great Things has
+        <content class="is-size-3">Download Personal Data</content>
+
+        <p class="my-4">This service will create a .zip file containing all of the personal information that Great
+          Things has
           stored about you. This may take a few minutes to generate, please do not leave this page until the download
           starts.</p>
-        <br>
+
         <button class="button is-block is-info is-large is-fullwidth" [ngClass]="{'is-loading': isLoading}"
           (click)="startDownload()">Generate and
           Download</button>
