@@ -1,5 +1,5 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { SidelogService } from 'sidelog-angular';
@@ -7,7 +7,7 @@ import { environment } from '@src/environments/environment';
 import { API_LOG_IDENTIFIERS } from '@src/app/shared/constants/api-log-identifiers';
 import { AuthService } from '@src/app/shared/services/auth/auth.service';
 import { BaseApiService } from '@src/app/shared/services/base-api-service/base-api.service';
-import { FileSaver, fileSaverInjectionToken } from '../providers/file-saver.provider';
+import { FileSaverService } from './file-saver.service';
 
 @Injectable()
 export class AccountService extends BaseApiService {
@@ -16,8 +16,7 @@ export class AccountService extends BaseApiService {
     protected http: HttpClient,
     protected sidelog: SidelogService,
     private auth: AuthService,
-    @Inject('window') private window: Window,
-    @Inject(fileSaverInjectionToken) private fileSaver: FileSaver
+    private fileSaver: FileSaverService
   ) {
     super(http, sidelog);
   }
@@ -38,7 +37,7 @@ export class AccountService extends BaseApiService {
       tap((res: HttpResponse<Blob>) => {
         const blob = new Blob([res.body], { type: res.headers.get('Content-Type') });
         const filename = res.headers.get('Content-Disposition').split('filename=')[1];
-        this.fileSaver(blob, filename);
+        this.fileSaver.saveAs(blob, filename);
       }),
       map(() => null)
     );

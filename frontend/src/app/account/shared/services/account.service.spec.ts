@@ -7,32 +7,19 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 import { spyOnClass } from '../../../utils/testing/helper-functions';
 import { Spied } from '../../../utils/testing/spied.interface';
 import { AccountService } from './account.service';
+import { FileSaverService } from './file-saver.service';
 
 describe('AccountService', () => {
   let service: AccountService;
   let sidelog: Spied<SidelogService>;
   let auth: Spied<AuthService>;
   let http: HttpTestingController;
+  let fileSaver: Spied<FileSaverService>;
   let testSub: Subscription;
 
   const testUserId = 'USER_ID';
   const updateUrl = `${environment.BACKEND_BASE}/users/USER_ID`;
   const downloadAllDataUrl = `${environment.BACKEND_BASE}/users/USER_ID/all-data`;
-
-  const mockAnchor = {
-    href: '',
-    download: '',
-    click: jasmine.createSpy('click')
-  };
-  const mockBlob = {};
-  const mockWindow = {
-    document: {
-      createElement: jasmine.createSpy('createElement').and.returnValue(mockAnchor),
-      body: jasmine.createSpyObj('body', ['appendChild', 'removeChild'])
-    },
-    URL: jasmine.createSpyObj('URL', ['createObjectURL']),
-    Blob: jasmine.createSpy('Blob').and.returnValue(mockBlob)
-  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -50,8 +37,8 @@ describe('AccountService', () => {
           useFactory: () => auth = spyOnClass(AuthService)
         },
         {
-          provide: 'window',
-          useFactory: () => ({ ...mockWindow })
+          provide: FileSaverService,
+          useFactory: () => fileSaver = spyOnClass(FileSaverService)
         }
       ]
     });
