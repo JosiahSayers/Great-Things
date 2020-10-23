@@ -8,6 +8,7 @@ import { SharedServicesModule } from '@src/app/shared/services/shared-services.m
 import { AuthenticationModule } from '@src/app/authentication/authentication.module.tns';
 import { HomeGuard } from '@src/app/home/home.guard';
 import { GreatThingsTilesComponent } from '@src/app/great-things-tiles/great-things-tiles.component';
+import { FileUploadComponent } from '@src/app/file-upload/file-upload.component';
 
 
 // Uncomment and add to NgModule imports if you need to use two-way binding and/or HTTP wrapper
@@ -18,6 +19,7 @@ import { GreatThingsTilesComponent } from '@src/app/great-things-tiles/great-thi
     AppComponent,
     HomeComponent,
     GreatThingsTilesComponent,
+    FileUploadComponent,
   ],
   imports: [
     NativeScriptModule,

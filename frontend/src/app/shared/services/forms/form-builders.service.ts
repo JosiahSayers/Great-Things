@@ -32,6 +32,18 @@ export class FormBuildersService {
     });
   }
 
+  uploadImageForm(): FormGroup {
+    return new FormGroup({
+      image: this.newImageControl()
+    });
+  }
+
+  private newImageControl(): FormControl {
+    return new FormControl(null, [
+      Validators.required
+    ]);
+  }
+
   private newNameControl(currentValue?: string): FormControl {
     return new FormControl(currentValue || '', [
       Validators.required,

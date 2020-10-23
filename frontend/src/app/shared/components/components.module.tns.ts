@@ -5,6 +5,7 @@ import { ErrorNotificationComponent } from '@src/app/shared/components/error-not
 import { GreatThingComponent } from '@src/app/great-things/great-thing/great-thing.component';
 import { NavbarUserInfoComponent } from '@src/app/shared/components/navbar/navbar-user-info/navbar-user-info.component';
 import { PasswordCheckComponent } from '@src/app/shared/components/password-check/password-check.component';
+import { FileUploadComponent } from '@src/app/shared/components/file-upload/file-upload.component';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { PasswordCheckComponent } from '@src/app/shared/components/password-chec
     ErrorNotificationComponent,
     GreatThingComponent,
     NavbarUserInfoComponent,
-    PasswordCheckComponent
+    PasswordCheckComponent,
+    FileUploadComponent
   ],
   imports: [
     NativeScriptCommonModule,
@@ -20,7 +22,8 @@ import { PasswordCheckComponent } from '@src/app/shared/components/password-chec
   ],
   exports: [
     PassFailListItemComponent,
-    PasswordCheckComponent
+    PasswordCheckComponent,
+    FileUploadComponent
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

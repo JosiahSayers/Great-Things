@@ -7,6 +7,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ErrorNotificationComponent } from '@src/app/shared/components/error-notification/error-notification.component';
 import { NavbarUserInfoComponent } from '@src/app/shared/components/navbar/navbar-user-info/navbar-user-info.component';
 import { PasswordCheckComponent } from '@src/app/shared/components/password-check/password-check.component';
+import { FileUploadComponent } from '@src/app/shared/components/file-upload/file-upload.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { PasswordCheckComponent } from '@src/app/shared/components/password-chec
     PassFailListItemComponent,
     ErrorNotificationComponent,
     NavbarUserInfoComponent,
-    PasswordCheckComponent
+    PasswordCheckComponent,
+    FileUploadComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +27,8 @@ import { PasswordCheckComponent } from '@src/app/shared/components/password-chec
     NavbarComponent,
     PassFailListItemComponent,
     ErrorNotificationComponent,
-    PasswordCheckComponent
+    PasswordCheckComponent,
+    FileUploadComponent
   ]
 })
 export class ComponentsModule { }

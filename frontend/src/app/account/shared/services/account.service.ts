@@ -1,13 +1,14 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { SidelogService } from 'sidelog-angular';
 import { environment } from '@src/environments/environment';
 import { API_LOG_IDENTIFIERS } from '@src/app/shared/constants/api-log-identifiers';
 import { AuthService } from '@src/app/shared/services/auth/auth.service';
 import { BaseApiService } from '@src/app/shared/services/base-api-service/base-api.service';
 import { FileSaverService } from './file-saver.service';
+import { ImageUploadService } from '@src/app/shared/services/image-upload/image-upload.service';
 
 @Injectable()
 export class AccountService extends BaseApiService {
@@ -16,7 +17,8 @@ export class AccountService extends BaseApiService {
     protected http: HttpClient,
     protected sidelog: SidelogService,
     private auth: AuthService,
-    private fileSaver: FileSaverService
+    private fileSaver: FileSaverService,
+    private imageUpload: ImageUploadService
   ) {
     super(http, sidelog);
   }
@@ -39,6 +41,15 @@ export class AccountService extends BaseApiService {
         const filename = res.headers.get('Content-Disposition').split('filename=')[1];
         this.fileSaver.saveAs(blob, filename);
       }),
+      map(() => null)
+    );
+  }
+
+  changeProfilePicture(newPicture: File): Observable<void> {
+    return this.imageUpload.upload(newPicture).pipe(
+      mergeMap((newPictureRes) => (
+        this.update({ pictureId: newPictureRes.id })
+      )),
       map(() => null)
     );
   }
