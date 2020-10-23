@@ -7,5 +7,8 @@ export const API_LOG_IDENTIFIERS = {
   USERS: {
     PATCH: 'User Accounts - PATCH',
     DOWNLOAD_ALL_DATA: 'User Accounts - GET /all-data'
+  },
+  IMAGES: {
+    UPLOAD: 'Images - POST /upload-image'
   }
 };
