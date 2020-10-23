@@ -1,6 +1,7 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { Subscription } from 'rxjs';
+import { ImageUploadService } from '@src/app/shared/services/image-upload/image-upload.service';
+import { Observable, Subscription } from 'rxjs';
 import { SidelogService } from 'sidelog-angular';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -16,6 +17,7 @@ describe('AccountService', () => {
   let http: HttpTestingController;
   let fileSaver: Spied<FileSaverService>;
   let testSub: Subscription;
+  let imageUpload: Spied<ImageUploadService>;
 
   const testUserId = 'USER_ID';
   const updateUrl = `${environment.BACKEND_BASE}/users/USER_ID`;
@@ -39,6 +41,12 @@ describe('AccountService', () => {
         {
           provide: FileSaverService,
           useFactory: () => fileSaver = spyOnClass(FileSaverService)
+        },
+        {
+          provide: ImageUploadService,
+          useFactory: () => imageUpload = spyOnClass(ImageUploadService, [
+            'upload'
+          ])
         }
       ]
     });
@@ -50,6 +58,7 @@ describe('AccountService', () => {
   afterEach(() => {
     testSub?.unsubscribe();
     http.verify();
+    imageUpload.cleanupObservables();
   });
 
   it('should be created', () => {
@@ -91,6 +100,23 @@ describe('AccountService', () => {
       testSub = service.downloadAllData().subscribe();
       const request = http.expectOne(downloadAllDataUrl).request;
       expect(request.method).toBe('GET');
+    });
+  });
+
+  describe('changeProfilePicture', () => {
+    const testImage = new File([], 'test');
+
+    it('sends a request to the image upload service', () => {
+      testSub = service.changeProfilePicture(testImage).subscribe();
+      expect(imageUpload.upload).toHaveBeenCalledWith(testImage);
+    });
+
+    it('sends the new picture ID to the update method after the upload completes', () => {
+      const updateSpy = spyOn(service, 'update').and.returnValue(new Observable());
+      testSub = service.changeProfilePicture(testImage).subscribe();
+      expect(updateSpy).not.toHaveBeenCalled();
+      imageUpload.upload.observer.next({ id: 'NEW PICTURE ID' });
+      expect(updateSpy).toHaveBeenCalledWith({ pictureId: 'NEW PICTURE ID' });
     });
   });
 });

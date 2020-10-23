@@ -33,8 +33,6 @@ export class ChangeProfilePictureComponent implements OnInit {
         next: () => { this.isLoading = false; this.router.navigateByUrl('/account'); },
         error: () => { this.isLoading = false; this.errorNotificationState = 'shown'; }
       });
-    } else {
-      console.log(this.form.errors);
     }
   }
 
@@ -48,7 +46,7 @@ export class ChangeProfilePictureComponent implements OnInit {
   }
 
   get disableSubmit(): boolean {
-    return !this.form.valid;
+    return this.form.invalid;
   }
 
 }

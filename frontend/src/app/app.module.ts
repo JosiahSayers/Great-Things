@@ -14,14 +14,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeGuard } from '@src/app/home/home.guard';
 import { sidelogConfigInjectionToken } from 'sidelog-angular';
 import { environment } from '@src/environments/environment';
-import { FileUploadComponent } from '@src/app/file-upload/file-upload.component';
-
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    FileUploadComponent
+    HomeComponent
   ],
   imports: [
     BrowserModule,

@@ -49,7 +49,8 @@ export class AccountService extends BaseApiService {
     return this.imageUpload.upload(newPicture).pipe(
       mergeMap((newPictureRes) => (
         this.update({ pictureId: newPictureRes.id })
-      ))
+      )),
+      map(() => null)
     );
   }
 }
