@@ -13,13 +13,15 @@ import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeGuard } from '@src/app/home/home.guard';
 import { sidelogConfigInjectionToken } from 'sidelog-angular';
-import { environment } from '../environments/environment';
+import { environment } from '@src/environments/environment';
+import { FileUploadComponent } from '@src/app/file-upload/file-upload.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    FileUploadComponent
   ],
   imports: [
     BrowserModule,

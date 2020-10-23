@@ -6,10 +6,7 @@
 
         <form [formGroup]="form" (submit)="onFormSubmit()">
           <div class="field" class="my-4">
-            <div class="control">
-              <input class="input is-medium" type="file" autofocus="" formControlName="image"
-                (change)="onFileSelect($event)">
-            </div>
+            <app-file-upload (fileSelected)="fileSelected($event)" acceptFileType="image/*"></app-file-upload>
           </div>
 
           <button type="submit" class="button is-block is-info is-large is-fullwidth"

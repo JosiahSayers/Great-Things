@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormBuildersService } from '@src/app/shared/services/forms/form-builders.service';
-import { AccountService } from '../shared/services/account.service';
+import { AccountService } from '@src/app/account/shared/services/account.service';
 
 @Component({
   selector: 'app-change-profile-picture',
@@ -25,13 +25,6 @@ export class ChangeProfilePictureComponent implements OnInit {
     this.form = this.formBuilder.uploadImageForm();
   }
 
-  onFileSelect(event): void {
-    if (event.target.files.length > 0) {
-      const file = event.target.files[0];
-      this.image.setValue(file);
-    }
-  }
-
   onFormSubmit(): void {
     if (this.form.valid) {
       this.isLoading = true;
@@ -40,11 +33,22 @@ export class ChangeProfilePictureComponent implements OnInit {
         next: () => { this.isLoading = false; this.router.navigateByUrl('/account'); },
         error: () => { this.isLoading = false; this.errorNotificationState = 'shown'; }
       });
+    } else {
+      console.log(this.form.errors);
     }
+  }
+
+  fileSelected(file: File): void {
+    this.image.markAsTouched();
+    this.image.setValue(file);
   }
 
   get image(): AbstractControl {
     return this.form.controls.image;
+  }
+
+  get disableSubmit(): boolean {
+    return !this.form.valid;
   }
 
 }
