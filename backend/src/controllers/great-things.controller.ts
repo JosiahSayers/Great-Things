@@ -27,8 +27,8 @@ router.delete('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res:
 
 router.put('/:greatThingId', doesUserOwnGreatThing, async (req: Request, res: Response) => {
   try {
-    await greatThingService.update(req);
-    return res.sendStatus(204);
+    const response = await greatThingService.update(req);
+    return res.status(200).send(response);
   } catch (e) {
     return res.sendStatus(parseInt(e.message, 10));
   }
