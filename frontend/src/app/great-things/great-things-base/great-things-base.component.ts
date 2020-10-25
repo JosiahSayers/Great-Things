@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GreatThingsService } from '../../shared/services/great-things/great-things.service';
 import { GreatThing } from '../../shared/models/GreatThing.model';
-import { Observable } from 'rxjs';
+import { GreatThingsCacheService } from '../shared/services/great-things-cache/great-things-cache.service';
 
 @Component({
   selector: 'app-great-things-base',
@@ -10,16 +10,29 @@ import { Observable } from 'rxjs';
 })
 export class GreatThingsBaseComponent implements OnInit {
 
-  greatThings$: Observable<GreatThing[]>;
+  loading = true;
 
   constructor(
-    private greatThingsService: GreatThingsService
+    private greatThingsService: GreatThingsService,
+    private cache: GreatThingsCacheService
   ) { }
 
   ngOnInit(): void {
-    this.greatThings$ = this.greatThingsService.retrieve({
+    this.greatThingsService.retrieve({
       limit: 30
+    }).subscribe({
+      next: (res) => {
+        this.cache.addGreatThings(res);
+        this.loading = false;
+      },
+      error: (res) => {
+        console.error(res);
+      }
     });
+  }
+
+  get greatThings(): GreatThing[] {
+    return this.cache.greatThings;
   }
 
 }

@@ -9,5 +9,10 @@ import { GreatThing } from '../../shared/models/GreatThing.model';
 export class GreatThingComponent {
 
   @Input() greatThing: GreatThing;
+  editing = false;
+
+  toggleEditing(): void {
+    this.editing = !this.editing;
+  }
 
 }

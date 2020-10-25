@@ -1,21 +1,14 @@
-<div class="container">
+<div class="container mt-5">
 
-  <div *ngIf="greatThings$ | async as greatThings else loading">
-    <div *ngIf="greatThings.length > 0 else noGreatThings">
-
-      <div class="tile is-ancestor">
-        <div class="tile is-parent">
-          <app-great-thing *ngFor="let greatThing of greatThings" [greatThing]="greatThing"></app-great-thing>
-        </div>
-      </div>
-
+  <ng-container *ngIf="greatThings?.length > 0">
+    <div class="columns is-multiline">
+      <app-great-thing class="column is-one-third" *ngFor="let greatThing of greatThings" [greatThing]="greatThing">
+      </app-great-thing>
     </div>
+  </ng-container>
 
-    <ng-template #noGreatThings>No Great Things to load</ng-template>
-  </div>
+  <ng-container *ngIf="!loading && greatThings?.length === 0">No Great Things to load</ng-container>
 
-  <ng-template #loading>
-    <progress class="progress is-primary"></progress>
-  </ng-template>
+  <progress *ngIf="loading" class="progress is-primary"></progress>
 
 </div>

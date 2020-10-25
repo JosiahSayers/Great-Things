@@ -1,8 +1,5 @@
 <div class="card">
-  <app-edit-great-thing [greatThing]="greatThing" *ngIf="editing" (toggleEditing)="toggleEditing()">
-  </app-edit-great-thing>
-
-  <ng-container *ngIf="!editing">
+  <form [formGroup]="form">
     <div class="card-image" *ngIf="greatThing?.picture">
       <figure class="image is-1by1">
         <img [src]="greatThing?.picture.href" [alt]="greatThing?.text">
@@ -10,7 +7,7 @@
     </div>
     <div class="card-content pb-2">
       <div class="content">
-        <p class="has-text-weight-medium mb-0 pb-0">{{greatThing?.text}}</p>
+        <textarea class="textarea" formControlName="text"></textarea>
         <br>
         <div class="w-100 has-text-right mt-1 is-size-7">
           <time>{{greatThing?.createdAtTime | date:'medium'}}</time>
@@ -18,7 +15,8 @@
       </div>
     </div>
     <footer class="card-footer">
-      <a class="card-footer-item" (click)="toggleEditing()">Edit</a>
+      <a class="card-footer-item has-text-danger" (click)="emitToggleEditing()">Cancel</a>
+      <a class="card-footer-item has-text-primary" (click)="sendApiRequests()">Submit</a>
     </footer>
-  </ng-container>
+  </form>
 </div>
