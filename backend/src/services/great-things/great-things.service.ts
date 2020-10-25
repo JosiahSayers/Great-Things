@@ -85,13 +85,16 @@ const remove = async (req: Request): Promise<void> => {
   }
 };
 
-const update = async (req: Request): Promise<void> => {
+const update = async (req: Request): Promise<MappedResponseObject> => {
   try {
-    const updatedGreatThing = <GreatThingRequest>req.body;
+    const updateReq = <GreatThingRequest>req.body;
 
-    await GreatThing.findByIdAndUpdate({ _id: req.params.greatThingId }, {
-      text: updatedGreatThing.text
-    });
+    const updatedDocument = await GreatThing.findById(req.params.greatThingId);
+    updatedDocument.text = updateReq.text ?? updatedDocument.text;
+    updatedDocument.pictureId = updateReq.pictureId ?? updatedDocument.pictureId;
+    await updatedDocument.save();
+
+    const response = <MappedResponseObject>await helper.mapResponseWithPicture(updatedDocument);
 
     logger.info({
       msg: 'User successfully updated a new Great Thing',
@@ -99,7 +102,7 @@ const update = async (req: Request): Promise<void> => {
       ...baseLogObject(req)
     });
 
-    return;
+    return response;
   } catch (e) {
     logger.error({
       msg: 'User encountered an error while updating a Great Thing',
