@@ -44,10 +44,10 @@ export class GreatThingsService extends BaseApiService {
     return this.delete<void>(url, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.DELETE);
   }
 
-  edit({ id, text, pictureId }: EditGreatThingRequest): Observable<void> {
+  edit({ id, text, pictureId }: EditGreatThingRequest): Observable<GreatThing> {
     const url = `${environment.BACKEND_BASE}/users/${this.authService.userId()}/great-things/${id}`;
     const payload = { text, pictureId };
-    return this.put<void>(url, payload, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.PUT);
+    return this.put<GreatThing>(url, payload, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.PUT);
   }
 
   private mapResponse(res: GreatThingsResponse): GreatThing[] {

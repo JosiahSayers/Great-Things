@@ -9,22 +9,28 @@ import { trigger, state, style, transition, animate, stagger, group } from '@ang
   animations: [
     trigger('fade', [
       state('shown', style({
-        maxHeight: '500px'
+        maxHeight: '500px',
+        display: 'block'
       })),
       state('hidden', style({
         opacity: '0%',
-        height: '0'
+        height: '0',
+        display: 'none'
       })),
       transition('shown => hidden', [
         group([
-          animate('0.2s 3s ease-in', style({
+          animate('0.1s 0.3s', style({ display: 'none' })),
+          animate('0.2s 0.2s ease-out', style({
             opacity: '100%'
           })),
-          animate('0.2s ease-in')
+          animate('0.2s ease-out')
         ])
       ]),
       transition('hidden => shown', [
-        animate('.2s ease-out')
+        group([
+          animate(10, style({ display: 'block' })),
+          animate('0.2s 0.01s ease-out')
+        ])
       ])
     ])
   ]

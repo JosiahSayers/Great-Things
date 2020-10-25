@@ -15,6 +15,7 @@ export class EditGreatThingComponent implements OnInit {
   @Input() greatThing: GreatThing;
   @Output() toggleEditing = new EventEmitter<void>();
   form: FormGroup;
+  errorNotificationState: 'shown' | 'hidden' = 'hidden';
 
   constructor(
     private formBuilder: FormBuildersService,
@@ -31,21 +32,19 @@ export class EditGreatThingComponent implements OnInit {
   }
 
   sendApiRequests(): void {
-    this.greatThingService.edit({
-      id: this.greatThing.id,
-      text: this.form.controls.text.value
-    }).subscribe({
-      next: (res) => {
-        console.log(res);
-        this.emitToggleEditing();
-      },
-      error: (err) => console.error(err)
-    });
-    //   this.cache.updateGreatThing(<any>{
-    //     ...this.greatThing,
-    //     text: this.form.controls.text.value
-    //   });
-    // this.emitToggleEditing();
+    if (this.form.valid) {
+      this.errorNotificationState = 'hidden';
+      this.greatThingService.edit({
+        id: this.greatThing.id,
+        text: this.form.controls.text.value
+      }).subscribe({
+        next: (res) => {
+          this.cache.updateGreatThing(res);
+          this.emitToggleEditing();
+        },
+        error: (err) => this.errorNotificationState = 'shown'
+      });
+    }
   }
 
 }

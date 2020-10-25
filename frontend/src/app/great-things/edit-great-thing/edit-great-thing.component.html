@@ -12,6 +12,10 @@
         <div class="w-100 has-text-right mt-1 is-size-7">
           <time>{{greatThing?.createdAtTime | date:'medium'}}</time>
         </div>
+
+        <app-error-notification [state]="errorNotificationState">
+          Something went wrong, please try again.
+        </app-error-notification>
       </div>
     </div>
     <footer class="card-footer">

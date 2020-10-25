@@ -5,6 +5,7 @@ import { GreatThingsRoutingModule } from '@src/app/great-things/great-things-rou
 import { componentDeclarations, exports, providerDeclarations } from '@src/app/great-things/great-things.common';
 import { EditGreatThingComponent } from '@src/app/great-things/edit-great-thing/edit-great-thing.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ComponentsModule } from '../shared/components/components.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     SharedServicesModule,
     GreatThingsRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ComponentsModule
   ],
   providers: [
     ...providerDeclarations
