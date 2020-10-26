@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { GreatThing } from '@src/app/shared/models/GreatThing.model';
 import { FormBuildersService } from '@src/app/shared/services/forms/form-builders.service';
 import { GreatThingsService } from '@src/app/shared/services/great-things/great-things.service';
+import { ModalService } from '@src/app/shared/services/modal/modal.service';
 import { GreatThingsCacheService } from '../shared/services/great-things-cache/great-things-cache.service';
 
 @Component({
@@ -20,7 +21,8 @@ export class EditGreatThingComponent implements OnInit {
   constructor(
     private formBuilder: FormBuildersService,
     private cache: GreatThingsCacheService,
-    private greatThingService: GreatThingsService
+    private greatThingService: GreatThingsService,
+    private modalService: ModalService
   ) { }
 
   ngOnInit(): void {
@@ -31,7 +33,29 @@ export class EditGreatThingComponent implements OnInit {
     this.toggleEditing.emit();
   }
 
-  sendApiRequests(): void {
+  confirmDelete(): void {
+    const sub = this.modalService.openAreYouSureModal().subscribe({
+      next: (choice) => {
+        sub.unsubscribe();
+        if (choice === 'confirm') {
+          this.delete();
+        }
+      }
+    });
+  }
+
+  private delete(): void {
+    this.errorNotificationState = 'hidden';
+    this.greatThingService.remove(this.greatThing.id).subscribe({
+      next: (res) => {
+        this.cache.removeGreatThing(this.greatThing.id);
+        this.emitToggleEditing();
+      },
+      error: (err) => this.errorNotificationState = 'shown'
+    });
+  }
+
+  sendUpdateApiRequest(): void {
     if (this.form.valid) {
       this.errorNotificationState = 'hidden';
       this.greatThingService.edit({

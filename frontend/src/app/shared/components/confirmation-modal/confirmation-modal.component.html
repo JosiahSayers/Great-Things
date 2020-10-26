@@ -1,0 +1,14 @@
+<div class="modal" [class.is-active]="isActive">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="box">
+      <p class="is-size-1 has-text-centered">Are you sure?</p>
+      <br>
+      <div class="buttons is-right">
+        <button class="button" (click)="sendChoice('cancel')">Cancel</button>
+        <button class="button" (click)="sendChoice('confirm')">Confirm</button>
+      </div>
+    </div>
+  </div>
+  <button class="modal-close is-large" aria-label="close"></button>
+</div>
