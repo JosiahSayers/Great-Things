@@ -6,8 +6,8 @@ export class GreatThingsCacheService {
 
   readonly greatThings: GreatThing[] = [];
 
-  updateGreatThing(updatedGreaThing: GreatThing): void {
-    this.greatThings[this.getIndexById(updatedGreaThing.id)] = updatedGreaThing;
+  updateGreatThing(updatedGreatThing: GreatThing): void {
+    this.greatThings[this.getIndexById(updatedGreatThing.id)] = updatedGreatThing;
   }
 
   removeGreatThing(id: string): void {
