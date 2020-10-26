@@ -4,7 +4,7 @@ import { GreatThing } from '@src/app/shared/models/GreatThing.model';
 import { FormBuildersService } from '@src/app/shared/services/forms/form-builders.service';
 import { GreatThingsService } from '@src/app/shared/services/great-things/great-things.service';
 import { ModalService } from '@src/app/shared/services/modal/modal.service';
-import { GreatThingsCacheService } from '../shared/services/great-things-cache/great-things-cache.service';
+import { GreatThingsCacheService } from '@src/app/great-things/shared/services/great-things-cache/great-things-cache.service';
 
 @Component({
   selector: 'app-edit-great-thing',
