@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { GreatThingsService } from '../../shared/services/great-things/great-things.service';
 import { GreatThing } from '../../shared/models/GreatThing.model';
+import { GreatThingsService } from '../../shared/services/great-things/great-things.service';
 import { GreatThingsCacheService } from '../shared/services/great-things-cache/great-things-cache.service';
 
 @Component({

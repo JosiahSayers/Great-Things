@@ -1,13 +1,15 @@
-.card:hover time {
-  transform: translateX(-1rem);
-}
+.card:hover {
+  time {
+    transform: translateX(-1rem);
+  }
 
-.card:hover .edit-icon {
-  opacity: 100%;
+  .edit-icon {
+    opacity: 100%;
+  }
 }
 
 time {
-  transform: translateX(.75rem);
+  transform: translateX(0.75rem);
   display: block;
   transition: 0.4s;
 }
