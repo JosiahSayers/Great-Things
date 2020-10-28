@@ -4,7 +4,7 @@ import { faBan, faCheckSquare, IconDefinition } from '@fortawesome/free-solid-sv
 @Component({
   selector: 'app-pass-fail-list-item',
   templateUrl: './pass-fail-list-item.component.html',
-  styleUrls: ['./pass-fail-list-item.component.css']
+  styleUrls: ['./pass-fail-list-item.component.scss']
 })
 export class PassFailListItemComponent {
 

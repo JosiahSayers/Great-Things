@@ -8,7 +8,7 @@ import { AccountService } from '@src/app/account/shared/services/account.service
 @Component({
   selector: 'app-change-name',
   templateUrl: './change-name.component.html',
-  styleUrls: ['./change-name.component.css']
+  styleUrls: ['./change-name.component.scss']
 })
 export class ChangeNameComponent implements OnInit {
 

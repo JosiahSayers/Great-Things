@@ -5,7 +5,7 @@ import { trigger, state, style, transition, animate, stagger, group } from '@ang
 @Component({
   selector: 'app-error-notification',
   templateUrl: './error-notification.component.html',
-  styleUrls: ['./error-notification.component.css'],
+  styleUrls: ['./error-notification.component.scss'],
   animations: [
     trigger('fade', [
       state('shown', style({

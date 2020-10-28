@@ -6,7 +6,7 @@ import { GreatThingsCacheService } from '../shared/services/great-things-cache/g
 @Component({
   selector: 'app-great-things-base',
   templateUrl: './great-things-base.component.html',
-  styleUrls: ['./great-things-base.component.css']
+  styleUrls: ['./great-things-base.component.scss']
 })
 export class GreatThingsBaseComponent implements OnInit {
 

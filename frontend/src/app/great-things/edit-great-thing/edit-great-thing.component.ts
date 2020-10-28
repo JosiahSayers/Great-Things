@@ -9,7 +9,7 @@ import { GreatThingsCacheService } from '@src/app/great-things/shared/services/g
 @Component({
   selector: 'app-edit-great-thing',
   templateUrl: './edit-great-thing.component.html',
-  styleUrls: ['./edit-great-thing.component.css']
+  styleUrls: ['./edit-great-thing.component.scss']
 })
 export class EditGreatThingComponent implements OnInit {
 

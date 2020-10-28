@@ -4,7 +4,7 @@ import { GreatThing } from '../../shared/models/GreatThing.model';
 @Component({
   selector: 'app-great-thing',
   templateUrl: './great-thing.component.html',
-  styleUrls: ['./great-thing.component.css']
+  styleUrls: ['./great-thing.component.scss']
 })
 export class GreatThingComponent {
 

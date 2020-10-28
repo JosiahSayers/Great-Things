@@ -5,7 +5,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 @Component({
   selector: 'app-password-check',
   templateUrl: './password-check.component.html',
-  styleUrls: ['./password-check.component.css'],
+  styleUrls: ['./password-check.component.scss'],
   animations: [
     trigger('openClose', [
       state('open', style({
