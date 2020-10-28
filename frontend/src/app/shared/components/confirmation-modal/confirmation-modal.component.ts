@@ -15,11 +15,13 @@ export class ConfirmationModalComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.modalService.confirmationModalOpen.subscribe({ next: (open) => this.isActive = open });
+    this.modalService.confirmationModalOpen().subscribe({
+      next: (open) => this.isActive = open
+    });
   }
 
   sendChoice(choice: 'cancel' | 'confirm'): void {
-    this.modalService.confirmationModalChoice.next(choice);
+    this.modalService.sendConfirmationModalChoice(choice);
   }
 
 }

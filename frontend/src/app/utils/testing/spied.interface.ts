@@ -4,4 +4,6 @@ export type SpyWithObservables = jasmine.Spy & { observer?: Observer<any>, obser
 
 export interface ObservableCleanup { cleanupObservables: () => void; }
 
-export type Spied<T> = { [Method in keyof T]: SpyWithObservables; } & ObservableCleanup;
+export interface SetProperties<T> { setProperty: (property: keyof T, value: any) => void; }
+
+export type Spied<T> = { [Method in keyof T]: SpyWithObservables; } & ObservableCleanup & SetProperties<T>;

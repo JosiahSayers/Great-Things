@@ -4,26 +4,30 @@ import { GreatThing } from '@src/app/shared/models/GreatThing.model';
 @Injectable()
 export class GreatThingsCacheService {
 
-  readonly greatThings: GreatThing[] = [];
+  private _greatThings: GreatThing[] = [];
 
-  updateGreatThing(updatedGreatThing: GreatThing): void {
-    this.greatThings[this.getIndexById(updatedGreatThing.id)] = updatedGreatThing;
-  }
-
-  removeGreatThing(id: string): void {
-    this.greatThings.splice(this.getIndexById(id), 1);
+  get greatThings(): GreatThing[] {
+    return [...this._greatThings];
   }
 
   addGreatThings(newGreatThings: GreatThing[]): void {
-    this.greatThings.push(...newGreatThings);
+    this._greatThings.push(...newGreatThings);
     this.sortArray();
   }
 
+  removeGreatThing(id: string): void {
+    this._greatThings.splice(this.getIndexById(id), 1);
+  }
+
+  updateGreatThing(updatedGreatThing: GreatThing): void {
+    this._greatThings[this.getIndexById(updatedGreatThing.id)] = updatedGreatThing;
+  }
+
   private getIndexById(id: string): number {
-    return this.greatThings.findIndex((gt) => gt.id === id);
+    return this._greatThings.findIndex((gt) => gt.id === id);
   }
 
   private sortArray(): void {
-    this.greatThings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    this._greatThings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 }

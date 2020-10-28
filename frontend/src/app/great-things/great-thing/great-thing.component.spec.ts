@@ -23,4 +23,12 @@ describe('GreatThingComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('toggleEditing', () => {
+    it('flips the boolean value of editing', () => {
+      component.editing = false;
+      component.toggleEditing();
+      expect(component.editing).toBeTrue();
+    });
+  });
 });
