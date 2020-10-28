@@ -7,7 +7,7 @@ import { AccountService } from '@src/app/account/shared/services/account.service
 @Component({
   selector: 'app-change-profile-picture',
   templateUrl: './change-profile-picture.component.html',
-  styleUrls: ['./change-profile-picture.component.css']
+  styleUrls: ['./change-profile-picture.component.scss']
 })
 export class ChangeProfilePictureComponent implements OnInit {
 

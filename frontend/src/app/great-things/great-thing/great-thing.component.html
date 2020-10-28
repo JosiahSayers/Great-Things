@@ -1,1 +1,22 @@
-<p>{{greatThing?.text}}</p>
+<div class="card">
+  <app-edit-great-thing [greatThing]="greatThing" *ngIf="editing" (toggleEditing)="toggleEditing()">
+  </app-edit-great-thing>
+
+  <ng-container *ngIf="!editing">
+    <div class="card-image" *ngIf="greatThing?.picture">
+      <figure class="image is-1by1">
+        <img [src]="greatThing?.picture.href" [alt]="greatThing?.text">
+      </figure>
+    </div>
+    <div class="card-content pb-2">
+      <div class="content">
+        <p class="has-text-weight-medium mb-0 pb-0">{{greatThing?.text}}</p>
+        <br>
+        <div class="w-100 has-text-right mt-1 is-size-7 time-row">
+          <time>{{greatThing?.createdAtTime | date:'MMM dd, yyyy, h:mm a'}}</time>
+          <img class="edit-icon" src="assets/svg/pencil-outline.svg" (click)="toggleEditing()">
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

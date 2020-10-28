@@ -38,6 +38,18 @@ export class FormBuildersService {
     });
   }
 
+  editGreatThing(currentText: string): FormGroup {
+    return new FormGroup({
+      text: this.newGreatThingTextControl(currentText)
+    });
+  }
+
+  private newGreatThingTextControl(currentValue?: string): FormControl {
+    return new FormControl(currentValue || '', [
+      Validators.required
+    ]);
+  }
+
   private newImageControl(): FormControl {
     return new FormControl(null, [
       Validators.required

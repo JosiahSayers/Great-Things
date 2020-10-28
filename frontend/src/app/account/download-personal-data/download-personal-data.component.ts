@@ -4,7 +4,7 @@ import { AccountService } from '../shared/services/account.service';
 @Component({
   selector: 'app-download-personal-data',
   templateUrl: './download-personal-data.component.html',
-  styleUrls: ['./download-personal-data.component.css']
+  styleUrls: ['./download-personal-data.component.scss']
 })
 export class DownloadPersonalDataComponent {
 

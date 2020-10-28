@@ -8,6 +8,7 @@ import { ErrorNotificationComponent } from '@src/app/shared/components/error-not
 import { NavbarUserInfoComponent } from '@src/app/shared/components/navbar/navbar-user-info/navbar-user-info.component';
 import { PasswordCheckComponent } from '@src/app/shared/components/password-check/password-check.component';
 import { FileUploadComponent } from '@src/app/shared/components/file-upload/file-upload.component';
+import { ConfirmationModalComponent } from '@src/app/shared/components/confirmation-modal/confirmation-modal.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { FileUploadComponent } from '@src/app/shared/components/file-upload/file
     ErrorNotificationComponent,
     NavbarUserInfoComponent,
     PasswordCheckComponent,
-    FileUploadComponent
+    FileUploadComponent,
+    ConfirmationModalComponent
   ],
   imports: [
     CommonModule,
@@ -28,7 +30,8 @@ import { FileUploadComponent } from '@src/app/shared/components/file-upload/file
     PassFailListItemComponent,
     ErrorNotificationComponent,
     PasswordCheckComponent,
-    FileUploadComponent
+    FileUploadComponent,
+    ConfirmationModalComponent
   ]
 })
 export class ComponentsModule { }

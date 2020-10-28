@@ -13,7 +13,10 @@ export function provideMock<T>(spiedClass: Type<T>, localVariable: Spied<T>, obs
 
 export function spyOnClass<T>(spiedClass: Type<T>, observables?: (keyof T)[]): Spied<T> {
   const prototype = spiedClass.prototype;
-  let spy = jasmine.createSpyObj('spy', getMethodNames(prototype), getPropertyNames(prototype));
+  const properties = getPropertyNames(prototype);
+  let spy = jasmine.createSpyObj('spy', getMethodNames(prototype));
+  // workaround for: https://github.com/angular/angular/issues/33657
+  spy = addWriteMethod(spy, properties);
   spy = stubObservables(spy, observables);
   return spy;
 }
@@ -31,6 +34,7 @@ function getMethodNames(prototype): string[] {
 
     prototype = prototype.__proto__;
   }
+
   return methodNames;
 }
 
@@ -47,6 +51,11 @@ function getPropertyNames(prototype): string[] {
   }
 
   return propertyNames;
+}
+
+function addWriteMethod<T>(spy: Spied<T>, properties: string[]): Spied<T> {
+  spy.setProperty = (property: keyof T, value: any) => spy[property] = value;
+  return spy;
 }
 
 function stubObservables<T>(spy: Spied<T>, observables: (keyof T)[] = []): Spied<T> {
