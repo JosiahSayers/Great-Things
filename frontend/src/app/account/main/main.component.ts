@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { environment } from '@src/environments/environment';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -47,10 +48,21 @@ export class MainComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.addTestingTab();
     this.setActiveTab();
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => this.setActiveTab());
+  }
+
+  addTestingTab(): void {
+    if (!environment.production) {
+      this.navigationTabs.push({
+        name: 'Testing',
+        routerLink: '/account/testing',
+        isActive: false
+      });
+    }
   }
 
   setActiveTab(): void {

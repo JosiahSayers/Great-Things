@@ -11,7 +11,16 @@ export class GreatThingsCacheService {
   }
 
   addGreatThings(newGreatThings: GreatThing[]): void {
-    this._greatThings.push(...newGreatThings);
+    const newThings = [];
+    newGreatThings?.forEach((thing) => {
+      const foundIndex = this.getIndexById(thing.id);
+      if (foundIndex > -1) {
+        this._greatThings[foundIndex] = thing;
+      } else {
+        newThings.push(thing);
+      }
+    });
+    this._greatThings.push(...newThings);
     this.sortArray();
   }
 

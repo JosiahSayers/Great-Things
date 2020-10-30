@@ -3,12 +3,14 @@ import { NativeScriptCommonModule } from '@nativescript/angular';
 import { SharedServicesModule } from '@src/app/shared/services/shared-services.module.tns';
 import { AccountRoutingModule } from '@src/app/account/account-routing.module.tns';
 import { componentDeclarations, providerDeclarations } from '@src/app/account/account.common';
-import { ComponentsModule } from '../shared/components/components.module.tns';
+import { ComponentsModule } from '@src/app/shared/components/components.module.tns';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TestingComponent } from '@src/app/account/testing/testing.component';
 
 @NgModule({
   declarations: [
     ...componentDeclarations,
+    TestingComponent,
   ],
   imports: [
     NativeScriptCommonModule,

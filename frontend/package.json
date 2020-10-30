@@ -46,6 +46,7 @@
     "bulma": "^0.9.0",
     "core-js": "^2.6.9",
     "file-saver": "^2.0.2",
+    "ngx-infinite-scroll": "^9.1.0",
     "reflect-metadata": "~0.1.12",
     "rxjs": "~6.5.5",
     "sidelog-angular": "^1.0.0",
