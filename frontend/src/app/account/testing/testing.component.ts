@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { GreatThingsService } from '@src/app/shared/services/great-things/great-things.service';
+import { environment } from '@src/environments/environment';
 
 @Component({
   selector: 'app-testing',
@@ -17,7 +18,7 @@ export class TestingComponent {
   ) { }
 
   addRandomQuote(): void {
-    this.http.get('http://quotes.stormconsultancy.co.uk/random.json').subscribe(({ id, quote }: any) => {
+    this.http.get(environment.RANDOM_QUOTE_URL).subscribe(({ id, quote }: any) => {
       this.quotes.push({
         id,
         text: quote,
