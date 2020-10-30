@@ -7,6 +7,7 @@ import { DownloadPersonalDataComponent } from '@src/app/account/download-persona
 import { MainComponent } from '@src/app/account/main/main.component';
 import { OverviewComponent } from '@src/app/account/overview/overview.component';
 import { AccountService } from '@src/app/account/shared/services/account.service';
+import { TestingComponent } from './testing/testing.component';
 
 export const componentDeclarations: any[] = [
   MainComponent,
@@ -15,7 +16,8 @@ export const componentDeclarations: any[] = [
   ChangeProfilePictureComponent,
   DeleteAccountComponent,
   DownloadPersonalDataComponent,
-  OverviewComponent
+  OverviewComponent,
+  TestingComponent
 ];
 
 export const providerDeclarations: any[] = [
