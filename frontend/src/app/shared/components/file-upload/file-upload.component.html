@@ -1,3 +1,18 @@
-<div class="control">
-  <input class="input is-medium" type="file" [accept]="acceptFileType" (change)="onFileSelect($event)">
+<div class="field">
+  <div class="file is-centered is-boxed has-name">
+    <label class="file-label">
+      <input class="file-input" type="file" name="new-photo" [accept]="acceptFileType" (change)="onFileSelect($event)">
+      <span class="file-cta">
+        <span class="file-icon">
+          <i class="fas fa-upload"></i>
+        </span>
+        <span class="file-label">
+          Upload New Picture
+        </span>
+      </span>
+      <span class="file-name">
+        {{fileName}}
+      </span>
+    </label>
+  </div>
 </div>

@@ -13,7 +13,7 @@
         <p class="has-text-weight-medium mb-0 pb-0">{{greatThing?.text}}</p>
         <br>
         <div class="w-100 has-text-right mt-1 is-size-7 time-row">
-          <time>{{greatThing?.createdAtTime | date:'MMM dd, yyyy, h:mm a'}}</time>
+          <time>{{greatThing?.createdAt | date:'MMM dd, yyyy, h:mm a'}}</time>
           <img class="edit-icon" src="assets/svg/pencil-outline.svg" (click)="toggleEditing()">
         </div>
       </div>
