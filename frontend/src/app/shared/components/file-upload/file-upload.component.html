@@ -1,13 +1,13 @@
 <div class="field">
   <div class="file is-centered is-boxed has-name">
-    <label class="file-label">
+    <label class="file-label" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
       <input class="file-input" type="file" name="new-photo" [accept]="acceptFileType" (change)="onFileSelect($event)">
       <span class="file-cta">
         <span class="file-icon">
           <i class="fas fa-upload"></i>
         </span>
         <span class="file-label">
-          Upload New Picture
+          Click or Drop file here
         </span>
       </span>
       <span class="file-name">

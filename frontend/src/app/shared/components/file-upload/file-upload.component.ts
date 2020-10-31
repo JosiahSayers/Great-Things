@@ -11,11 +11,28 @@ export class FileUploadComponent {
   @Input() acceptFileType = '*';
   fileName = 'Select a file...';
 
-  onFileSelect(event): void {
-    if (event.target.files.length > 0) {
-      const file = <File>event.target.files[0];
-      this.fileName = file.name;
-      this.fileSelected.emit(file);
+  onFileSelect(e: Event): void {
+    e.preventDefault();
+    console.log(e.type);
+    this.processFiles((<HTMLInputElement>e.target)?.files);
+  }
+
+  onDragOver(e: DragEvent): void {
+    e.preventDefault();
+  }
+
+  onDrop(e: DragEvent): void {
+    e.preventDefault();
+    this.processFiles(e.dataTransfer?.files);
+  }
+
+  private processFiles(files: File[] | FileList): void {
+    if (files?.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith('image')) {
+        this.fileName = file.name;
+        this.fileSelected.emit(file);
+      }
     } else {
       this.fileName = 'Select a file...';
       this.fileSelected.emit(null);
