@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { providerDeclarations } from './shared-services.common';
 import { StorageService } from './storage/storage.service';
 import { WebStorageService } from './storage/web-storage.service';
-import { ModalService } from './modal/modal.service';
 
 @NgModule({
   declarations: [],
