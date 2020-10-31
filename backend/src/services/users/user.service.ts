@@ -158,7 +158,9 @@ const updateUser = async (req: Request): Promise<string> => {
       updatedPictureId = currentUser.profile.pictureId;
     } else {
       updatedPictureId = req.body.pictureId;
-      await pictureService.deleteImage(currentUser.profile.pictureId, req);
+      if (currentUser.profile.pictureId) {
+        await pictureService.deleteImage(currentUser.profile.pictureId, req);
+      }
     }
 
     if (req.body.currentPassword && !req.body.newPassword) {
