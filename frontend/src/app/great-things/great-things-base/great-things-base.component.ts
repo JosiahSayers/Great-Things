@@ -11,6 +11,7 @@ import { GreatThingsCacheService } from '../shared/services/great-things-cache/g
 export class GreatThingsBaseComponent implements OnInit {
 
   loading = true;
+  currentPage = 0;
 
   constructor(
     private greatThingsService: GreatThingsService,
@@ -18,9 +19,17 @@ export class GreatThingsBaseComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.greatThingsService.retrieve({
-      limit: 30
-    }).subscribe({
+    this.retrieveNext();
+  }
+
+  onScroll(): void {
+    this.retrieveNext();
+  }
+
+  private retrieveNext(): void {
+    this.currentPage++;
+    this.loading = true;
+    this.greatThingsService.retrieve({ page: this.currentPage }).subscribe({
       next: (res) => {
         this.cache.addGreatThings(res);
         this.loading = false;

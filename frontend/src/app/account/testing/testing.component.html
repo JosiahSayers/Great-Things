@@ -1,0 +1,5 @@
+<button (click)="addRandomQuote()">Fetch and Save Random Quote</button>
+
+<ul class="quotes">
+  <li *ngFor="let quote of quotes">{{quote.text}} - saved: {{quote.savedAsGreatThing}}</li>
+</ul>

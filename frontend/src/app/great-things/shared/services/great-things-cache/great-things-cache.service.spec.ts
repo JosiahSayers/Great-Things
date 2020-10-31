@@ -20,8 +20,17 @@ describe('GreatThingsCacheService', () => {
   describe('addGreatThings', () => {
     it('adds the passed in GreatThings to the cache', () => {
       expect(service.greatThings).toEqual([]);
-      service.addGreatThings([buildGreatThing({}), buildGreatThing({})]);
-      expect(service.greatThings).toEqual([buildGreatThing({}), buildGreatThing({})]);
+      service.addGreatThings([buildGreatThing({ id: '1' }), buildGreatThing({ id: '2' })]);
+      expect(service.greatThings).toEqual([buildGreatThing({ id: '1' }), buildGreatThing({ id: '2' })]);
+    });
+
+    it('updates any great things that already exist', () => {
+      const newThing = buildGreatThing({ id: '1' });
+      const updated = buildGreatThing({ id: '1' });
+      service.addGreatThings([newThing]);
+      service.addGreatThings([updated]);
+      expect(service.greatThings).toEqual([updated]);
+      expect(service.greatThings[0]).toBe(updated);
     });
 
     it('sorts the cache by the createdAt times of each GreatThing', () => {

@@ -1,7 +1,7 @@
 <div class="container mt-5">
 
   <ng-container *ngIf="greatThings?.length > 0">
-    <div class="columns is-multiline">
+    <div class="columns is-multiline" infiniteScroll (scrolled)="onScroll()">
       <app-great-thing class="column is-one-third" *ngFor="let greatThing of greatThings" [greatThing]="greatThing">
       </app-great-thing>
     </div>
@@ -9,6 +9,8 @@
 
   <ng-container *ngIf="!loading && greatThings?.length === 0">No Great Things to load</ng-container>
 
-  <progress *ngIf="loading" class="progress is-primary"></progress>
+  <div *ngIf="loading" class="my-6 px-6">
+    <progress class="progress is-primary is-large"></progress>
+  </div>
 
 </div>

@@ -13,8 +13,11 @@ const SIDELOG_CONFIG: SidelogConfig = {
   logToConsole: true
 };
 
+const RANDOM_QUOTE_URL = 'http://quotes.stormconsultancy.co.uk/random.json';
+
 export const baseEnvironment = {
   production,
   BACKEND_BASE,
-  SIDELOG_CONFIG
+  SIDELOG_CONFIG,
+  RANDOM_QUOTE_URL
 };

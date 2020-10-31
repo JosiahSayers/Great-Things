@@ -6,6 +6,7 @@ import { DeleteAccountComponent } from '@src/app/account/delete-account/delete-a
 import { DownloadPersonalDataComponent } from '@src/app/account/download-personal-data/download-personal-data.component';
 import { MainComponent } from '@src/app/account/main/main.component';
 import { OverviewComponent } from '@src/app/account/overview/overview.component';
+import { TestingComponent } from './testing/testing.component';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,10 @@ export const routes: Routes = [
       {
         path: 'delete-account',
         component: DeleteAccountComponent
+      },
+      {
+        path: 'testing',
+        component: TestingComponent
       }
     ]
   }

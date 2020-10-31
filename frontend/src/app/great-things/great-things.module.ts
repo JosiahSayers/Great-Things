@@ -6,6 +6,7 @@ import { componentDeclarations, exports, providerDeclarations } from '@src/app/g
 import { EditGreatThingComponent } from '@src/app/great-things/edit-great-thing/edit-great-thing.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ComponentsModule } from '../shared/components/components.module';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { ComponentsModule } from '../shared/components/components.module';
     SharedServicesModule,
     GreatThingsRoutingModule,
     ReactiveFormsModule,
-    ComponentsModule
+    ComponentsModule,
+    InfiniteScrollModule
   ],
   providers: [
     ...providerDeclarations
