@@ -154,12 +154,11 @@ const updateUser = async (req: Request): Promise<string> => {
     const currentUser = await User.findById(req.jwt.id);
     let updatedPictureId;
 
-    if (req.body.pictureId === null) {
-      updatedPictureId = null;
-    } else if (req.body.pictureId === undefined) {
+    if (req.body.pictureId === undefined) {
       updatedPictureId = currentUser.profile.pictureId;
     } else {
       updatedPictureId = req.body.pictureId;
+      await pictureService.deleteImage(currentUser.profile.pictureId, req);
     }
 
     if (req.body.currentPassword && !req.body.newPassword) {
