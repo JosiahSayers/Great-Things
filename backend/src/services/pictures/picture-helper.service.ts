@@ -5,15 +5,19 @@ import { Request } from 'express';
 import { GCP_PHOTO_URL_BASE } from '../../util/environment';
 import fs from 'fs';
 import { PictureInterface } from '../../models/Picture';
+import * as probe from 'probe-image-size';
 
 const processImageAndUpload = async (req: Request): Promise<PictureInterface> => {
   try {
     const fileName = `${req.jwt.id}-${new Date().getTime()}.jpeg`;
     const filepath = `/tmp/${fileName}`;
+    const imageSizeData = getImageSizeForResize((<UploadedFile>req.files.image).data);
 
     const processedImage = await sharp((<UploadedFile>req.files.image).data)
-      .resize(450, 450, {
-        fit: 'contain'
+      .resize({
+        fit: 'contain',
+        height: imageSizeData.height,
+        width: imageSizeData.width
       })
       .jpeg()
       .toFile(filepath);
@@ -34,8 +38,17 @@ const processImageAndUpload = async (req: Request): Promise<PictureInterface> =>
       error: e,
       ...baseLogObject(req)
     });
-    return;
+    throw e;
   }
+};
+
+const getImageSizeForResize = (image: Buffer): { width: number, height: number } => {
+  const originalImageData = probe.sync(image);
+  const { height, width } = originalImageData;
+  return {
+    width: width > height ? 450 : null,
+    height: height > width ? 450 : null
+  };
 };
 
 const deleteImage = async (fileHref: string, req: Request): Promise<void> => {
@@ -49,6 +62,7 @@ const deleteImage = async (fileHref: string, req: Request): Promise<void> => {
       error: e,
       ...baseLogObject(req)
     });
+    throw e;
   }
 };
 
