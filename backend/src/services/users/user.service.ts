@@ -254,14 +254,16 @@ const aggregateAllData = async (req: Request): Promise<archiver.Archiver> => {
   for (const photo of allPhotos) {
     const pathSegments = photo.href.split('/');
     const filename = pathSegments[pathSegments.length - 1];
-    const photoStream = req.photoStorage.file(filename).createReadStream();
+    const photoStream = req.photoStorage.file(filename)?.createReadStream();
 
-    if (photo.id === user.profile.pictureId) {
-      archive.append(photoStream, { name: `profile/user-image.${photo.format}` });
-    } else {
-      const createdAt = new Date(photo.createdAt);
-      const nameInArchive = `photos/${createdAt.getUTCFullYear()}/${createdAt.getUTCMonth() + 1}/${createdAt.getUTCDate()}/${filename}`;
-      archive.append(photoStream, { name: nameInArchive });
+    if (photoStream) {
+      if (photo.id === user.profile.pictureId) {
+        archive.append(photoStream, { name: `profile/user-image.${photo.format}` });
+      } else {
+        const createdAt = new Date(photo.createdAt);
+        const nameInArchive = `photos/${createdAt.getUTCFullYear()}/${createdAt.getUTCMonth() + 1}/${createdAt.getUTCDate()}/${filename}`;
+        archive.append(photoStream, { name: nameInArchive });
+      }
     }
   }
 
