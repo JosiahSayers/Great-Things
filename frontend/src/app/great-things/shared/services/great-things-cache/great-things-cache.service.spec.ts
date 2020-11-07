@@ -33,7 +33,7 @@ describe('GreatThingsCacheService', () => {
 
   describe('when a user logs out', () => {
     it('empties the cache', () => {
-      service.addGreatThings(<any>['test', 'test2']);
+      service.addGreatThings([buildGreatThing({ id: '1' }), buildGreatThing({ id: '2' })]);
       auth.onAuthStateChanged.observer.next('unauthenticated');
       expect(service.greatThings).toEqual([]);
     });
@@ -42,8 +42,10 @@ describe('GreatThingsCacheService', () => {
   describe('addGreatThings', () => {
     it('adds the passed in GreatThings to the cache', () => {
       expect(service.greatThings).toEqual([]);
-      service.addGreatThings([buildGreatThing({ id: '1' }), buildGreatThing({ id: '2' })]);
-      expect(service.greatThings).toEqual([buildGreatThing({ id: '1' }), buildGreatThing({ id: '2' })]);
+      const thing1 = buildGreatThing({ id: '1' });
+      const thing2 = buildGreatThing({ id: '2' });
+      service.addGreatThings([thing1, thing2]);
+      expect(service.greatThings).toEqual([thing1, thing2]);
     });
 
     it('updates any great things that already exist', () => {
@@ -72,9 +74,10 @@ describe('GreatThingsCacheService', () => {
 
   describe('removeGreatThing', () => {
     it('removes the GreatThing with the passed in ID', () => {
-      service.addGreatThings([buildGreatThing({ id: 'TEST' }), buildGreatThing({ id: 'REMOVE ME' })]);
+      const shouldStay = buildGreatThing({ id: 'TEST' });
+      service.addGreatThings([shouldStay, buildGreatThing({ id: 'REMOVE ME' })]);
       service.removeGreatThing('REMOVE ME');
-      expect(service.greatThings).toEqual([buildGreatThing({ id: 'TEST' })]);
+      expect(service.greatThings).toEqual([shouldStay]);
     });
   });
 
