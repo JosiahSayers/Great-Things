@@ -10,7 +10,7 @@ export class GreatThingsCacheService {
   constructor(
     private auth: AuthService
   ) {
-    this.auth.authStateChange$.subscribe((newAuthState) => {
+    this.auth.onAuthStateChanged().subscribe((newAuthState) => {
       if (newAuthState === 'unauthenticated') {
         this._greatThings = [];
       }

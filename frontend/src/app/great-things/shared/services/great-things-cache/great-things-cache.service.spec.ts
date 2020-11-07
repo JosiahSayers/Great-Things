@@ -1,20 +1,42 @@
 import { TestBed } from '@angular/core/testing';
 import { GreatThing } from '@src/app/shared/models/GreatThing.model';
+import { AuthService } from '@src/app/shared/services/auth/auth.service';
+import { spyOnClass } from '@src/app/utils/testing/helper-functions';
+import { Spied } from '@src/app/utils/testing/spied.interface';
 
 import { GreatThingsCacheService } from './great-things-cache.service';
 
 describe('GreatThingsCacheService', () => {
   let service: GreatThingsCacheService;
+  let auth: Spied<AuthService>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [GreatThingsCacheService]
+      providers: [
+        GreatThingsCacheService,
+        {
+          provide: AuthService,
+          useFactory: () => auth = spyOnClass(AuthService, [
+            'onAuthStateChanged'
+          ])
+        }
+      ]
     });
     service = TestBed.inject(GreatThingsCacheService);
   });
 
+  afterEach(() => auth.cleanupObservables());
+
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('when a user logs out', () => {
+    it('empties the cache', () => {
+      service.addGreatThings(<any>['test', 'test2']);
+      auth.onAuthStateChanged.observer.next('unauthenticated');
+      expect(service.greatThings).toEqual([]);
+    });
   });
 
   describe('addGreatThings', () => {

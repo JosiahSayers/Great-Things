@@ -12,13 +12,17 @@ import { environment } from '../../../../environments/environment';
 @Injectable()
 export class AuthService {
 
-  authStateChange$ = new Subject<'authenticated' | 'unauthenticated'>();
+  private authStateChange$ = new Subject<AuthState>();
 
   constructor(
     private http: HttpClient,
     private storage: StorageService,
     private jwtHelper: JwtHelperService
   ) { }
+
+  onAuthStateChanged(): Observable<AuthState> {
+    return this.authStateChange$.asObservable();
+  }
 
   register(username: string, password: string, name: string): Observable<void> {
     return this.http.post<AuthCallResponse>(`${environment.BACKEND_BASE}/auth/register`, {
@@ -101,3 +105,5 @@ export class AuthService {
     return this.jwt()?.email;
   }
 }
+
+export type AuthState = 'authenticated' | 'unauthenticated';
