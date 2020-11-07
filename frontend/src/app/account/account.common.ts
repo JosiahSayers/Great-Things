@@ -8,6 +8,7 @@ import { MainComponent } from '@src/app/account/main/main.component';
 import { OverviewComponent } from '@src/app/account/overview/overview.component';
 import { AccountService } from '@src/app/account/shared/services/account.service';
 import { TestingComponent } from '@src/app/account/testing/testing.component';
+import { AccountGuard } from './shared/guards/account.guard';
 
 export const componentDeclarations: any[] = [
   MainComponent,
@@ -21,7 +22,8 @@ export const componentDeclarations: any[] = [
 ];
 
 export const providerDeclarations: any[] = [
-  AccountService
+  AccountService,
+  AccountGuard
 ];
 
 export const routes: Routes = [
