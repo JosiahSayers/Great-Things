@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -11,6 +11,8 @@ import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class AuthService {
+
+  authStateChange$ = new Subject<'authenticated' | 'unauthenticated'>();
 
   constructor(
     private http: HttpClient,
@@ -24,7 +26,10 @@ export class AuthService {
       password,
       name
     }).pipe(
-      tap((res: AuthCallResponse) => this.storage.set(storageKeys.JWT, res.jwt)),
+      tap((res: AuthCallResponse) => {
+        this.storage.set(storageKeys.JWT, res.jwt);
+        this.authStateChange$.next('authenticated');
+      }),
       map(() => undefined)
     );
   }
@@ -34,13 +39,17 @@ export class AuthService {
       username,
       password
     }).pipe(
-      tap((res: AuthCallResponse) => this.storage.set(storageKeys.JWT, res.jwt)),
+      tap((res: AuthCallResponse) => {
+        this.storage.set(storageKeys.JWT, res.jwt);
+        this.authStateChange$.next('authenticated');
+      }),
       map(() => undefined)
     );
   }
 
   logout(): void {
     this.storage.remove(storageKeys.JWT);
+    this.authStateChange$.next('unauthenticated');
   }
 
   refreshJwt(): Observable<void> {

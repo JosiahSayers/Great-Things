@@ -1,10 +1,21 @@
 import { Injectable } from '@angular/core';
 import { GreatThing } from '@src/app/shared/models/GreatThing.model';
+import { AuthService } from '@src/app/shared/services/auth/auth.service';
 
 @Injectable()
 export class GreatThingsCacheService {
 
   private _greatThings: GreatThing[] = [];
+
+  constructor(
+    private auth: AuthService
+  ) {
+    this.auth.authStateChange$.subscribe((newAuthState) => {
+      if (newAuthState === 'unauthenticated') {
+        this._greatThings = [];
+      }
+    });
+  }
 
   get greatThings(): GreatThing[] {
     return [...this._greatThings];
