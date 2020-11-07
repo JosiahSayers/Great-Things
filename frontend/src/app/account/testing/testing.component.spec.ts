@@ -63,7 +63,7 @@ describe('TestingComponent', () => {
           text: 'QUOTE',
           savedAsGreatThing: false
         }
-      ])
+      ]);
     });
 
     it('should create a new GreatThing with the random quote', () => {

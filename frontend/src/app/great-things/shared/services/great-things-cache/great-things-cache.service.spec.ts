@@ -1,27 +1,51 @@
 import { TestBed } from '@angular/core/testing';
 import { GreatThing } from '@src/app/shared/models/GreatThing.model';
+import { AuthService } from '@src/app/shared/services/auth/auth.service';
+import { spyOnClass } from '@src/app/utils/testing/helper-functions';
+import { Spied } from '@src/app/utils/testing/spied.interface';
 
 import { GreatThingsCacheService } from './great-things-cache.service';
 
 describe('GreatThingsCacheService', () => {
   let service: GreatThingsCacheService;
+  let auth: Spied<AuthService>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [GreatThingsCacheService]
+      providers: [
+        GreatThingsCacheService,
+        {
+          provide: AuthService,
+          useFactory: () => auth = spyOnClass(AuthService, [
+            'onAuthStateChanged'
+          ])
+        }
+      ]
     });
     service = TestBed.inject(GreatThingsCacheService);
   });
+
+  afterEach(() => auth.cleanupObservables());
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
+  describe('when a user logs out', () => {
+    it('empties the cache', () => {
+      service.addGreatThings([buildGreatThing({ id: '1' }), buildGreatThing({ id: '2' })]);
+      auth.onAuthStateChanged.observer.next('unauthenticated');
+      expect(service.greatThings).toEqual([]);
+    });
+  });
+
   describe('addGreatThings', () => {
     it('adds the passed in GreatThings to the cache', () => {
       expect(service.greatThings).toEqual([]);
-      service.addGreatThings([buildGreatThing({ id: '1' }), buildGreatThing({ id: '2' })]);
-      expect(service.greatThings).toEqual([buildGreatThing({ id: '1' }), buildGreatThing({ id: '2' })]);
+      const thing1 = buildGreatThing({ id: '1' });
+      const thing2 = buildGreatThing({ id: '2' });
+      service.addGreatThings([thing1, thing2]);
+      expect(service.greatThings).toEqual([thing1, thing2]);
     });
 
     it('updates any great things that already exist', () => {
@@ -50,9 +74,10 @@ describe('GreatThingsCacheService', () => {
 
   describe('removeGreatThing', () => {
     it('removes the GreatThing with the passed in ID', () => {
-      service.addGreatThings([buildGreatThing({ id: 'TEST' }), buildGreatThing({ id: 'REMOVE ME' })]);
+      const shouldStay = buildGreatThing({ id: 'TEST' });
+      service.addGreatThings([shouldStay, buildGreatThing({ id: 'REMOVE ME' })]);
       service.removeGreatThing('REMOVE ME');
-      expect(service.greatThings).toEqual([buildGreatThing({ id: 'TEST' })]);
+      expect(service.greatThings).toEqual([shouldStay]);
     });
   });
 

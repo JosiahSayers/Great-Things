@@ -24,7 +24,7 @@
     "preview": "tns preview",
     "ngcc": "ngcc --properties es2015 module main --first-only",
     "postinstall": "npm run ngcc",
-    "ci": "npm i && npm run test:ci && npm run build:web"
+    "ci": "npm i && npm run lint && npm run test:ci && npm run build:web"
   },
   "private": true,
   "dependencies": {
