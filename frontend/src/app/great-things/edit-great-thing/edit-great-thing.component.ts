@@ -26,7 +26,7 @@ export class EditGreatThingComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.form = this.formBuilder.editGreatThing(this.greatThing.text);
+    this.form = this.formBuilder.greatThing(this.greatThing.text);
   }
 
   emitToggleEditing(): void {

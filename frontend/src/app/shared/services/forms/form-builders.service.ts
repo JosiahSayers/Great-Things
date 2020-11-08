@@ -38,7 +38,7 @@ export class FormBuildersService {
     });
   }
 
-  editGreatThing(currentText: string): FormGroup {
+  greatThing(currentText?: string): FormGroup {
     return new FormGroup({
       text: this.newGreatThingTextControl(currentText)
     });

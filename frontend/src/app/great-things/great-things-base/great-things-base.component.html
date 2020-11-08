@@ -1,5 +1,7 @@
 <div class="container mt-5">
 
+  <app-create-great-thing></app-create-great-thing>
+
   <ng-container *ngIf="greatThings?.length > 0">
     <div class="columns is-multiline" infiniteScroll (scrolled)="onScroll()">
       <app-great-thing class="column is-one-third" *ngFor="let greatThing of greatThings" [greatThing]="greatThing">

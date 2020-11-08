@@ -4,7 +4,7 @@ import { environment } from '../../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GreatThingsResponse } from '../../models/api-responses/great-thing.interface';
+import { GreatThingFromApi, GreatThingsResponse } from '../../models/api-responses/great-thing.interface';
 import { GreatThing } from '../../models/GreatThing.model';
 import { Picture } from '../../models/Picture.model';
 import { BaseApiService } from '../base-api-service/base-api.service';
@@ -29,14 +29,20 @@ export class GreatThingsService extends BaseApiService {
       fromObject: <any>searchParams
     });
     return this.get<GreatThingsResponse>(url, { params }, API_LOG_IDENTIFIERS.GREAT_THINGS.GET).pipe(
-      map(this.mapResponse)
+      map((res) => {
+        if (Array.isArray(res?.greatThings)) {
+          return res.greatThings.map(this.mapResponseToGreatThing);
+        }
+      })
     );
   }
 
-  create(text: string, pictureId?: string): Observable<void> {
+  create(text: string, pictureId?: string): Observable<GreatThing> {
     const url = `${environment.BACKEND_BASE}/users/${this.authService.userId()}/great-things`;
     const payload = { text, pictureId };
-    return this.post<void>(url, payload, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.POST);
+    return this.post<GreatThingFromApi>(url, payload, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.POST).pipe(
+      map(this.mapResponseToGreatThing)
+    );
   }
 
   remove(greatThingId: string): Observable<void> {
@@ -50,31 +56,23 @@ export class GreatThingsService extends BaseApiService {
     return this.put<GreatThing>(url, payload, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.PUT);
   }
 
-  private mapResponse(res: GreatThingsResponse): GreatThing[] {
-    let greatThings = [];
+  private mapResponseToGreatThing(gt: GreatThingFromApi): GreatThing {
+    const picture = gt.picture ? new Picture(
+      gt.picture.id,
+      gt.picture.createdAt,
+      gt.picture.href,
+      gt.picture.height,
+      gt.picture.width,
+      gt.picture.format
+    ) : null;
 
-    if (Array.isArray(res?.greatThings)) {
-      greatThings = res.greatThings.map((item) => {
-        const picture = item.picture ? new Picture(
-          item.picture.id,
-          item.picture.createdAt,
-          item.picture.href,
-          item.picture.height,
-          item.picture.width,
-          item.picture.format
-        ) : null;
-
-        return new GreatThing(
-          item.id,
-          item.text,
-          item.createdAt,
-          item.updatedAt,
-          picture
-        );
-      });
-    }
-
-    return greatThings;
+    return new GreatThing(
+      gt.id,
+      gt.text,
+      gt.createdAt,
+      gt.updatedAt,
+      picture
+    );
   }
 }
 

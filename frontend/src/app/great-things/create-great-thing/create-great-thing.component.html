@@ -1,0 +1,21 @@
+<div class="box mb-4">
+  <form [formGroup]="form">
+    <article class="media">
+      <div class="media-content">
+        <div class="field">
+          <p class="control">
+            <textarea class="textarea" placeholder="Tell me something great..." formControlName="text"></textarea>
+          </p>
+        </div>
+        <nav class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <button class="button is-info is-fullwidth" (click)="onSubmitClick()"
+                [disabled]="shouldDisableSubmit">Submit</button>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </article>
+  </form>
+</div>
