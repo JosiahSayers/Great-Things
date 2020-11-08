@@ -7,14 +7,17 @@
             <textarea class="textarea" placeholder="Tell me something great..." formControlName="text"></textarea>
           </p>
         </div>
-        <nav class="level">
+        <nav class="level mb-0">
           <div class="level-left">
             <div class="level-item">
-              <button class="button is-info is-fullwidth" (click)="onSubmitClick()"
-                [disabled]="shouldDisableSubmit">Submit</button>
+              <button class="button is-info is-fullwidth" (click)="onSubmitClick()" [disabled]="shouldDisableSubmit"
+                [ngClass]="{'is-loading': isLoading}">Submit</button>
             </div>
           </div>
         </nav>
+        <app-error-notification [state]="errorNotificationState" class="mb2">
+          Something went wrong, please try again.
+        </app-error-notification>
       </div>
     </article>
   </form>

@@ -12,6 +12,8 @@ import { GreatThingsCacheService } from '../shared/services/great-things-cache/g
 export class CreateGreatThingComponent implements OnInit {
 
   form: FormGroup;
+  isLoading = false;
+  errorNotificationState: 'shown' | 'hidden' = 'hidden';
 
   constructor(
     private formBuilder: FormBuildersService,
@@ -25,9 +27,18 @@ export class CreateGreatThingComponent implements OnInit {
 
   onSubmitClick(): void {
     if (this.form.valid) {
+      this.errorNotificationState = 'hidden';
+      this.isLoading = true;
       this.greatThings.create(this.form.controls.text.value).subscribe({
-        next: (res) => this.cache.addGreatThings([res]),
-        error: (err) => console.log(err)
+        next: (res) => {
+          this.cache.addGreatThings([res]);
+          this.form.reset();
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.errorNotificationState = 'shown';
+        }
       });
     }
   }
