@@ -44,6 +44,7 @@
     "@nativescript/core": "rc",
     "@nativescript/theme": "~2.2.1",
     "bulma": "^0.9.0",
+    "bulma-modal-fx": "^1.1.1",
     "core-js": "^2.6.9",
     "file-saver": "^2.0.2",
     "ngx-infinite-scroll": "^9.1.0",
