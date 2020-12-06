@@ -151,7 +151,7 @@ describe('EditGreatThingComponent', () => {
   });
 
   function _stubFormGroup(): void {
-    formBuilder.editGreatThing.and.returnValue(new FormGroup({
+    formBuilder.greatThing.and.returnValue(new FormGroup({
       text: new FormControl('TEXT')
     }));
   }
