@@ -30,13 +30,8 @@ export class GreatThingsBaseComponent implements OnInit {
     this.currentPage++;
     this.loading = true;
     this.greatThingsService.retrieve({ page: this.currentPage }).subscribe({
-      next: (res) => {
-        this.cache.addGreatThings(res);
-        this.loading = false;
-      },
-      error: (res) => {
-        console.error(res);
-      }
+      next: () => this.loading = false,
+      error: (res) => console.error(res)
     });
   }
 
