@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { GreatThingFromApi, GreatThingsResponse } from '../../models/api-responses/great-thing.interface';
 import { GreatThing } from '../../models/GreatThing.model';
 import { Picture } from '../../models/Picture.model';
@@ -11,6 +11,7 @@ import { BaseApiService } from '../base-api-service/base-api.service';
 import { API_LOG_IDENTIFIERS } from '../../constants/api-log-identifiers';
 import { GetRequestParams } from './get-request-params.interface';
 import { SidelogService } from 'sidelog-angular';
+import { GreatThingsCacheService } from '@src/app/great-things/shared/services/great-things-cache/great-things-cache.service';
 
 @Injectable()
 export class GreatThingsService extends BaseApiService {
@@ -18,7 +19,8 @@ export class GreatThingsService extends BaseApiService {
   constructor(
     protected http: HttpClient,
     private authService: AuthService,
-    protected logger: SidelogService
+    protected logger: SidelogService,
+    private cache: GreatThingsCacheService
   ) {
     super(http, logger);
   }
@@ -41,7 +43,8 @@ export class GreatThingsService extends BaseApiService {
     const url = `${environment.BACKEND_BASE}/users/${this.authService.userId()}/great-things`;
     const payload = { text, pictureId };
     return this.post<GreatThingFromApi>(url, payload, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.POST).pipe(
-      map(this.mapResponseToGreatThing)
+      map(this.mapResponseToGreatThing),
+      tap((greatThing) => this.cache.addGreatThings([greatThing]))
     );
   }
 

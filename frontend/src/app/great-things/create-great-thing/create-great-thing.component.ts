@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormBuildersService } from '@src/app/shared/services/forms/form-builders.service';
 import { GreatThingsService } from '@src/app/shared/services/great-things/great-things.service';
-import { GreatThingsCacheService } from '../shared/services/great-things-cache/great-things-cache.service';
 
 @Component({
   selector: 'app-create-great-thing',
@@ -17,8 +16,7 @@ export class CreateGreatThingComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuildersService,
-    private greatThings: GreatThingsService,
-    private cache: GreatThingsCacheService
+    private greatThings: GreatThingsService
   ) { }
 
   ngOnInit(): void {
@@ -30,12 +28,11 @@ export class CreateGreatThingComponent implements OnInit {
       this.errorNotificationState = 'hidden';
       this.isLoading = true;
       this.greatThings.create(this.form.controls.text.value).subscribe({
-        next: (res) => {
-          this.cache.addGreatThings([res]);
+        next: () => {
           this.form.reset();
           this.isLoading = false;
         },
-        error: (err) => {
+        error: () => {
           this.isLoading = false;
           this.errorNotificationState = 'shown';
         }

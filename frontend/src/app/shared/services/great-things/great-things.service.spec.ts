@@ -1,5 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { GreatThingsCacheService } from '@src/app/great-things/shared/services/great-things-cache/great-things-cache.service';
 import { Subscription } from 'rxjs';
 import { SidelogService } from 'sidelog-angular';
 import { environment } from '../../../../environments/environment';
@@ -15,6 +16,7 @@ describe('GreatThingsService', () => {
   let http: HttpTestingController;
   let auth: Spied<AuthService>;
   let logger: Spied<SidelogService>;
+  let cache: Spied<GreatThingsCacheService>;
   let testSub: Subscription;
   let retrieveAndCreateUrl: string;
 
@@ -32,6 +34,10 @@ describe('GreatThingsService', () => {
         {
           provide: SidelogService,
           useFactory: () => logger = spyOnClass(SidelogService)
+        },
+        {
+          provide: GreatThingsCacheService,
+          useFactory: () => cache = spyOnClass(GreatThingsCacheService)
         }
       ]
     });
@@ -45,6 +51,8 @@ describe('GreatThingsService', () => {
     if (testSub) {
       testSub.unsubscribe();
     }
+
+    http.verify();
   });
 
   it('should be created', () => {
@@ -87,6 +95,20 @@ describe('GreatThingsService', () => {
           req.method === 'POST';
       });
       expect(http.verify()).toBeFalsy();
+    });
+
+    it('adds the mapped great thing to the cache', (done) => {
+      testSub = service.create('TEST').subscribe((mappedRes) => {
+        expect(cache.addGreatThings).toHaveBeenCalledWith([mappedRes]);
+        done();
+      });
+
+      http.expectOne(retrieveAndCreateUrl).flush({
+        id: 'ID',
+        text: 'TEXT',
+        createdAt: 'CREATED AT',
+        updatedAt: 'UPDATED AT'
+      });
     });
   });
 

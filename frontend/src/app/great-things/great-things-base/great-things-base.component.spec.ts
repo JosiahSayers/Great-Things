@@ -1,8 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GreatThingsBaseComponent } from '@src/app/great-things/great-things-base/great-things-base.component';
+import { MockComponent } from 'ng-mocks';
 import { GreatThingsService } from '../../shared/services/great-things/great-things.service';
 import { spyOnClass } from '../../utils/testing/helper-functions';
 import { Spied } from '../../utils/testing/spied.interface';
+import { CreateGreatThingComponent } from '../create-great-thing/create-great-thing.component';
 import { GreatThingsCacheService } from '../shared/services/great-things-cache/great-things-cache.service';
 
 describe('GreatThingsBaseComponent', () => {
@@ -13,7 +15,10 @@ describe('GreatThingsBaseComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [GreatThingsBaseComponent],
+      declarations: [
+        GreatThingsBaseComponent,
+        MockComponent(CreateGreatThingComponent)
+      ],
       providers: [
         {
           provide: GreatThingsService,
