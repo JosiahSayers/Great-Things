@@ -35,7 +35,8 @@ export class GreatThingsService extends BaseApiService {
         if (Array.isArray(res?.greatThings)) {
           return res.greatThings.map(this.mapResponseToGreatThing);
         }
-      })
+      }),
+      tap((mapped) => this.cache.addGreatThings(mapped))
     );
   }
 
@@ -50,13 +51,17 @@ export class GreatThingsService extends BaseApiService {
 
   remove(greatThingId: string): Observable<void> {
     const url = `${environment.BACKEND_BASE}/users/${this.authService.userId()}/great-things/${greatThingId}`;
-    return this.delete<void>(url, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.DELETE);
+    return this.delete<void>(url, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.DELETE).pipe(
+      tap(() => this.cache.removeGreatThing(greatThingId))
+    );
   }
 
   edit({ id, text, pictureId }: EditGreatThingRequest): Observable<GreatThing> {
     const url = `${environment.BACKEND_BASE}/users/${this.authService.userId()}/great-things/${id}`;
     const payload = { text, pictureId };
-    return this.put<GreatThing>(url, payload, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.PUT);
+    return this.put<GreatThing>(url, payload, {}, API_LOG_IDENTIFIERS.GREAT_THINGS.PUT).pipe(
+      tap((res) => this.cache.updateGreatThing(res))
+    );
   }
 
   private mapResponseToGreatThing(gt: GreatThingFromApi): GreatThing {

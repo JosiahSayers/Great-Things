@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-
 import { EditGreatThingComponent } from '@src/app/great-things/edit-great-thing/edit-great-thing.component';
 import { ErrorNotificationComponent } from '@src/app/shared/components/error-notification/error-notification.component';
 import { GreatThing } from '@src/app/shared/models/GreatThing.model';
@@ -11,13 +10,11 @@ import { spyOnClass } from '@src/app/utils/testing/helper-functions';
 import { Spied } from '@src/app/utils/testing/spied.interface';
 import { MockComponent } from 'ng-mocks';
 import { Subscription } from 'rxjs';
-import { GreatThingsCacheService } from '../shared/services/great-things-cache/great-things-cache.service';
 
 describe('EditGreatThingComponent', () => {
   let component: EditGreatThingComponent;
   let fixture: ComponentFixture<EditGreatThingComponent>;
   let formBuilder: Spied<FormBuildersService>;
-  let cache: Spied<GreatThingsCacheService>;
   let greatThingsService: Spied<GreatThingsService>;
   let modalService: Spied<ModalService>;
   let testSub: Subscription;
@@ -33,10 +30,6 @@ describe('EditGreatThingComponent', () => {
         {
           provide: FormBuildersService,
           useFactory: () => formBuilder = spyOnClass(FormBuildersService)
-        },
-        {
-          provide: GreatThingsCacheService,
-          useFactory: () => cache = spyOnClass(GreatThingsCacheService)
         },
         {
           provide: GreatThingsService,
@@ -102,16 +95,6 @@ describe('EditGreatThingComponent', () => {
       expect(greatThingsService.remove).toHaveBeenCalledWith('ID');
     });
 
-    it('removes the great thing from cache and emits an editing toggle when the API call succeeds', (done) => {
-      component.toggleEditing.subscribe(() => {
-        expect(true).toBeTrue();
-        done();
-      });
-      getToApiCall();
-      greatThingsService.remove.observer.next({});
-      expect(cache.removeGreatThing).toHaveBeenCalledWith('ID');
-    });
-
     it('displays an error notification when the API call fails', () => {
       getToApiCall();
       greatThingsService.remove.observer.error({});
@@ -130,17 +113,6 @@ describe('EditGreatThingComponent', () => {
         id: 'ID',
         text: 'NEW TEXT VALUE'
       });
-    });
-
-    it('updates the cache and emits a toggle editing event when the API call succeeds', (done) => {
-      component.toggleEditing.subscribe(() => {
-        expect(true).toBe(true);
-        done();
-      });
-      const testResponse = { prop: 'VALUE' };
-      component.sendUpdateApiRequest();
-      greatThingsService.edit.observer.next(testResponse);
-      expect(cache.updateGreatThing).toHaveBeenCalledWith(testResponse);
     });
 
     it('displays an error notification when the API call fails', () => {

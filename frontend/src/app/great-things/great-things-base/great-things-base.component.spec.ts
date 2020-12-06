@@ -51,9 +51,8 @@ describe('GreatThingsBaseComponent', () => {
     expect(greatThingsService.retrieve).toHaveBeenCalled();
   });
 
-  it('passes the response of the API call to the cache and sets loading to false when the API call suceeds', () => {
+  it('sets loading to false when the API call suceeds', () => {
     greatThingsService.retrieve.observer.next(['TEST']);
-    expect(cache.addGreatThings).toHaveBeenCalledWith(['TEST']);
     expect(component.loading).toBeFalse();
   });
 
