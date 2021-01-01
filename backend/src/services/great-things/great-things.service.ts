@@ -7,6 +7,7 @@ import { PictureDocument } from '../../models/Picture';
 import { GreatThing, GreatThingDocument } from '../../models/Great-Thing';
 import { pictureService } from '../pictures/picture.service';
 import { MongooseFilterQuery } from 'mongoose';
+import { languageService } from '../language-processing/natural-language-processing.service';
 
 const create = async (req: Request): Promise<MappedResponseObject | GreatThingResponse> => {
   const gtReq = <GreatThingRequest>req.body;
@@ -36,6 +37,10 @@ const create = async (req: Request): Promise<MappedResponseObject | GreatThingRe
       greatThingId: greatThing._id,
       ...baseLogObject(req)
     });
+
+    console.log('ANALYZING LANGUAGE');
+    const analysis = await languageService.analyzeSingle(req, greatThing.text);
+    console.log('ANALYSIS: ' + JSON.stringify(analysis));
 
     return await helper.mapResponseWithPicture(greatThing);
   } catch (e) {

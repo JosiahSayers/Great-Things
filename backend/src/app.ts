@@ -13,6 +13,7 @@ import { isAuthorized, isCurrentUser } from './middleware/auth.middleware';
 import { logger } from './util/logger';
 import fileUpload from 'express-fileupload';
 import { Storage } from '@google-cloud/storage';
+import { LanguageServiceClient } from '@google-cloud/language';
 import * as fs from 'fs';
 import cors from 'cors';
 
@@ -42,10 +43,17 @@ const photoBucket = new Storage({
   projectId: GCP_ID
 }).bucket(GCP_USER_PHOTOS);
 
-const injectStorageBucket = (req: Request, res: Response, next: NextFunction): void => {
+const languageClient = new LanguageServiceClient({
+  keyFilename: GCP_KEY_FILE_PATH,
+  projectId: GCP_ID
+});
+
+const injectDependencies = (req: Request, res: Response, next: NextFunction): void => {
   req.photoStorage = photoBucket;
+  req.languageClient = languageClient;
   next();
 };
+
 
 app.set('port', PORT || 3000);
 app.use(bodyParser.json());
@@ -57,7 +65,7 @@ app.use(cors());
 app.use(logRequest);
 
 app.use('/v1/auth', validateHeaders, authController);
-app.use('/v1/users/:userid', injectStorageBucket, validateHeaders, isAuthorized, isCurrentUser, usersController);
-app.use('/v1/users/:userid/great-things', injectStorageBucket, validateHeaders, isAuthorized, isCurrentUser, greatThingsController);
+app.use('/v1/users/:userid', injectDependencies, validateHeaders, isAuthorized, isCurrentUser, usersController);
+app.use('/v1/users/:userid/great-things', injectDependencies, validateHeaders, isAuthorized, isCurrentUser, greatThingsController);
 
 export default app;
