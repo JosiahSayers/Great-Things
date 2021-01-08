@@ -61,7 +61,9 @@ const mapGreatThing = (gt: GreatThingDocument): GreatThingInterface => ({
   text: gt.text,
   ownerId: gt.ownerId,
   createdAt: gt.createdAt,
-  updatedAt: gt.updatedAt
+  updatedAt: gt.updatedAt,
+  people: gt.people,
+  textWithEntities: gt.textWithEntities
 });
 
 const sanitizeSearchString = (search: string): string => {

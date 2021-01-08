@@ -7,28 +7,33 @@ import { PictureDocument } from '../../models/Picture';
 import { GreatThing, GreatThingDocument } from '../../models/Great-Thing';
 import { pictureService } from '../pictures/picture.service';
 import { MongooseFilterQuery } from 'mongoose';
+import { languageService } from '../language-processing/natural-language-processing.service';
 
 const create = async (req: Request): Promise<MappedResponseObject | GreatThingResponse> => {
   const gtReq = <GreatThingRequest>req.body;
   let picture: PictureDocument;
 
   try {
-    if (!gtReq || !gtReq.text) {
+    if (!gtReq?.text) {
       logger.debug({
         msg: 'User tried to create a new Great Thing with invalid input(s)',
         request: req.body,
         ...baseLogObject(req)
       });
       throw new Error('400');
-    } else if (gtReq.pictureId) {
+    } else if (gtReq?.pictureId) {
       picture = await pictureService.findById(gtReq.pictureId);
       helper.userOwnsPicture(req, picture);
     }
 
+    const analysis = await languageService.analyzeSingle(req, gtReq.text);
+
     const greatThing = await new GreatThing(<GreatThingDocument>{
       text: gtReq.text,
       ownerId: req.jwt.id,
-      pictureId: gtReq.pictureId
+      pictureId: gtReq.pictureId,
+      people: analysis.people,
+      textWithEntities: analysis.modifiedText
     }).save();
 
     logger.info({
