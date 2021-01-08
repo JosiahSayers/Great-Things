@@ -26,10 +26,14 @@ const create = async (req: Request): Promise<MappedResponseObject | GreatThingRe
       helper.userOwnsPicture(req, picture);
     }
 
+    const analysis = await languageService.analyzeSingle(req, gtReq.text);
+
     const greatThing = await new GreatThing(<GreatThingDocument>{
       text: gtReq.text,
       ownerId: req.jwt.id,
-      pictureId: gtReq.pictureId
+      pictureId: gtReq.pictureId,
+      people: analysis.people,
+      textWithEntities: analysis.modifiedText
     }).save();
 
     logger.info({
@@ -37,10 +41,6 @@ const create = async (req: Request): Promise<MappedResponseObject | GreatThingRe
       greatThingId: greatThing._id,
       ...baseLogObject(req)
     });
-
-    console.log('ANALYZING LANGUAGE');
-    const analysis = await languageService.analyzeSingle(req, greatThing.text);
-    console.log('ANALYSIS: ' + JSON.stringify(analysis));
 
     return await helper.mapResponseWithPicture(greatThing);
   } catch (e) {
