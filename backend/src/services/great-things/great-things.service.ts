@@ -14,14 +14,14 @@ const create = async (req: Request): Promise<MappedResponseObject | GreatThingRe
   let picture: PictureDocument;
 
   try {
-    if (!gtReq || !gtReq.text) {
+    if (!gtReq?.text) {
       logger.debug({
         msg: 'User tried to create a new Great Thing with invalid input(s)',
         request: req.body,
         ...baseLogObject(req)
       });
       throw new Error('400');
-    } else if (gtReq.pictureId) {
+    } else if (gtReq?.pictureId) {
       picture = await pictureService.findById(gtReq.pictureId);
       helper.userOwnsPicture(req, picture);
     }

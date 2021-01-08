@@ -16,7 +16,6 @@ const analyzeSingle = async (req: Request, text: string): Promise<{people: Perso
             referencesInText: person.mentions?.map((mention) => mention.text.content)
         }));
     const modifiedText = modifyText(text, people);
-    console.log(modifiedText);
     return { people, modifiedText };
 };
 
